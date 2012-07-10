@@ -1,0 +1,59 @@
+.pages 
+{
+    padding: 0em;
+    margin: 0 0;
+    padding: 10px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+    clear: left;
+    font-size: 11px;
+    font-family:Verdana, "Arial", Helvetica, sans-serif;
+}
+
+.pages a, .pages span 
+{
+    display: block;
+    float: left;
+    padding: 0.2em 0.5em;
+    margin-right: 0.1em;
+    border: 1px solid #fff;
+    background-color: #fff;
+}
+
+.pages span.current 
+{
+    border: 1px solid #2E6AB1;
+    font-weight: bold;
+    background: #0557a8;
+    color: #fff;
+}
+.pages span.text 
+{
+    font-weight: bold;
+    color: #000;
+}
+
+.pages a 
+{
+    border: 1px solid #9AAFE5;
+    color: #105CB6;
+    text-decoration: none;
+}
+
+.pages a:hover 
+{
+    border-color: #2E6AB1;
+    color: #105CB6;
+    background: #c0dcf0;
+}
+
+.pages a.nextprev 
+{
+    font-weight: bold;
+    color: #105CB6;
+}
+
+.pages span.nextprev 
+{
+    border: 1px solid #ddd;
+    color: #999;
+}

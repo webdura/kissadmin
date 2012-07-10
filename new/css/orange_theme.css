@@ -1,0 +1,67 @@
+body { background: #FAA002; }
+
+.right_links, .right_links a { color:#fff; }
+
+#top_buttons, #top_buttons ul {
+    background: transparent url(../images/orange_theme/nav_bg.jpg) repeat-x;
+}
+.summary_btn { 
+    background:url(../images/orange_theme/summary_btn.jpg) no-repeat left top ;
+}
+.clients_btn { 
+    background:url(../images/orange_theme/clients_btn.jpg) no-repeat left top ;
+}
+.quotation_btn { 
+    background:url(../images/orange_theme/quotation_btn.jpg) no-repeat left top ;
+}
+.invoices_btn { 
+    background:url(../images/orange_theme/invoices_btn.jpg) no-repeat left top ;
+}
+.statement_btn { 
+    background:url(../images/orange_theme/statement_btn.jpg) no-repeat left top ;
+}
+.payment_btn { 
+    background:url(../images/orange_theme/payment_btn.jpg) no-repeat left top ;
+}
+.pricing_btn { 
+    background:url(../images/orange_theme/pricing_btn.jpg) no-repeat left top ;
+}
+
+
+.btn_style {
+    background: transparent url(../images/orange_theme/btn_bg.png) repeat-x left bottom;
+    border:2px solid #F4D289;
+    color:#000 !important;
+}
+
+#maincontent {
+    background-color:#FAE9C6;
+}
+#subcontent {
+    background-color:#fff;
+}
+.page_header {
+    background: transparent url(../images/orange_theme/heading_bg.png) repeat-x;
+}
+.page_header h2 { color:#000; }
+.page_header .addnew { color:#000; }
+.page_header .text_links, .page_header .text_links a { color:#FACB7E; }
+
+
+.contents {
+    border-top:1px solid #E1E2DE;
+}
+.list { border:1px solid #FDD284; border-right:0px solid #FDD284; }
+.list th{ 
+    background: transparent url(../images/orange_theme/action_bar_bg.jpg) repeat-x;
+    color:#000;
+}
+.list td { border-right:1px solid #FDD284; }
+.list td { background-color:#fff; }
+.list tr.altrow td { background-color:#FFF9ED; }
+.list .asc { 
+    background: transparent url(../images/orange_theme/arrow_up.png) no-repeat;
+}
+.list .desc { 
+    background: transparent url(../images/orange_theme/arrow_down.png) repeat-x;
+}

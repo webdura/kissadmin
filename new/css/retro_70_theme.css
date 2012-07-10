@@ -1,0 +1,67 @@
+body { background: transparent url(../images/retro_70_theme/background.jpg) repeat; }
+
+.right_links, .right_links a { color:#fff; }
+
+#top_buttons, #top_buttons ul {
+    background: transparent url(../images/retro_70_theme/nav_bg.jpg) repeat-x;
+}
+.summary_btn { 
+    background:url(../images/retro_70_theme/summary_btn.jpg) no-repeat left top ;
+}
+.clients_btn { 
+    background:url(../images/retro_70_theme/clients_btn.jpg) no-repeat left top ;
+}
+.quotation_btn { 
+    background:url(../images/retro_70_theme/quotation_btn.jpg) no-repeat left top ;
+}
+.invoices_btn { 
+    background:url(../images/retro_70_theme/invoices_btn.jpg) no-repeat left top ;
+}
+.statement_btn { 
+    background:url(../images/retro_70_theme/statement_btn.jpg) no-repeat left top ;
+}
+.payment_btn { 
+    background:url(../images/retro_70_theme/payment_btn.jpg) no-repeat left top ;
+}
+.pricing_btn { 
+    background:url(../images/retro_70_theme/pricing_btn.jpg) no-repeat left top ;
+}
+
+
+.btn_style {
+    background: transparent url(../images/retro_70_theme/btn_bg.png) repeat-x left bottom;
+    border:2px solid #F0DBBE;
+    color:#000 !important;
+}
+
+#maincontent {
+    background-color:#DFD9CB;
+}
+#subcontent {
+    background-color:#fff;
+}
+.page_header {
+    background: transparent url(../images/retro_70_theme/heading_bg.png) repeat-x;
+}
+.page_header h2 { color:#000; }
+.page_header .addnew { color:#000; }
+.page_header .text_links, .page_header .text_links a { color:#F1A57E; }
+
+
+.contents {
+    border-top:1px solid #E1E2DE;
+}
+.list { border:1px solid #E8E0BC; border-right:0px solid #E8E0BC; }
+.list th{ 
+    background: transparent url(../images/retro_70_theme/action_bar_bg.jpg) repeat-x;
+    color:#000;
+}
+.list td { border-right:1px solid #E8E0BC; }
+.list td { background-color:#fff; }
+.list tr.altrow td { background-color:#F8F3E4; }
+.list .asc { 
+    background: transparent url(../images/retro_70_theme/arrow_up.png) no-repeat;
+}
+.list .desc { 
+    background: transparent url(../images/retro_70_theme/arrow_down.png) repeat-x;
+}
