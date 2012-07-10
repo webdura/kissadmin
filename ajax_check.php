@@ -2,7 +2,7 @@
 include("functions.php");
 
 $task = (isset($_REQUEST['task'])) ? $_REQUEST['task'] : '';
-
+  
 switch ($task)
 {
     case 'checkUserName':
