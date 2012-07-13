@@ -146,7 +146,7 @@ switch ($action)
         $admins_rs  = mysql_query($admins_sql);
         while ($admins_row = mysql_fetch_assoc($admins_rs))
         {
-            $userTypes[$admins_row['id']] = $admins_row['name'];
+            $userTypes[$admins_row['id']] = $admins_row['name'] . "|" . $admins_row['user'];
         }
         //echo '<pre>'; print_r($userTypes); exit;
         
@@ -155,7 +155,7 @@ switch ($action)
         $modules_rs  = mysql_query($modules_sql);
         while ($modules_row = mysql_fetch_assoc($modules_rs))
         {
-            $userModules[$modules_row['id']] = $modules_row['name'];
+            $userModules[$modules_row['id']] = $modules_row['name'] . "|" . $modules_row['for_users'];
         }
         // echo '<pre>'; print_r($userModules); exit;
         
@@ -369,55 +369,24 @@ $(document).ready(function() {
 </table>
 </div>
 
-<? } else if($action=='permission') { $width = 90 / count($userModules); //echo '<pre>'; print_r($permissionModules); exit; ?>
+<? } 
+else if($action=='permission') { 
+	foreach ($userTypes as $admins_id=>$name) { 
+	
+		$admn = explode("|", $name);
+		$name = $admn[0];
+		$adminType = $admn[1];
+	
+		echo '<div class="moduleContainer">';
+		echo '<div class="adminHead">' . $name . '</div>';
+		echo showPermissionGrid($adminType,$admins_id, $userModules, $permissionModules[$admins_id]);
+		echo '</div>';
+		echo '<div style="height:20px;"></div>';
+	
+	}         
 
-<!--$userTypes == $userModules == $permissionModules-->
+?>
 
-<div class="client_display"><br>
-    <table width="100%" class="client_display_table" cellpadding="3" cellspacing="3">
-        <tr valign="middle" height="25">
-            <th class="thead" width="10%">Admin Type</th>
-            <? foreach ($userModules as $module) { ?>
-                <th class="thead" width="<?=$width?>%" align="center"><?=$module?></th>
-            <? } ?>
-        </tr>
-        <? $j=0; foreach ($userTypes as $admins_id=>$name) { $class = ((($j++)%2)==1) ? 'row2' : 'row1';?>
-            <tr valign="middle" class="<?=$class?>">
-                <td><?=$name?></td>                
-                <?
-                foreach ($userModules as $module_id=>$module) {
-                    $name    = $admins_id.'_'.$module_id;
-                    $checked = (in_array($module_id, $permissionModules[$admins_id])) ? 'checked' : ''; 
-                ?>
-                    <td align="center"><input type="checkbox" id="<?=$name?>" value="1" <?=$checkbox?> <?=$checked?>></td>
-                <? } ?>
-            </tr>
-        <? } ?>
-        <?
-        $j=0;
-        while ($permission_row = mysql_fetch_assoc($permission_rs)) {
-            $class     = ((($j++)%2)==1) ? 'row2' : 'row1';
-            $admins_id = $permission_row['admins_id'];
-            
-            $checkbox  = ($admins_id==1) ? 'disabled readonly' : '';
-            // client_permission	invoice_permission	account_permission	payment_permission	service_permission	admin_permission	theme_permission
-            ?>
-            <tr valign="middle" class="<?=$class?>">
-                <td><?=$permission_row['name']?></td>
-                <td align="center"><input type="checkbox" id="client_permission_<?=$admins_id?>" value="1" <?=$checkbox?> <?=($permission_row['client_permission']==1 ? 'checked' : '')?>></td>
-                <td align="center"><input type="checkbox" id="invoice_permission_<?=$admins_id?>" value="1" <?=$checkbox?> <?=($permission_row['invoice_permission']==1 ? 'checked' : '')?>></td>
-                <td align="center"><input type="checkbox" id="account_permission_<?=$admins_id?>" value="1" <?=$checkbox?> <?=($permission_row['account_permission']==1 ? 'checked' : '')?>></td>
-                <td align="center"><input type="checkbox" id="payment_permission_<?=$admins_id?>" value="1" <?=$checkbox?> <?=($permission_row['payment_permission']==1 ? 'checked' : '')?>></td>
-                <td align="center"><input type="checkbox" id="service_permission_<?=$admins_id?>" value="1" <?=$checkbox?> <?=($permission_row['service_permission']==1 ? 'checked' : '')?>></td>
-                <td align="center"><input type="checkbox" id="admin_permission_<?=$admins_id?>" value="1" <?=$checkbox?> <?=($permission_row['admin_permission']==1 ? 'checked' : '')?>></td>
-                <td align="center"><input type="checkbox" id="theme_permission_<?=$admins_id?>" value="1" <?=$checkbox?> <?=($permission_row['theme_permission']==1 ? 'checked' : '')?>></td>
-                <td align="center"><input type="checkbox" id="accounts_permission_<?=$admins_id?>" value="1" <?=$checkbox?> <?=($permission_row['accounts_permission']==1 ? 'checked' : '')?>></td>
-                <td align="center"><input type="checkbox" id="email_permission_<?=$admins_id?>" value="1" <?=$checkbox?> <?=($permission_row['email_permission']==1 ? 'checked' : '')?>></td>
-                <td align="center"><input type="checkbox" id="grade_permission_<?=$admins_id?>" value="1" <?=$checkbox?> <?=($permission_row['grade_permission']==1 ? 'checked' : '')?>></td>
-            </tr>
-        <? } ?>
-    </table>
-</div>
 <script>
 $(document).ready(function() {
     $('input').bind('click', function() {
@@ -434,4 +403,27 @@ $(document).ready(function() {
 <? }
 
 include('footer.php');
+
+
+function showPermissionGrid($adminType,$admins_id, $arrModuleNames, $arrPermissions){
+	
+	
+        foreach ($arrModuleNames as $module_id=>$module) {
+            $name    = $admins_id.'_'.$module_id;
+            
+            $checked = (in_array($module_id, $arrPermissions)) ? 'checked' : ''; 
+
+            $modool = explode("|", $module);
+        	$module = $modool[0];
+        	$moduleUsers = $modool[1];
+            	
+            if(strpos($moduleUsers,$adminType)===false) {
+            }
+        	else {
+           $moduleTable .= '<div class="moduleName"><input type="checkbox" id="'. $name. '" value="1" ' . $checkbox . $checked . '>' . $module. '</div>';
+         	}
+        
+        } 
+	return $moduleTable;
+}	
 ?>

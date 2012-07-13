@@ -1,13 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
 <project version="5.5" encoding="default">
-	<project_entity ID="SourceControl">
-		<encodingStyle value="CVS"/>
-	</project_entity>
 	<project_entity ID="debugger">
 		<connectionInfo use_defaults="true" tempFilesLocation="C:\Users\Webdura" debug_mode="local" serverHost="http://Server_Address/" port="10000"/>
-		<breakpoints/>
+		<breakpoints>
+			<breakpoint fileName="D:\wamp\www\kissadmin\css\style.css" lineNumber="327" enable="true" condition=""/>
+			<breakpoint fileName="D:\wamp\www\kissadmin\myprofile.php" lineNumber="323" enable="true" condition=""/>
+			<breakpoint fileName="D:\wamp\www\kissadmin\users.php" lineNumber="364" enable="true" condition=""/>
+		</breakpoints>
 		<watches/>
+	</project_entity>
+	<project_entity ID="SourceControl">
+		<encodingStyle value="CVS"/>
 	</project_entity>
 	<project_entity ID="project_roots">
 		<vfile name="D:\wamp\www\kissadmin"/>
@@ -26,12 +30,20 @@
 			<SubversionCommand commandType="resolve"/>
 		</svnCmdArguments>
 	</project_entity>
-	<project_entity ID="editor_component" selectedEditor="3">
+	<project_entity ID="editor_component" selectedEditor="11">
 		<openEditors>
-			<editor fileName="D:\wamp\www\kissadmin\index.php" caretPosition="579" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\dashboard.php" caretPosition="49" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\header.php" caretPosition="833" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\dashboard.php" caretPosition="2052" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\header.php" caretPosition="10645" clone="false" encoding="default"/>
 			<editor fileName="D:\wamp\www\kissadmin\functions.php" caretPosition="0" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\users.php" caretPosition="9154" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\admins.php" caretPosition="6776" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\style.php" caretPosition="0" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\css\style.css" caretPosition="6896" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\company.php" caretPosition="8694" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\payments.php" caretPosition="15392" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\invoices.php" caretPosition="329" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\index.php" caretPosition="3153" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\myprofile.php" caretPosition="14477" clone="false" encoding="default"/>
 		</openEditors>
 	</project_entity>
 	<project_entity ID="CVS">

@@ -116,8 +116,11 @@ switch ($action)
             {	
                 $details = invoiceDetails($orderId);
                 $result  = emailSend('invoice', $details);
-                if($result)
-                    $smsg = "Invoice added and mail sent successfully";                
+                if($result){
+                    $smsg = "Invoice added and mail sent successfully";  
+		            $sql  = "UPDATE gma_order SET sendDate=NOW()WHERE id='$orderId'";
+		            mysql_query($sql);
+                }              
             }
             return header("Location: invoices.php?msg=$smsg");
             exit;
@@ -216,8 +219,11 @@ switch ($action)
     case 'resendMail':
         $details = invoiceDetails($orderId);        
         $result  = emailSend('invoice', $details);
-        if($result)                    
+        if($result)  {                  
+            $sql  = "UPDATE gma_order SET sendDate=NOW()WHERE id='$orderId'";
+            mysql_query($sql);
             $smsg = "Invoice mail send successfully";
+        }
                     
         return header("Location: invoices.php?msg=$smsg");
         exit;

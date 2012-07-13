@@ -239,12 +239,18 @@ switch ($action)
         
     default:
         $action  = 'list';
-        $offset  = ($pageNum - 1) * $rowsPerPage;
+        $offset  = ($pageNum - 1) * $perPage;
         $initial = 0;
-        $orderBy = ($_REQUEST['orderby']!='') ? 'ORDER BY '.$_REQUEST['orderby'].' '.$_REQUEST['order'] : 'ORDER BY date DESC ';
-        
+        $orderBy = ($_REQUEST['orderby']!='') ? 'ORDER BY '.$_REQUEST['orderby'].' '.$_REQUEST['order'] : 'ORDER BY date DESC ';        
         $payment_sql   .= ($userId>0) ? " AND gma_payments.userId='$userId'" : '';
+
+        print_r($_SESSION);
+        
+        if( strtolower(trim($_SESSION['ses_userType']))=='client')
+			$payment_sql   .= " AND gma_payments.userId = " . $_SESSION['ses_userId'];
+        
         $payment_sql   .= " $orderBy";
+        
         $payment_rs     = mysql_query($payment_sql);
         $payment_count  = mysql_num_rows($payment_rs);
         
@@ -258,7 +264,12 @@ switch ($action)
             $pagination   = pagination($maxPage, $pageNum);
             $pagination   = paginations($payment_count, $perPage, 5);
         }
+        echo $payment_sql;
         
+
+	if( strtolower(trim($_SESSION['ses_userType']))=='client')
+		$links = '';
+    else    
         $links = '<a href="#" onclick="javascript:return paymentExport();">Export</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="payments.php?action=import" title="Import batch payments">Import batch payments</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="payments.php?action=add" title="Add manual payment">Add manual payment</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
         
         break;
@@ -280,6 +291,11 @@ if($action=='list') { ?>
     <table border="0" width="100%">
     <tr>
         <td align="left" width="600">
+        <?php
+        	if( strtolower(trim($_SESSION['ses_userType']))=='client')
+        		echo '&nbsp;';
+			else {
+		?>
             <b>Select Client : </b>
             <select name="userId" id="userId" class="inputbox_green" style="width:;" onchange="document.searchform.submit();">
                 <option value="">Select All</option>
@@ -293,6 +309,7 @@ if($action=='list') { ?>
                 ?>
             </select>
             <!--&nbsp;<input type="submit"  value="Search"  class="search_bt" name="" id="sbmt" />-->
+           <?php } // END OF if( strtolower(trim($_SESSION['ses_userType']))=='client') ?>
         </td>
         <td align="right"><?=$pagination?></td>
     </tr>
@@ -311,7 +328,11 @@ if($action=='list') { ?>
             <!--<th class="thead">Description</th>-->
             <th width="20%" class="thead"><span>Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=date&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=date&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
             <th width="20%" class="thead"><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=amount&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=amount&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="10%" class="thead" align="center">Delete</th>
+         <?php
+        	if( strtolower(trim($_SESSION['ses_userType']))!='client')
+           		echo '<th width="10%" class="thead" align="center">Delete</th>';
+          ?>
+           		
         </tr>  
         <?php
         $j=0; $val=0;
@@ -329,7 +350,11 @@ if($action=='list') { ?>
                 <td><?=$payment_row['businessName']?></td>
                 <td><?=$payment_row['date']?></td>
                 <td>R <?=formatMoney($total, true)?></td>
+         <?php
+        	if( strtolower(trim($_SESSION['ses_userType']))!='client') {
+        	?>
                 <td align="center"><a href="payments.php?action=edit&payment_id=<?=$paymentId?>&userId=<?=$userId?>&page=<?=$pageNum?>">Edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="payments.php?action=delete&payment_id=<?=$paymentId?>&userId=<?=$userId?>&page=<?=$pageNum?>" onclick="return window.confirm('Are you sure to delete this ?');">Delete</a></td>
+         <?php } ?>
             </tr>
             <?php
         }

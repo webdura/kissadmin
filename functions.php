@@ -158,7 +158,7 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
         }
         
         $email_to = explode(',', $email_to);
-        $mailToSend->send($email_to);
+        //$mailToSend->send($email_to);
                 
         $today  = date('d-m-Y H:i:s');
         $myFile = "mail_log.txt";

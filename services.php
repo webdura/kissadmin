@@ -17,12 +17,13 @@ switch ($action)
         if(isset($_POST['service_name']) && $_POST['service_name']!='')
         {
             $service_name = GetSQLValueString(trim($_POST['service_name']), 'text');
+            $description = GetSQLValueString(trim($_POST['description']), 'text');
             $group_id     = GetSQLValueString(trim($_POST['group_id']), 'text');
             $amount       = GetSQLValueString(trim($_POST['amount']), 'text');
             $order        = GetSQLValueString(trim($_POST['order']), 'text');
             $status       = isset($_POST['status']) ? 1 : 0;
             
-            $service_query = "INSERT INTO gma_services SET service_name=$service_name,group_id=$group_id,amount=$amount,`order`=$order,status=$status";
+            $service_query = "INSERT INTO gma_services SET service_name=$service_name, description=$description,group_id=$group_id,amount=$amount,`order`=$order,status=$status";
             mysql_query($service_query);
             
             header("Location: services.php?a");
@@ -37,12 +38,13 @@ switch ($action)
         if(isset($_POST['service_name']) && $_POST['service_name']!='')
         {
             $service_name = GetSQLValueString(trim($_POST['service_name']), 'text');
+            $description = GetSQLValueString(trim($_POST['description']), 'text');
             $group_id     = GetSQLValueString(trim($_POST['group_id']), 'text');
             $amount       = GetSQLValueString(trim($_POST['amount']), 'text');
             $order        = GetSQLValueString(trim($_POST['order']), 'text');
             $status       = isset($_POST['status']) ? 1 : 0;
             
-            $service_query = "UPDATE gma_services SET service_name=$service_name,group_id=$group_id,amount=$amount,`order`=$order,status=$status WHERE id=$service_id";
+            $service_query = "UPDATE gma_services SET service_name=$service_name, description=$description, group_id=$group_id,amount=$amount,`order`=$order,status=$status WHERE id=$service_id";
             mysql_query($service_query);
             
             header("Location: services.php?u");
@@ -276,6 +278,11 @@ if($action=='list') { ?>
         <tr height="25" valign="middle">
             <th class="row1" align="left" width="30%">Service Name</th>
             <td class="row1"><input type="text" name="service_name" id="service_name" class="fleft textbox required" value="<?=@$service_row['service_name']?>" /></td>  
+        </tr> 
+        <tr valign="middle">
+            <th class="row1" align="left" width="30%">Service Description</th>
+            <td class="row1"><textarea name="description" rows="5" cols="30"><?=@$service_row['description']?></textarea>
+           </td>  
         </tr> 
         <tr height="25" valign="middle">
             <th class="row2" align="left" width="30%">Group</th>

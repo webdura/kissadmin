@@ -161,6 +161,7 @@ if(isset($_SESSION['ses_userId']) && $_SESSION['ses_userId']>0) {
     $company_rs  = mysql_query($company_sql);
     $company_row = mysql_fetch_assoc($company_rs);
 }
+
 $module_ids = implode(',', $module_ids);
 
 $systemModules = array();
@@ -213,6 +214,34 @@ $actualQueryString = $_SERVER["QUERY_STRING"];
 
 $queryString = explode("&orderby=", $actualQueryString); 
 $queryString = $queryString[0];
+
+	if( strtolower(trim($_SESSION['ses_userType']))=='client'){
+		$name_sql =" SELECT firstName " .
+				" FROM gma_user_details, gma_logins " .
+				" WHERE gma_logins.userId = gma_user_details.userId " .
+				" AND gma_logins.userId= " . $_SESSION['ses_userId'] .
+				" AND gma_logins.companyId='" . $_SESSION['ses_companyId'] ."'";   
+	
+	
+		$name_rs     = mysql_query($name_sql);
+		$name = mysql_fetch_assoc($name_rs);
+		$_SESSION['displayName'] = $name['firstName'];
+	}
+	else { //if( strtolower(trim($_SESSION['ses_userType']))=='super_admin'){
+		$name_sql =" SELECT companyName " .
+				" FROM gma_company, gma_logins " .
+				" WHERE gma_logins.companyId = gma_company.companyId " .
+				" AND gma_logins.userId= " . $_SESSION['ses_userId'] .
+				" AND gma_logins.companyId='" . $_SESSION['ses_companyId'] ."'";   
+	
+	
+		$name_rs     = mysql_query($name_sql);
+		$name = mysql_fetch_assoc($name_rs);
+		$_SESSION['displayName'] = $name['companyName'];
+	}
+	//else 
+	//	$_SESSION['displayName'] = $_SESSION['displayName'];
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -240,7 +269,7 @@ $queryString = $queryString[0];
         <img src="images/company/admin_logo.png" align="right"></div>
         <div id="head_right">
             <span class="logout">
-                Logged in as "<?=$ses_userName?>"&nbsp;&nbsp;&nbsp;|&nbsp;
+                Logged in as "<?=$_SESSION['displayName']?>"&nbsp;&nbsp;&nbsp;|&nbsp;
                 <? if(count($top_menu)>0) { ?>
                     <a href="javascript:void(0);" onclick="settingsTab();">Settings</a>&nbsp;&nbsp;|&nbsp;&nbsp;
                 <? } ?>

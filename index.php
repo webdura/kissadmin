@@ -37,7 +37,8 @@ if(isset($_REQUEST['logoff']))
     exit;
 }
 else if(isset($_SESSION['ses_userId']) && $_SESSION['ses_userId']>0)
-{
+{ 
+	
     $ses_companyId = $_SESSION['ses_companyId'];
     $ses_userType  = $_SESSION['ses_userType'];
     $admins_id  = 5;
@@ -83,6 +84,7 @@ if(isset($_REQUEST['sbmt']))
     else
         $msg1 = "Incorrect Username/Password";
 }
+
 ?>
 
 <form name="loginfrm" method="post" action="">

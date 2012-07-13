@@ -14,6 +14,12 @@ $userTypes  = userTypes('', 0, 1);
 $userTypes  = "'".implode("', '", $userTypes)."'";
 $page_title = 'Clients';
 
+if( strtolower(trim($_SESSION['ses_userType']))=='client'){
+	if($action!="view")
+		$action = "list";
+}
+
+
 $user_sql  = "SELECT * FROM gma_user_details,gma_logins,gma_company WHERE gma_user_details.userId=gma_logins.userId AND gma_company.companyId=gma_logins.companyId AND userType IN ($userTypes) AND gma_company.companyId='$ses_companyId' ";
 switch ($action)
 {
@@ -226,10 +232,10 @@ switch ($action)
         header("Location: users.php?d");        
         break;
         
-    case 'login':
+    case 'login':	
+    	
         $_SESSION['usr_userId'] = $_SESSION['ses_userId'];
         $_SESSION['ses_userId'] = $_REQUEST['userId'];
-        
         header("Location: index.php");        
         break;
         
@@ -256,7 +262,11 @@ switch ($action)
             $pagination  = paginations($user_count, $perPage, 5);
         }
         
-        $links = '<a href="users.php?action=add" title="Add new">Add new</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+        if( strtolower(trim($_SESSION['ses_userType']))=='client')
+			$links = "";
+		else 
+	        $links = '<a href="users.php?action=add" title="Add new">Add new</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+	        
         $chars = '<a href="users.php">All</a>';
         for($i=65;$i<91;$i++)
         {
@@ -327,7 +337,13 @@ if($action=='list') { ?>
                 <td><?=$user_row['userName']?></td>
                 <td><?=$user_row['email']?></td>
                 <td><?=$user_row['phone']?></td>
-                <td><a href="users.php?action=view&user_id=<?=$auto_id?>" alt="View Details" title="View Details">View</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="users.php?action=edit&user_id=<?=$auto_id?>" alt="Edit Details" title="Edit Details">Edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="users.php?action=delete&user_id=<?=$auto_id?>" onclick="return window.confirm('Are you sure to delete this ?');">Delete</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="invoices.php?action=add&userId=<?=$auto_id?>">Create Invoice</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="users.php?action=login&userId=<?=$auto_id?>">Login</a></td>
+<?php
+        if( strtolower(trim($_SESSION['ses_userType']))=='client')
+	        echo '<td><a href="users.php?action=view&user_id='. $auto_id. '" alt="View Details" title="View Details">View</a>&nbsp;';
+		else 
+	        echo '<td><a href="users.php?action=view&user_id='. $auto_id. '" alt="View Details" title="View Details">View</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="users.php?action=edit&user_id='. $auto_id. '" alt="Edit Details" title="Edit Details">Edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="users.php?action=delete&user_id='. $auto_id. '" onclick="return window.confirm(\'Are you sure to delete this ?\');">Delete</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="invoices.php?action=add&userId='. $auto_id. '">Create Invoice</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="users.php?action=login&userId='. $auto_id. '">Login</a></td>';
+?>
+                
             </tr>
             <?php
         }

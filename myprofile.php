@@ -288,8 +288,14 @@ $(document).ready(function() {
             <th align="left">Account Contact</th>
             <td><input type="text" name="companyAccountContact" id="companyAccountContact" class="textbox" value="<?=$company_row['companyAccountContact']?>" /></td>  
         </tr>
+        </table>
+</td></tr>
+<tr><td bgcolor="#fff">&nbsp;</td></tr>
+<tr><td style="padding:10px;"><strong>Bank Details</strong></td></tr>
+<tr><td>
+    <table width="100%" border="0" cellspacing="2" cellpadding="5">
         <tr class="row1">
-            <th align="left">Bank Name</th>
+            <th align="left" width="20%">Bank Name</th>
             <td><input type="text" name="companyBankName" id="companyBankName" class="textbox" value="<?=$company_row['companyBankName']?>" /></td>  
         </tr>
         <tr class="row2">
@@ -312,7 +318,9 @@ $(document).ready(function() {
             <th align="left">Account No</th>
             <td><input type="text" name="companyAccountNo" id="companyAccountNo" class="textbox" value="<?=$company_row['companyAccountNo']?>" /></td>  
         </tr>
-    </table>
+        </table>
+
+ 
 </td></tr>
 <tr><td style="padding:10px;padding-left:280px;"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="search_bt" /></td></tr>
 </table>

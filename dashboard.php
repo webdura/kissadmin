@@ -2,14 +2,36 @@
 $summary_btn = 'selected';
 include("config.php"); 
 include("header.php"); 
+//	print_r($_SESSION); 
 
 $list_count = 13;
-$user_sql = "SELECT count(*) as userCount, MONTH(joinDate) as joinMonth, MONTHNAME(joinDate) as joinMonthName, YEAR(joinDate) as joinYear FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND gma_logins.companyId='$ses_companyId' GROUP BY MONTH(joinDate), YEAR(joinDate) ORDER BY YEAR(joinDate) DESC, MONTH(joinDate) DESC LIMIT 0,$list_count";
+$user_sql = "SELECT count(*) as userCount, MONTH(joinDate) as joinMonth, MONTHNAME(joinDate) as joinMonthName, " . 
+			" YEAR(joinDate) as joinYear FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId " .
+			" AND gma_logins.companyId='" . $ses_companyId. "' GROUP BY MONTH(joinDate), YEAR(joinDate) " . 
+			" ORDER BY YEAR(joinDate) DESC, MONTH(joinDate) DESC LIMIT 0,$list_count";
 $user_rs     = mysql_query($user_sql);
 $user_count  = 0;
 $user_month_count = mysql_num_rows($user_rs);
 
-$order_sql = "SELECT MONTH(orderDate) as joinMonth, MONTHNAME(orderDate) as joinMonthName, YEAR(orderDate) as joinYear FROM gma_order,gma_logins WHERE gma_order.userId=gma_logins.userId AND gma_logins.companyId='$ses_companyId' GROUP BY MONTH(orderDate), YEAR(orderDate) ORDER BY YEAR(orderDate) DESC, MONTH(orderDate) DESC LIMIT 0,$list_count";
+$clientOnly = "";
+if( strtolower(trim($_SESSION['ses_userType']))=='client')
+	$clientOnly = " AND gma_order.userId = " . $_SESSION['ses_userId'];
+
+
+$order_sql = " SELECT MONTH(orderDate) as joinMonth, MONTHNAME(orderDate) as joinMonthName, YEAR(orderDate) as joinYear " .
+			" FROM gma_order,gma_logins WHERE gma_order.userId=gma_logins.userId " . $clientOnly . " AND gma_logins.companyId='" . $ses_companyId ."'" .
+			" GROUP BY MONTH(orderDate), YEAR(orderDate) ORDER BY YEAR(orderDate) DESC, MONTH(orderDate) DESC LIMIT 0,$list_count";
+
+			
+$order_sql =" SELECT MONTH(orderDate) as joinMonth, MONTHNAME(orderDate) as joinMonthName, YEAR(orderDate) as joinYear, " .
+			" SUM(IF(serviceName LIKE '%credits%', amount,0)) AS credit_amount, " .
+			" SUM(IF(serviceName NOT LIKE '%credits%', amount,0)) AS other_amount " .
+			" FROM gma_order, gma_order_details, gma_logins " .
+			" WHERE gma_order.userId=gma_logins.userId AND gma_order.id = gma_order_details.orderId " . $clientOnly .
+			" AND gma_logins.companyId='" . $ses_companyId ."'" .
+			" GROUP BY MONTH(orderDate), YEAR(orderDate) ORDER BY YEAR(orderDate) DESC, MONTH(orderDate) DESC";   
+
+
 $order_rs     = mysql_query($order_sql);
 $order_month_count = mysql_num_rows($order_rs);
 
@@ -18,6 +40,12 @@ include('sub_header.php');
 ?>
 
 <div class="client_display">
+<?php
+	if( strtolower(trim($_SESSION['ses_userType']))=='client'){
+	//	NOTHING
+	}
+	else{
+?>
     <div class="dashboard">
         <h2>Clients</h2>
         <table width="100%" border="0" cellspacing="2" cellpadding="5" class="head_bg">
@@ -51,6 +79,8 @@ include('sub_header.php');
             </tr>
         </table>
     </div>
+<?php } //END OF if( strtolower(trim($_SESSION['ses_userType']))=='client') ?>
+    
     <div class="dashboard">
         <h2>Invoice</h2>
         <table width="100%" border="0" cellspacing="2" cellpadding="5" class="head_bg">
@@ -68,15 +98,8 @@ include('sub_header.php');
                     $joinMonth     = $order_row['joinMonth'];
                     $joinMonthName = $order_row['joinMonthName'];
                     
-                    $order_detail_sql = "SELECT SUM(amount) AS total_amount FROM gma_logins,gma_order,gma_order_details WHERE gma_order.id=gma_order_details.orderId AND gma_order.userId=gma_logins.userId AND serviceName LIKE '%credits%' AND gma_logins.companyId='$ses_companyId' AND MONTH(orderDate)='$joinMonth' AND YEAR(orderDate)='$joinYear'";
-                    $order_detail_rs  = mysql_query($order_detail_sql);
-                    $order_detail_row = mysql_fetch_assoc($order_detail_rs);
-                    $credits          = $order_detail_row['total_amount'];
-                    
-                    $order_detail_sql = "SELECT SUM(amount) AS total_amount FROM gma_logins,gma_order,gma_order_details WHERE gma_order.id=gma_order_details.orderId AND gma_order.userId=gma_logins.userId AND serviceName NOT LIKE '%credits%' AND gma_logins.companyId='$ses_companyId' AND MONTH(orderDate)='$joinMonth' AND YEAR(orderDate)='$joinYear'";
-                    $order_detail_rs  = mysql_query($order_detail_sql);
-                    $order_detail_row = mysql_fetch_assoc($order_detail_rs);
-                    $others           = $order_detail_row['total_amount'];
+                    $credits          = $order_row['credit_amount'];
+                    $others           = $order_row['other_amount'];
                     
                     $credits = ($credits>0) ? $credits : 0;
                     $others  = ($others>0) ? $others : 0;
