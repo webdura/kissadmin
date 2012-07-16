@@ -500,29 +500,31 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
         ksort($details);
     }
     $cellpadding = ($date_flag==0) ? 3 : 0;
-    $result = "<table width='100%' class='client_display_table' cellpadding='$cellpadding' cellspacing='$cellpadding'>
+    $cellpadding = 0;
+//    $result = "<table width='100%' class='client_display_table' cellpadding='$cellpadding' cellspacing='$cellpadding'>
+    $result = "<table width='100%' class='list' cellpadding='$cellpadding' cellspacing='$cellpadding'>
     <tr>
-        <th width='10%' class='thead_new'><span>Date</span></th>
-        <th class='thead_new'><span>Description</span></th>
-        <th width='15%' class='thead_new' align='center'><span>Payment</span></th>
-        <th width='15%' class='thead_new' align='center'><span>Amount</span></th>
-        <th width='15%' class='thead_new' align='center'><span>Balance</span></th>
+        <th width='10%'><span>Date</span></th>
+        <th><span>Description</span></th>
+        <th width='15%'><span>Payment</span></th>
+        <th width='15%'><span>Amount</span></th>
+        <th width='15%'><span>Balance</span></th>
     </tr>";
     $j=0; $balance = 0;
     if($balance_forward!=0)
     {
         $j++;
         if($date_flag==0)
-            $class = (($j%2)==0) ? 'row2' : 'row1';
+            $class = (($j%2)==0) ? 'altrow' : '';
         else 
             $class = "border_bottom";
             
         $result .= "<tr class='$class'>
             <td>$date3</td>
             <td>Balance Forward</td>
-            <td align='right'></td>
-            <td align='right'></td>
-            <td align='right'>R ".formatMoney($balance_forward, true)."</td>
+            <td></td>
+            <td></td>
+            <td>R ".formatMoney($balance_forward, true)."</td>
         </tr>";
     }
     $balance = $balance_forward;
@@ -548,25 +550,20 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
             $result .= "<tr class='$class'>
                 <td>$date</td>
                 <td>$desc</td>
-                <td align='right'>".(($type=='payment') ? 'R '.formatMoney($amount, true) : '')."</td>
-                <td align='right'>".(($type!='payment') ? 'R '.formatMoney($amount, true) : '')."</td>
-                <td align='right'>R ".formatMoney($balance, true)."</td>
+                <td>".(($type=='payment') ? 'R '.formatMoney($amount, true) : '')."</td>
+                <td>".(($type!='payment') ? 'R '.formatMoney($amount, true) : '')."</td>
+                <td>R ".formatMoney($balance, true)."</td>
             </tr>";
         }
     }
     if($j!=0) {
-        $j++;
-        if($date_flag==0)
-            $class  = (($j%2)==0) ? 'row2' : 'row1';
-        else 
-            $class = "row2";
-        
-        $result .= "<tr class='$class' style='height:30px;'>
-            <td colspan='4' align='right'><b>Current Balance&nbsp;:&nbsp;</b></td>
+        $class = 'footer';
+        $result .= "<tr class='$class'>
+            <td colspan='4' style='text-align:right'><b>Current Balance&nbsp;:&nbsp;</b></td>
             <td align='right'><b>R ".formatMoney($balance_due, true)."</b></td>
         </tr>";
     } else { 
-        $result .= "<tr><td class='message' colspan='10'>No Records Found</td></tr>";
+        $result .= "<tr><td class='norecords' colspan='10'>No Records Found</td></tr>";
     } 
     $result .= "</table>";
     

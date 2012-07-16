@@ -8,26 +8,21 @@ else
     include("header.php");  
 
 $action      = (isset($_REQUEST['action']) && $_REQUEST['action']!='') ? $_REQUEST['action'] : 'list';
-//$userId      = (isset($_REQUEST['userId']) && $_REQUEST['userId']>0 && ($ses_loginType!='user')) ? $_REQUEST['userId'] : $ses_userId;
 $date_range  = (isset($_REQUEST['date'])) ? $_REQUEST['date'] : '3months';
 $startdate   = (isset($_REQUEST['startdate'])) ? $_REQUEST['startdate'] : '';
 $enddate     = (isset($_REQUEST['enddate'])) ? $_REQUEST['enddate'] : '';
 
-if(isset($_REQUEST['userId']) && $_REQUEST['userId']>0){
-	if($ses_loginType!='user')
-		$userId = $_REQUEST['userId'];
-	else 
-		$userId = $ses_userId;
-	
-	$_SESSION['clientId'] = $userId;
+if(isset($_REQUEST['userId']) && $_REQUEST['userId']>=0){
+    if($ses_loginType!='user')
+        $userId = $_REQUEST['userId'];
+    else 
+        $userId = $ses_userId;
+    
+    $_SESSION['clientId'] = $userId;
 } else {
-	if(isset($_SESSION['clientId']) && $_SESSION['clientId']>0)
-		$userId = $_SESSION['clientId'];
-	else 
-		$userId = $ses_userId;
-	
+    $_SESSION['clientId'] = $ses_userId;
 }
-
+$userId = $_SESSION['clientId'];
 $userId = userCheck($userId);
 
 if($date_range!='thismonth' && $date_range!='lastmonth' && $date_range!='all' && $date_range!='3months' && $date_range!='daterange')
@@ -143,76 +138,60 @@ $businessName = $user_row['businessName'];
 
 $user_sql  = "SELECT * FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND gma_logins.companyId='$ses_companyId' GROUP BY userName ORDER BY businessName ASC"; 
 $user_rs   = mysql_query($user_sql);
+
+$page_title   = 'Account Activity';
+
+$other_urls[] = array('text'=>'This month', 'sign'=>'+', 'url'=>"myaccount.php?userId=$userId&date=thismonth", 'click'=>'');
+$other_urls[] = array('text'=>'Last month', 'sign'=>'+', 'url'=>"myaccount.php?userId=$userId&date=lastmonth", 'click'=>'');
+$other_urls[] = array('text'=>'Last 3 months', 'sign'=>'+', 'url'=>"myaccount.php?userId=$userId&date=3months", 'click'=>'');
+$other_urls[] = array('text'=>'All', 'sign'=>'+', 'url'=>"myaccount.php?userId=$userId&date=all", 'click'=>'');
+
+$right_urls[] = array('text'=>'View Statement', 'sign'=>'+', 'click'=>"", 'url'=>"myaccount.php?userId=$userId&date=$date_range&startdate=$startdate&enddate=$enddate&action=view", 'class'=>'thickbox', 'target'=>'_blank');
+$right_urls[] = array('text'=>'Save Statement', 'sign'=>'+', 'click'=>"", 'url'=>"myaccount.php?userId=$userId&date=$date_range&startdate=$startdate&enddate=$enddate&action=save", 'class'=>'', 'target'=>'_blank');
+$right_urls[] = array('text'=>'Email Statement', 'sign'=>'+', 'url'=>"javascript:void(0);", 'click'=>"mailStatement('myaccount.php?userId=$userId&date=$date_range&startdate=$startdate&enddate=$enddate&action=email');", 'class'=>'', 'target'=>'');
+//$date_search  = true;
+
+include('sub_header.php');
+
+$queryString = explode("&orderby=",$actualQueryString); 
+$queryString = $queryString[0];
 ?>
 
 <script type="text/javascript" src="js/date.js"></script>
 <script type="text/javascript" src="js/jquery.datePicker.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/datePicker.css">
 
-<form name="frm" id="frm" method="get" action="">
-<div class="sub_head">
-    
-    <div style="float:right;padding-top:2px;padding-left:20px;">
-        <span class="head_links" style="padding-right:20px;"><a href="javascript:void(0);" onclick="mailStatement('myaccount.php?userId=<?=$userId?>&date=<?=$date_range?>&startdate=<?=$startdate?>&enddate=<?=$enddate?>&action=email');" title="Email Statement">Email Statement</a></span>
-        <div class="head_links" style="padding-left:5px;padding-right:5px;">|</div>
-        <span class="head_links"><a href="myaccount.php?userId=<?=$userId?>&date=<?=$date_range?>&startdate=<?=$startdate?>&enddate=<?=$enddate?>&action=save" title="Save Statement" target="_blank">Save Statement</a></span>
-        <div class="head_links" style="padding-left:5px;padding-right:5px;">|</div>
-        <span class="head_links"><a href="myaccount.php?userId=<?=$userId?>&date=<?=$date_range?>&startdate=<?=$startdate?>&enddate=<?=$enddate?>&action=view" title="View Statement" target="_blank" class='thickbox'>View Statement</a></span>
-    </div>    
-    <span id="sub_head_left" style="float:right;"><div class="sub_sub_head">Statement : </div></span>
-    
-    <span id="sub_head_left" style="float:left;"><div class="sub_sub_head">Account Activity</div></span>
-    <div style="float:left;padding-top:2px;padding-left:20px;">
-        <span class="head_links"><a href="myaccount.php?userId=<?=$userId?>&date=all" title="All">All</a></span>
-        <div class="head_links" style="padding-left:5px;padding-right:5px;">|</div>
-        <span class="head_links"><a href="myaccount.php?userId=<?=$userId?>&date=3months" title="Last 3 months">Last 3 months</a></span>
-        <div class="head_links" style="padding-left:5px;padding-right:5px;">|</div>
-        <span class="head_links"><a href="myaccount.php?userId=<?=$userId?>&date=lastmonth" title="Last month">Last month</a></span>
-        <div class="head_links" style="padding-left:5px;padding-right:5px;">|</div>
-        <span class="head_links"><a href="myaccount.php?userId=<?=$userId?>&date=thismonth" title="This month">This month</a></span>
-    </div>
-    
-</div>
-
-<div class="pagination">
-    <table border="0" width="100%" cellpadding="5">
-    <tr valign="middle">
-       <? if($ses_loginType!='user') { ?>
-        <td width="400">
-            <b>Select Client : </b>
-            <select name="userId" id="userId" class="inputbox_green" style="width:300px;" onchange="document.frm.submit();">
-                <option value="">Select All</option>
-                <?php
-                while($user_row = mysql_fetch_array($user_rs))
-                {
-                    $user_Id  = $user_row['userId'];
-                    $name     = $user_row['businessName'].' - '.$user_row['userName'];
-                    $selected = ($userId==$user_Id && $userId!=$ses_userId) ? 'selected' : '';
-                    
-                    echo "<option value='$user_Id' $selected>$name</option>";
-                }
-                ?>
-            </select>
-        </td>
-        <? } else { ?> <input type="hidden" name="userId" id="userId" value="<?=$userId?>"> <?} ?>
-        <td width="280">
-        <b>Date Range : </b>
-        <input type="hidden" name="date" id="date" value="daterange">
-        <input type="text" name="startdate" id="startdate" value="<?=($startdate)?>" style="width:80px" readonly>&nbsp;-&nbsp;
-        <input type="text" name="enddate" id="enddate" value="<?=($enddate)?>" style="width:80px" readonly>
-        </td>
-        <td width="50"><input type="submit" value="Search" class="search_bt" /></td>
-        <td><?=$pagination?>&nbsp;</td>
-    </tr>
-    </table>
-</div>
-<br>
 <div class="sub_subhead" ><?=$title?></div>
-<div class="sub_subhead_new" ><?=($businessName!='' ? $businessName.' - '.$userName : '')?></div>
-<?php
-$queryString = explode("&orderby=",$actualQueryString); 
-$queryString = $queryString[0];
-?>
+                
+<? if($ses_loginType!='user') { ?>
+<div class="pagination fright">
+<form name="frm" id="frm" method="get" action="">
+    <b>Client : </b>
+    <select name="userId" id="userId" class="inputbox_green" style="width:300px;" onchange="document.frm.submit();">
+        <option value="0">Select All</option>
+        <?php
+        while($user_row = mysql_fetch_array($user_rs))
+        {
+            $user_Id  = $user_row['userId'];
+            $name     = $user_row['businessName'].' - '.$user_row['userName'];
+            $selected = ($userId==$user_Id && $userId!=$ses_userId) ? 'selected' : '';
+            
+            echo "<option value='$user_Id' $selected>$name</option>";
+        }
+        ?>
+    </select>
+</form>
+</div>
+<? } else { ?> <input type="hidden" name="userId" id="userId" value="<?=$userId?>"> <?} ?>
+
+<div class="fright" style="padding-right:120px;"><form method="GET">
+    <b>Date Range : </b>
+    <input type="hidden" name="userId" id="userId" value="<?=$userId?>">
+    <input type="hidden" name="date" id="date" value="daterange">
+    <input type="text" name="startdate" id="startdate" value="<?=($startdate)?>" style="width:66px" readonly>-
+    <input type="text" name="enddate" id="enddate" value="<?=($enddate)?>" style="width:66px" readonly>
+    &nbsp;&nbsp;<input type="submit" class="btn_style" value="Search">
+</form></div>
 
 <div class="client_display clear"><?=$details?></div>
 </form>

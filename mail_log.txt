@@ -668,3 +668,143 @@ Please click <a href='http://localhost/gnetmail/admin/index.php'>Click here</a> 
 Administrator<br />
 Gnet Mail 1
 
+user13@gnetweb.co.za, admin@gnetmail.co.za, 16-07-2012 16:30:31, Invoice
+<table width=\"672\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+<tr><td bgcolor=\"#CCCCCC\">
+    <table width=\"100%\" border=\"0\" cellspacing=\"1\" cellpadding=\"10\">
+        <tr><td align=\"center\" bgcolor=\"#fff\">
+            <table width=\"662\" border=\"0\" cellspacing=\"2\" cellpadding=\"0\">
+            <tr><td align=\"center\"></td></tr>
+            <tr><td align=\"right\"><a href=\"mailto:companyAccountEmail@gmail.com\">companyAccountEmail@gmail.com</a></div></td></tr>
+            <tr><td width=\"91%\">
+                <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+                    <tr><td colspan=\"2\">
+                                        
+                    <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"3\">
+                        <tr>
+                            <td width=\"128\"><strong>INVOICE NUMBER</strong></td>
+                            <td width=\"265\">1001 </td>
+                            <td width=\"108\"><strong>DATE</strong></td>
+                            <td width=\"265\">16 July 2012 </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Attention</strong></td>
+                            <td colspan=\"3\">User Name </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Company</strong></td>
+                            <td colspan=\"3\">user</td>
+                        </tr>
+                        <tr>
+                            <td width=\"108\"><strong>Tel</strong></td>
+                            <td colspan=\"3\">914842411013</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Address</strong></td>
+                            <td colspan=\"3\"></td>
+                        </tr>
+                        <tr><td colspan=\"4\"></td></tr>
+                        <tr>
+                            <td><strong>VAT Number: </strong></td>
+                            <td colspan=\"3\">123456</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Order Number: </strong></td>
+                            <td colspan=\"3\"></td>
+                        </tr>
+                        <tr><td colspan=\"4\"></td></tr>
+                    </table>
+                            
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+
+    <table width=\"662\" border=\"0\" cellspacing=\"2\" cellpadding=\"0\">
+        <tr><td colspan=\"3\">
+            <table width=\"100%\" border=\"0\" cellspacing=\"2\" cellpadding=\"5\" class=\"head_bg\">
+                <tr>
+                    <td width='35' style="background-color: "><div align='left'><b>ITEM</b></div></td>
+                    <td width='400' style="background-color: "><div align='left'><b>DESCRIPTION</b></div></td>
+                    <td width='87' style="background-color: "><div align='left'><b>COST</b></div></td>
+                    <td width='50' style="background-color: "><div align='left'><b>QUANTITY</b></div></td><td width='87' style="background-color: "><div align='left'><b>DISCOUNT</b></div></td>   <td width='98' style="background-color: "><div align='right'><b>AMOUNT</b></div></td>
+                </tr><tr>
+                <td bgcolor=white style="background-color: "><div align=left >1</div></td>
+                <td bgcolor=white style="background-color: "><div align=left >Email campaign - basic</div></td>
+                <td bgcolor=white style="background-color: "><div align=center >450</div></td>
+                <td bgcolor=white style="background-color: "><div align=center >1</div></td><td bgcolor=white style="background-color: "><div align=center >10%</div></td><td bgcolor=white style="background-color: "><div align=right>R 405.00</div></td>
+            </tr><tr>
+                <td bgcolor=white style="background-color: "><div align=left >2</div></td>
+                <td bgcolor=white style="background-color: "><div align=left >General labour</div></td>
+                <td bgcolor=white style="background-color: "><div align=center >270</div></td>
+                <td bgcolor=white style="background-color: "><div align=center >1</div></td><td bgcolor=white style="background-color: "><div align=center >10%</div></td><td bgcolor=white style="background-color: "><div align=right>R 243.00</div></td>
+            </tr><tr>
+                <td bgcolor=white style="background-color: "><div align=left >3</div></td>
+                <td bgcolor=white style="background-color: "><div align=left ></div></td>
+                <td bgcolor=white style="background-color: "><div align=center >0</div></td>
+                <td bgcolor=white style="background-color: "><div align=center >0</div></td><td bgcolor=white style="background-color: "><div align=center >0%</div></td><td bgcolor=white style="background-color: "><div align=right>R 0.00</div></td>
+            </tr><tr>
+                <td bgcolor=white style="background-color: "><div align=left >4</div></td>
+                <td bgcolor=white style="background-color: "><div align=left ></div></td>
+                <td bgcolor=white style="background-color: "><div align=center >0</div></td>
+                <td bgcolor=white style="background-color: "><div align=center >0</div></td><td bgcolor=white style="background-color: "><div align=center >0%</div></td><td bgcolor=white style="background-color: "><div align=right>R 0.00</div></td>
+            </tr><tr>
+                <td bgcolor=white style="background-color: "><div align=left >5</div></td>
+                <td bgcolor=white style="background-color: "><div align=left ></div></td>
+                <td bgcolor=white style="background-color: "><div align=center >0</div></td>
+                <td bgcolor=white style="background-color: "><div align=center >0</div></td><td bgcolor=white style="background-color: "><div align=center >0%</div></td><td bgcolor=white style="background-color: "><div align=right>R 0.00</div></td>
+            </tr><tr>
+                    <td colspan='5' style="background-color: "><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
+                    <td style="background-color: "><div align='right' class='style9'>R 648.00</div></td>
+                </tr>
+            </table>
+        </td></tr>
+        <tr><td colspan=\"3\"></td></tr>
+    </table>
+    
+    Content can be added here.
+    
+    <table width=\"662\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+        <tr><td align=\"center\">
+            <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>
+                <table width=\"450\" border=\"0\" cellspacing=\"1\" cellpadding=\"0\">
+                    <tr><td bgcolor=\"white\">
+                        <table width=\"100%\" border=\"0\" cellspacing=\"2\" cellpadding=\"0\" bgcolor=\"[head_bg]\">
+                            <tr><td height=\"20\"><div align=\"left\" style=\"padding-left:10px; padding-bottom:10px; padding-top:10px;\"><strong>BANK DETAILS</strong></div></td></tr>
+                            <tr><td align=\"left\">
+                                <table width=\"100%\" border=\"0\" cellspacing=\"2\" cellpadding=\"5\">
+                                    <tr>
+                                        <td width=\"36%\" class=\'color4\'><strong>Bank</strong></td>
+                                        <td width=\"64%\" class=\'color4\' class=\"style8\">companyBankName</td>
+                                    </tr>
+                                    <tr>
+                                        <td class=\'color4\'><strong>Branch Name</span></td>
+                                        <td class=\'color4\'>companyBranchName</td>
+                                    </tr>
+                                    <tr>
+                                        <td class=\'color4\'><strong>Branch Number</span></td>
+                                        <td class=\'color4\'>companyBranchNo</td>
+                                    </tr>
+                                    <tr>
+                                        <td class=\'color4\'><strong>Account Name</span></td>
+                                        <td class=\'color4\'>companyAccountName</td>
+                                    </tr>
+                                    <tr>
+                                        <td class=\'color4\'><strong>Account Type</strong></td>
+                                        <td class=\'color4\'>companyAccountType</td>
+                                    </tr>
+                                    <tr>
+                                        <td class=\'color4\'><strong>Account Number</strong></td>
+                                        <td class=\'color4\'>companyAccountNo</td>
+                                    </tr>
+                                </table>
+                            </td></tr>
+                        </table>
+                    </td></tr>
+                </table>
+            </td></tr></table>
+        </td></tr>
+    </table>
+</td></tr>
+</table>
+

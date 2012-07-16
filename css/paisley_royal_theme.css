@@ -65,6 +65,7 @@ a:hover, a.selected { color:#FF9000 !important; }
 .list th, .list td { border-right:1px solid #C2D0D6; }
 .list td { background-color:#fff; }
 .list tr.altrow td { background-color:#E7EFF2; }
+.list tr.footer td { background-color:#C2D0D6; }
 .list .asc { 
     background: transparent url(images/paisley_royal_theme/arrow_up.png) no-repeat;
 }

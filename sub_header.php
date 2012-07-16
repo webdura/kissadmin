@@ -20,6 +20,16 @@
                     <input type="text" class="inputbox" name="srchtxt" id="srchtxt" value="<?=$srchtxt?>">&nbsp;&nbsp;<input type="submit" class="btn_style" value="Search">
                 </form></div>
             <? } ?>
+            <? if(isset($date_search)) { ?>
+                <div class="search"><form method="GET">
+                    <b>Date Range : </b>
+                    <input type="hidden" name="userId" id="userId" value="<?=$userId?>">
+                    <input type="hidden" name="date" id="date" value="daterange">
+                    <input type="text" name="startdate" id="startdate" value="<?=($startdate)?>" style="width:66px" readonly>-
+                    <input type="text" name="enddate" id="enddate" value="<?=($enddate)?>" style="width:66px" readonly>
+                    &nbsp;&nbsp;<input type="submit" class="btn_style" value="Search">
+                </form></div>
+            <? } ?>
             <? if(isset($user_search)) { ?>
                 <div class="search">
                     <form method="GET" name='searchform'>
@@ -60,6 +70,13 @@
         <? } ?>
         <? if(isset($pagination) && $pagination!='') { ?>
             <div class="fright pagination"><?=$pagination?></div>
+        <? } ?>
+        <? if(isset($right_urls) && count($right_urls)>0) { ?>
+            <div class="fright padding_top">
+                <? foreach ($right_urls as $other_url) { ?>
+                     <a class="addnew delete fleft <?=$other_url['class']?>" href="<?=$other_url['url']?>" onclick="<?=$other_url['click']?>" target="<?=$other_url['target']?>"><div class="fleft btn_style"><?=$other_url['sign']?></div><span>&nbsp;&nbsp;<?=$other_url['text']?></span></a>
+                <? } ?>
+            </div>
         <? } ?>
     </div>
     </form>

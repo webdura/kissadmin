@@ -64,6 +64,7 @@ a:hover, a.selected { color:#FF9000 !important; }
 .list th, .list td { border-right:1px solid #99D9EC; }
 .list td { background-color:#fff; }
 .list tr.altrow td { background-color:#EEF9FD; }
+.list tr.footer td { background-color:#99D9EC; }
 .list .asc { 
     background: transparent url(images/blue_theme/arrow_up.png) no-repeat;
 }

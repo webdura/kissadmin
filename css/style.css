@@ -116,7 +116,7 @@ table, tr, td, th { font-weight:normal; }
     padding:0px;
     height:40px;
     
-    padding:0px 15px 0px 20px;
+    padding:0px 10px 0px 20px;
 }
 .page_header h2 { font-size:18px; font-weight:bold; float:left; }
 .page_header .addnew { margin-left:40px; padding-top:2px; }
@@ -133,6 +133,7 @@ table, tr, td, th { font-weight:normal; }
 
 .contents {
     padding:10px 20px;
+    min-height:330px;
 }
 .list { border:1px solid #BCBD9B; border-right:0px solid #BCBD9B; }
 .list th{ 
@@ -145,6 +146,7 @@ table, tr, td, th { font-weight:normal; }
     padding:5px 10px 5px 10px;
 } 
 .list td { background-color:#fff; font-size:12px; height:25px;}
+.list tr.footer td { }
 .list tr.altrow td { }
 .list .btn_style { padding:0px 5px; border-radius: 4px; }
 .list .asc, .list .desc { 
@@ -252,3 +254,11 @@ label.error {
     clear: both;
 }
 
+
+.sub_subhead { 
+    font-size:15px !important;
+    font-weight:bold;
+    color:#000;
+    margin:7px 0px 7px 0px;
+    float:left;
+}

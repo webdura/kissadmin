@@ -64,6 +64,7 @@ a:hover, a.selected { color:#FF9000 !important; }
 .list th, .list td { border-right:1px solid #E1B1BD; }
 .list td { background-color:#fff; }
 .list tr.altrow td { background-color:#FCF2F3; }
+.list tr.footer td { background-color:#E1B1BD; }
 .list .asc { 
     background: transparent url(imagesnk_hearts_theme/arrow_up.png) no-repeat;
 }

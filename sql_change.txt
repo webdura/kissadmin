@@ -1,5 +1,5 @@
 --11-July
-ALTER TABLE gma_order ADD sentDate DATETIME NOT NULL AFTER orderDate;
+ALTER TABLE gma_order ADD sendDate DATETIME NOT NULL AFTER orderDate;
 ALTER TABLE gma_modules ADD for_users VARCHAR( 10 ) NOT NULL;
 
 
@@ -23,3 +23,5 @@ ALTER TABLE gma_company ADD site_logo VARCHAR( 50 ) NOT NULL AFTER companyAccoun
 -- 16/july
 UPDATE gma_modules SET for_users='A,U' WHERE 1;
 UPDATE gma_modules SET for_users='A,U' WHERE id =2;
+
+
