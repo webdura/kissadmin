@@ -651,3 +651,20 @@ Please click <a href='http://localhost/gnetmail/admin/index.php'>Click here</a> 
 Administrator<br />
 Gnet Mail
 
+user13@gnetweb.co.za, admin@gnetmail.co.za, 16-07-2012 10:22:52, New client welcome email
+Hi User Name,<br />
+<br />
+An account has been created for you with the following details,<br />
+<br />
+Client Name : user<br />
+Company Name : Gnet Mail 1<br />
+Username : user<br />
+Password : user123<br />
+Email Address : user13@gnetweb.co.za<br />
+<br />
+Please click <a href='http://localhost/gnetmail/admin/index.php'>Click here</a> to login. Or copy paste the below URL in browser http://localhost/gnetmail/admin/index.php<br />
+<br />
+-----<br />
+Administrator<br />
+Gnet Mail 1
+

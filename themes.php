@@ -43,6 +43,9 @@ if(isset($_POST['theme_id']) && $_POST['theme_id']>0)
         $invoice_logo = $filename;
     }
     
+    $site_logo      = str_replace('images/company/', '', $site_logo);
+    $invoice_logo   = str_replace('images/company/', '', $invoice_logo);
+    
     $site_logo      = GetSQLValueString($site_logo, 'text');
     $invoice_logo   = GetSQLValueString($invoice_logo, 'text');
     $invoice_status = isset($_POST['invoice_status']) ? 1 : 0;

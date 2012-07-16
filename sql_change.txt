@@ -20,7 +20,6 @@ INSERT INTO gma_theme VALUES (NULL, 'Retro 70\'s', 'retro_70_theme', '', '', '',
 
 ALTER TABLE gma_company ADD site_logo VARCHAR( 50 ) NOT NULL AFTER companyAccountNo , ADD invoice_logo VARCHAR( 50 ) NOT NULL AFTER site_logo , ADD invoice_status INT( 1 ) NOT NULL AFTER invoice_logo;
 
--- 16/July 
-
-UPDATE gma_modules SET for_users='A,U';
-UPDATE gma_modules SET for_users = 'A' WHERE gma_modules.id =2;
+-- 16/july
+UPDATE gma_modules SET for_users='A,U' WHERE 1;
+UPDATE gma_modules SET for_users='A,U' WHERE id =2;
