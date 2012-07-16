@@ -8,10 +8,25 @@ else
     include("header.php");  
 
 $action      = (isset($_REQUEST['action']) && $_REQUEST['action']!='') ? $_REQUEST['action'] : 'list';
-$userId      = (isset($_REQUEST['userId']) && $_REQUEST['userId']>0 && ($ses_loginType!='user')) ? $_REQUEST['userId'] : $ses_userId;
+//$userId      = (isset($_REQUEST['userId']) && $_REQUEST['userId']>0 && ($ses_loginType!='user')) ? $_REQUEST['userId'] : $ses_userId;
 $date_range  = (isset($_REQUEST['date'])) ? $_REQUEST['date'] : '3months';
 $startdate   = (isset($_REQUEST['startdate'])) ? $_REQUEST['startdate'] : '';
 $enddate     = (isset($_REQUEST['enddate'])) ? $_REQUEST['enddate'] : '';
+
+if(isset($_REQUEST['userId']) && $_REQUEST['userId']>0){
+	if($ses_loginType!='user')
+		$userId = $_REQUEST['userId'];
+	else 
+		$userId = $ses_userId;
+	
+	$_SESSION['clientId'] = $userId;
+} else {
+	if(isset($_SESSION['clientId']) && $_SESSION['clientId']>0)
+		$userId = $_SESSION['clientId'];
+	else 
+		$userId = $ses_userId;
+	
+}
 
 $userId = userCheck($userId);
 

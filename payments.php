@@ -9,11 +9,26 @@ if($action!='export') {
 }
 
 $action     = (isset($_REQUEST['action']) && $_REQUEST['action']!='') ? $_REQUEST['action'] : 'list';
-$userId     = trim(($_REQUEST['userId']!='') ? $_REQUEST['userId'] : 0);
+//$userId     = trim(($_REQUEST['userId']!='') ? $_REQUEST['userId'] : 0);
 $payment_id = trim(($_REQUEST['payment_id']!='') ? $_REQUEST['payment_id'] : 0);
 $perPage    = ($_SESSION['perpageval']!='') ? $_SESSION['perpageval'] : 50;
 $pageNum    = ($_REQUEST['page']!='') ? $_REQUEST['page'] : 1;
 $pending_amount = 0;
+
+if(isset($_REQUEST['userId']) && $_REQUEST['userId']>0){
+	if($ses_loginType!='user')
+		$userId = $_REQUEST['userId'];
+	else 
+		$userId = $ses_userId;
+	
+	$_SESSION['clientId'] = $userId;
+} else {
+	if(isset($_SESSION['clientId']) && $_SESSION['clientId']>0)
+		$userId = $_SESSION['clientId'];
+	else 
+		$userId = $ses_userId;
+	
+}
 
 $payment_sql = "SELECT * FROM gma_payments,gma_logins,gma_user_details WHERE gma_logins.userId=gma_user_details.userId AND gma_logins.userId=gma_payments.userId AND gma_logins.companyId='$ses_companyId'";
 switch ($action)

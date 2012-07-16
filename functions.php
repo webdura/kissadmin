@@ -90,7 +90,7 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
     $company_row = mysql_fetch_assoc($company_rs);
     $email_from  = $company_row['email'];
     
-    $email_sql = "SELECT * FROM gma_emails WHERE companyId=".GetSQLValueString($companyId, 'text')." AND template=".GetSQLValueString($email_template, 'text');
+   echo $email_sql = "SELECT * FROM gma_emails WHERE companyId=".GetSQLValueString($companyId, 'text')." AND template=".GetSQLValueString($email_template, 'text');
     $email_rs  = mysql_query($email_sql);
     $email_row = mysql_fetch_assoc($email_rs);
     $email_subject = $email_row['subject'];
