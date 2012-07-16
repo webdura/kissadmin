@@ -1021,4 +1021,6 @@ function userCheck($userId) {
    
    return (mysql_num_rows($login_rs)==0) ? 0 : $userId;
 }
+
+
 ?>
