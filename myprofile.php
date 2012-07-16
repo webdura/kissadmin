@@ -52,7 +52,7 @@ if(isset($_POST['userName']))
         $sql = "UPDATE gma_admin_details SET fullName=".GetSQLValueString($_POST['fullName'],'text')." WHERE userId='$ses_userId'";
         mysql_query($sql);
         
-        if($ses_userType=='gnet_admin' || $ses_userType=='super_admin')
+//        if($ses_userType=='gnet_admin' || $ses_userType=='super_admin')
         {
             $sql = "UPDATE gma_company SET companyName=".GetSQLValueString($_POST['companyName'], 'text').",companyVatNo=".GetSQLValueString($_POST['companyVatNo'], 'text').",companyAccountEmail=".GetSQLValueString($_POST['companyAccountEmail'], 'text').",companyAccountTel=".GetSQLValueString($_POST['companyAccountTel'], 'text').",companyAccountFax=".GetSQLValueString($_POST['companyAccountFax'], 'text').",companyAccountContact=".GetSQLValueString($_POST['companyAccountContact'], 'text').",companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text').",companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text').",companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text').",companyAccountName=".GetSQLValueString($_POST['companyAccountName'], 'text').",companyAccountType=".GetSQLValueString($_POST['companyAccountType'], 'text').",companyAccountNo=".GetSQLValueString($_POST['companyAccountNo'], 'text')." WHERE companyId='$ses_companyId'";
             mysql_query($sql);

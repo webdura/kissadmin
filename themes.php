@@ -71,6 +71,8 @@ while ($theme_row = mysql_fetch_assoc($theme_rs)) {
 }
 
 $page_title = 'Theme';
+
+echo $site_logo;
 include('sub_header.php');
 ?>
 

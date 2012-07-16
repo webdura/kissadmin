@@ -8,14 +8,19 @@ UPDATE gma_modules SET class = 'clients_btn' WHERE id =2;
 UPDATE gma_modules SET class = 'invoices_btn' WHERE id =4;
 UPDATE gma_modules SET class = 'statement_btn' WHERE id =6;
 
-ALTER TABLE  `gma_theme` CHANGE  `theme`  `theme` VARCHAR( 25 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
-INSERT INTO `gma_theme` VALUES (NULL, 'Blue', 'blue_theme', '', '', '', '', '', '', '1');
-INSERT INTO `gma_theme` VALUES (NULL, 'Cameo', 'cammo_theme', '', '', '', '', '', '', '0');
-INSERT INTO `gma_theme` VALUES (NULL, 'Green', 'green_theme', '', '', '', '', '', '', '0');
-INSERT INTO `gma_theme` VALUES (NULL, 'Orange', 'orange_theme', '', '', '', '', '', '', '0');
-INSERT INTO `gma_theme` VALUES (NULL, 'Paisley Royal', 'paisley_royal_theme', '', '', '', '', '', '', '0');
-INSERT INTO `gma_theme` VALUES (NULL, 'Pink Hearts', 'pink_hearts_theme', '', '', '', '', '', '', '0');
-INSERT INTO `gma_theme` VALUES (NULL, 'Pink Passion', 'pink_passion_theme', '', '', '', '', '', '', '0');
-INSERT INTO `gma_theme` VALUES (NULL, 'Retro 70\'s', 'retro_70_theme', '', '', '', '', '', '', '0');
+ALTER TABLE gma_theme CHANGE theme theme VARCHAR( 25 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+INSERT INTO gma_theme VALUES (NULL, 'Blue', 'blue_theme', '', '', '', '', '', '', '1');
+INSERT INTO gma_theme VALUES (NULL, 'Cameo', 'cammo_theme', '', '', '', '', '', '', '0');
+INSERT INTO gma_theme VALUES (NULL, 'Green', 'green_theme', '', '', '', '', '', '', '0');
+INSERT INTO gma_theme VALUES (NULL, 'Orange', 'orange_theme', '', '', '', '', '', '', '0');
+INSERT INTO gma_theme VALUES (NULL, 'Paisley Royal', 'paisley_royal_theme', '', '', '', '', '', '', '0');
+INSERT INTO gma_theme VALUES (NULL, 'Pink Hearts', 'pink_hearts_theme', '', '', '', '', '', '', '0');
+INSERT INTO gma_theme VALUES (NULL, 'Pink Passion', 'pink_passion_theme', '', '', '', '', '', '', '0');
+INSERT INTO gma_theme VALUES (NULL, 'Retro 70\'s', 'retro_70_theme', '', '', '', '', '', '', '0');
 
-ALTER TABLE  `gma_company` ADD  `site_logo` VARCHAR( 50 ) NOT NULL AFTER  `companyAccountNo` , ADD  `invoice_logo` VARCHAR( 50 ) NOT NULL AFTER  `site_logo` , ADD  `invoice_status` INT( 1 ) NOT NULL AFTER  `invoice_logo`;
+ALTER TABLE gma_company ADD site_logo VARCHAR( 50 ) NOT NULL AFTER companyAccountNo , ADD invoice_logo VARCHAR( 50 ) NOT NULL AFTER site_logo , ADD invoice_status INT( 1 ) NOT NULL AFTER invoice_logo;
+
+-- 16/July 
+
+UPDATE gma_modules SET for_users='A,U';
+UPDATE gma_modules SET for_users = 'A' WHERE gma_modules.id =2;
