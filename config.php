@@ -18,11 +18,9 @@ if($_SERVER['HTTP_HOST']=='localhost') {
     $username  = "gnetmail_sys0510";
     $password  = "uPJSo-}BNS;E";
     $dbname    = "gnetmail_db2209";
-    $SITE_URL = 'http://gnetmail.co.za/beta/';
+    $SITE_URL = 'http://gnetmail.co.za/kissadmin/';
 }
 
 $con = mysql_connect($localhost,$username,$password) or die(mysql_error());
 $db  = mysql_select_db($dbname,$con);
-
-	$_SESSION['perpageval'] = 15;
 ?>

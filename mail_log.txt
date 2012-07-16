@@ -635,3 +635,19 @@ client@gmail.com, admin@gnetmail.co.za, 16-07-2012 05:15:11, Invoice
 </td></tr>
 </table>
 
+admin@gnetmail.co.za, admin@gnetmail.co.za, 16-07-2012 05:45:26, New admin welcome email
+Hi Admin User,<br />
+<br />
+An account has been created for you with the following details,<br />
+<br />
+Company Name : Gnet Mail<br />
+Username : adminuser<br />
+Password : admin<br />
+Email Address : admin@gnetmail.co.za<br />
+<br />
+Please click <a href='http://localhost/gnetmail/admin/index.php'>Click here</a> to login. Or copy paste the below URL in browser http://localhost/gnetmail/admin/index.php<br />
+<br />
+-----<br />
+Administrator<br />
+Gnet Mail
+
