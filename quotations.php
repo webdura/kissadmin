@@ -347,8 +347,13 @@ switch ($action)
             $pagination  = paginations($order_count, $perPage, 5);
         }
         
-        if($ses_loginType!='user')
+        if($ses_loginType!='user') {
             $links = '<a href="quotations.php?action=add" title="Create New Quotation">Create New Quotation</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+            $add_url    = 'quotations.php?action=add';
+            $del_url    = 'javascript:void(0);';
+            $del_click  = 'deleteAll();';
+            $search_box = true;
+        }
         break;
 }
     
@@ -522,73 +527,57 @@ var count = <?=$i?>;
 
 <? } else { ?>
 
-<form name="frm" id="frm" method="post" action="">
-<div class="pagination" align="right">
-    <table border="0" width="100%">
-    <tr>
-        <td align="left" width="400" >
-            <b>Search&nbsp;:&nbsp;</b>
-            <input type="text" class="inputbox_green" name="srchtxt" value="<?=@$_REQUEST['srchtxt']?>" id="srchtxt" size="23" />
-            <input type="submit"  value="Search"  class="search_bt" name="sbmt" id="sbmt" />
-        </td>
-        <td align="right"><?=$pagination?></td>
-    </tr>
-    </table>
-</div>
-</form>
-
 <form method="POST" id="listForm" name='listForm'>
 <input type="hidden" name="action" value="deleteall">
-<div class="client_display">
-    <table width="100%" class="client_display_table" cellpadding="3" cellspacing="3">
-        <tr height="30">
-            <th class="thead"width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
-            <th class="thead"><span>Quotation Id.</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th class="thead"><span>Order Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <? if($ses_loginType!='user') { ?>
-                <th class="thead"><span>Client</span>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <? } ?>
-            <!--<th width="20%" class="thead">Quantity</th>-->
-            <th class="thead"><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th class="thead"><span>Sent</span>&nbsp;</th>
-            <th width="25%" class="thead">Action</th>
-        </tr>  
-        <?php
-        $j=0;
-        while($order_row = mysql_fetch_array($order_rs))
-        {
-            $j++;
-            $val++;
-            
-            $invoiceId = $order_row['invoiceId'];
-            $quotationId   = $auto_id = $order_row['id'];
-            $userId    = $order_row['userId'];
-            $class     = (($j%2)==0) ? 'row2' : 'row1';
-            ?>
-            <tr class="<?=$class?>">
-                <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
-                <td><?=$invoiceId?></td>
-                <td><?=dateFormat($order_row['orderDate'], 'Y')?></td>
-                <? if($ses_loginType!='user') { ?> <td><?=$order_row['businessName']?></td> <? } ?>
-                <td>R <?=formatMoney($order_row['invoice_amount'], true)?></td>
-                <td><?=dateFormat($order_row['sendDate'], 'Y') ?></td>
-                <td>
-                    <a href="quotations.php?action=view&quotationId=<?=$quotationId?>">View</a>
-                    <? if($ses_loginType!='user') { ?>
-                        &nbsp;&nbsp;|&nbsp;&nbsp;<a href="quotations.php?action=edit&quotationId=<?=$quotationId?>">Edit</a>
-                        &nbsp;&nbsp;|&nbsp;&nbsp;<a href="quotations.php?action=delete&quotationId=<?=$quotationId?>">Delete</a>
-                        &nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="convertOrder('<?=$quotationId?>');">Convert to Order</a>
-                    <? } ?>
-                    &nbsp;&nbsp;|&nbsp;&nbsp;<a href="quotations.php?action=resendMail&quotationId=<?=$quotationId?>" title="Send invoice to my email">Send</a>
-                </td>
-            </tr>
-            <?php
-        }
-        if($order_count==0) { ?>
-            <tr><td class="message" colspan="10">No Records Found</td></tr>
+
+<table width="100%" class="list" cellpadding="0" cellspacing="0">
+    <tr height="30">
+        <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
+        <th><span>Quotation Id.</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC" class="asc"></a>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=DESC" class="desc"></a></th>
+        <th><span>Order Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=ASC" class="asc"></a>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=DESC" class="desc"></a></th>
+        <? if($ses_loginType!='user') { ?>
+            <th><span>Client</span>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=ASC" class="asc"></a>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=DESC" class="desc"></a></th>
         <? } ?>
-    </table>
-</div>
+        <!--<th width="20%">Quantity</th>-->
+        <th><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC" class="asc"></a>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC" class="desc"></a></th>
+        <th><span>Sent</span>&nbsp;</th>
+        <th width="25%">Action</th>
+    </tr>  
+    <?php
+    $j=0;
+    while($order_row = mysql_fetch_array($order_rs))
+    {
+        $j++;
+        $val++;
+        
+        $invoiceId = $order_row['invoiceId'];
+        $quotationId   = $auto_id = $order_row['id'];
+        $userId    = $order_row['userId'];
+        $class     = (($j%2)==0) ? 'row2' : 'row1';
+        ?>
+        <tr class="<?=$class?>">
+            <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
+            <td><?=$invoiceId?></td>
+            <td><?=dateFormat($order_row['orderDate'], 'Y')?></td>
+            <? if($ses_loginType!='user') { ?> <td><?=$order_row['businessName']?></td> <? } ?>
+            <td>R <?=formatMoney($order_row['invoice_amount'], true)?></td>
+            <td><?=dateFormat($order_row['sendDate'], 'Y') ?></td>
+            <td>
+                <a href="quotations.php?action=view&quotationId=<?=$quotationId?>">View</a>
+                <? if($ses_loginType!='user') { ?>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;<a href="quotations.php?action=edit&quotationId=<?=$quotationId?>">Edit</a>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;<a href="quotations.php?action=delete&quotationId=<?=$quotationId?>">Delete</a>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="convertOrder('<?=$quotationId?>');">Convert to Order</a>
+                <? } ?>
+                &nbsp;&nbsp;|&nbsp;&nbsp;<a href="quotations.php?action=resendMail&quotationId=<?=$quotationId?>" title="Send invoice to my email">Send</a>
+            </td>
+        </tr>
+        <?php
+    }
+    if($order_count==0) { ?>
+        <tr><td class="norecords" colspan="10">No Records Found</td></tr>
+    <? } ?>
+</table>
 </form>
 <script>
 function convertOrder(order_id) {

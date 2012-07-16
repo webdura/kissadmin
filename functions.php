@@ -39,8 +39,8 @@ $theme_row = mysql_fetch_assoc($theme_rs);
 
 $theme_theme_id   = $active_theme['theme_id']       = (isset($theme_row['theme_id'])) ? $theme_row['theme_id'] : $theme_row['id'];
 $theme_theme      = $active_theme['theme']          = $theme_row['theme'];
-$site_logo        = $active_theme['site_logo']      = (isset($theme_row['site_logo'])) ? $theme_row['site_logo'] : '';
-$invoice_logo     = $active_theme['invoice_logo']   = (isset($theme_row['invoice_logo'])) ? $theme_row['invoice_logo'] : '';
+$site_logo        = $active_theme['site_logo']      = (isset($theme_row['site_logo']) && $theme_row['site_logo']!='') ? 'images/company/'.$theme_row['site_logo'] : 'images/logo.png';
+$invoice_logo     = $active_theme['invoice_logo']   = (isset($theme_row['invoice_logo']) && $theme_row['invoice_logo']!='') ? 'images/company/'.$theme_row['invoice_logo'] : '';
 $invoice_status   = $active_theme['invoice_status'] = (isset($theme_row['invoice_status'])) ? $theme_row['invoice_status'] : 0;
 $theme_head_bg    = $active_theme['head_bg']        = $theme_row['head_bg'];
 $theme_head_color = $active_theme['head_color']     = $theme_row['head_color'];
@@ -1011,5 +1011,14 @@ function paymentStatus($status) {
         return 'Paid';
     else if($status==2) 
         return 'Partial';    
+}
+
+function userCheck($userId) {
+   global $ses_companyId;
+   
+   $login_sql  = "SELECT * FROM gma_logins WHERE userId='$userId' AND companyId='$ses_companyId'";
+   $login_rs   = mysql_query($login_sql);
+   
+   return (mysql_num_rows($login_rs)==0) ? 0 : $userId;
 }
 ?>
