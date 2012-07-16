@@ -8,7 +8,7 @@ UPDATE gma_modules SET class = 'clients_btn' WHERE id =2;
 UPDATE gma_modules SET class = 'invoices_btn' WHERE id =4;
 UPDATE gma_modules SET class = 'statement_btn' WHERE id =6;
 
-ALTER TABLE  `gma_theme` CHANGE  `theme`  `theme` VARCHAR( 25 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
+ALTER TABLE  `gma_theme` CHANGE  `theme`  `theme` VARCHAR( 25 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
 INSERT INTO `gma_theme` VALUES (NULL, 'Blue', 'blue_theme', '', '', '', '', '', '', '1');
 INSERT INTO `gma_theme` VALUES (NULL, 'Cameo', 'cammo_theme', '', '', '', '', '', '', '0');
 INSERT INTO `gma_theme` VALUES (NULL, 'Green', 'green_theme', '', '', '', '', '', '', '0');
