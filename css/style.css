@@ -220,3 +220,34 @@ label.error {
 .message .close {	background:url("images/close.png") no-repeat scroll 0 0 transparent;	cursor:pointer;	display:block;	float:right;	height:16px;	opacity:0.7;	width:16px;}
 .message .close.hover {opacity:1;}
 *html .message {height:16px;}
+
+.moduleContainer{
+	padding-left: 15px; 
+	height:auto;
+	overflow: hidden;
+
+
+}
+
+.adminHead { 
+	padding-left: 5px; 
+	height: 20px; 
+	padding-top:7px; 
+    height:20px;
+    font-size:15px !important;
+    font-weight:bold;
+
+}
+
+
+.moduleName { 
+	padding-left: 10px; 
+	padding-top:7px;
+	width: 200px;
+	position: relative;
+	float: left;
+}
+
+.clear {
+    clear: both;
+}
