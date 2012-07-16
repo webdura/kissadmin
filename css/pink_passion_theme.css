@@ -1,0 +1,72 @@
+body { background: #D0167B; }
+a { color:#483bed; }
+a:hover, a.selected { color:#FF9000 !important; }
+
+.right_links, .right_links a { color:#fff; }
+
+#top_buttons, #top_buttons ul {
+    background: transparent url(images/pink_passion_theme/nav_bg.jpg) repeat-x;
+}
+.summary_btn { 
+    background:url(images/pink_passion_theme/summary_btn.jpg) no-repeat left top ;
+}
+.clients_btn { 
+    background:url(images/pink_passion_theme/clients_btn.jpg) no-repeat left top ;
+}
+.quotation_btn { 
+    background:url(images/pink_passion_theme/quotation_btn.jpg) no-repeat left top ;
+}
+.invoices_btn { 
+    background:url(images/pink_passion_theme/invoices_btn.jpg) no-repeat left top ;
+}
+.statement_btn { 
+    background:url(images/pink_passion_theme/statement_btn.jpg) no-repeat left top ;
+}
+.payment_btn { 
+    background:url(images/pink_passion_theme/payment_btn.jpg) no-repeat left top ;
+}
+.pricing_btn { 
+    background:url(images/pink_passion_theme/pricing_btn.jpg) no-repeat left top ;
+}
+
+
+.btn_style {
+    background: transparent url(images/pink_passion_theme/btn_bg.png) repeat-x left bottom;
+    border:2px solid #F3C6DA;
+    color:#000;
+}
+.current {
+    color:#FF9000;
+}
+
+#maincontent {
+    background-color:#EEBCD5;
+}
+#subcontent {
+    background-color:#fff;
+}
+.page_header {
+    background: transparent url(images/pink_passion_theme/heading_bg.png) repeat-x;
+}
+.page_header h2 { color:#000; }
+.page_header .addnew { color:#000; }
+.page_header .text_links, .page_header .text_links a { color:#DD71A1; }
+
+
+.contents {
+    border-top:1px solid #E1E2DE;
+}
+.list { border:1px solid #F1BFD7; border-right:0px solid #F1BFD7; }
+.list th{ 
+    background: transparent url(images/pink_passion_theme/action_bar_bg.jpg) repeat-x;
+    color:#000;
+}
+.list th, .list td { border-right:1px solid #F1BFD7; }
+.list td { background-color:#fff; }
+.list tr.altrow td { background-color:#E9E9E1; }
+.list .asc { 
+    background: transparent url(images/pink_passion_theme/arrow_up.png) no-repeat;
+}
+.list .desc { 
+    background: transparent url(images/pink_passion_theme/arrow_down.png) repeat-x;
+}

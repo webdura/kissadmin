@@ -4,17 +4,65 @@ include("config.php");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>GNet Mail</title>
-<link href="style.php?default" rel="stylesheet" type="text/css" />
+    <title>KissAdmin</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="style.php?default" rel="stylesheet" type="text/css" />
+    <script src="js/jquery-1.4.4.min.js" type="text/JavaScript"></script>
+    <script src="js/jquery.validate.js" type="text/JavaScript"></script>
+    <script src="js/animatedcollapse.js" type="text/JavaScript"></script>
+    <script src="js/scripts.js" type="text/JavaScript"></script>
+    <script>
+        animatedcollapse.addDiv('successmsg', 'fade=1');
+        animatedcollapse.init();
+        setTimeout("animatedcollapse.hide('successmsg');", 6000);
+    </script>
 </head>
+
 <body>
 <div id="wrapper">
-		<div id="head">
-           <div id="head_left"></div>
-           <div id="head_right"></div>
+
+    <div id="head">
+        <div id="head_left">
+            <div class="head_left"></div>
+            <div class="logo"><img src="images/logo.png" align="center"></div>
+            <div class="head_right"></div>
         </div>
-        <div class="clear"></div>
+        <div id="head_right">
+            <img src="images/KISSAdmin_logo.png" align="right">
+            <div class="right_links">
+                <? if(isset($_SESSION['ses_userId']) && $_SESSION['ses_userId']>0) { ?>
+                <div class="login">
+                    Logged in as "<?=$_SESSION['displayName']?>"&nbsp;&nbsp;&nbsp;|&nbsp;
+                    <? if(count($top_menu)>0) { ?>
+                        <a href="javascript:void(0);" onclick="settingsTab();">Settings</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                    <? } ?>
+                    <a href="index.php?logoff=signout">Logout</a>
+                </div>
+                <? } ?>
+                <? if(count($top_menu)>0) { ?>
+                    <div class="submenu">
+                    <? foreach ($top_menu as $key=>$menu) { ?>
+                        <? if($key!=0) { ?> &nbsp;|&nbsp; <? } ?>
+                        <a href="<?=$menu['filename']?>" title="<?=$menu['name']?>"><?=$menu['name']?></a>
+                    <? } ?>
+                    </div>
+                <? } ?>
+            </div>
+        </div>
+    </div>
+    <div id="top_buttons">
+        <ul>
+            <? foreach ($main_menu as $key=>$menu) { ?>
+                <li><a href="<?=$menu['filename']?>" class="<?=$menu['class']?>"></a></li>
+            <? } ?>
+        </ul> 
+    </div>
+    <div id="maincontent">
+    
+<div class="block" <?=($message=='' ? 'style="display:none"' : '')?>>
+    <div class="message successmsg" style="display: block;" id="successmsg"><span id=""><?=$message?></span><span title="Dismiss" class="close" onclick="animatedcollapse.hide('successmsg');"></span></div>
+</div>
+
 <?php 
 if(isset($_REQUEST['logoff']))
 {
@@ -75,41 +123,37 @@ if(isset($_REQUEST['sbmt']))
         $_SESSION['ses_loginType'] = $ses_loginType = ($ses_loginType=='normal' || $ses_loginType=='trial' || $ses_loginType=='client') ? 'user' : 'admin';
         
         $msg = "Login successful";
-//        if($user_row['userType']!='normal' && $user_row['userType']!='trial' && $user_row['userType']!='client')
-//            header("Location: users.php");
-//        else
         header("Location: dashboard.php");
         exit;
     }
     else
         $msg1 = "Incorrect Username/Password";
 }
-
+$page_title = "Login";
 ?>
-
+<div id="subcontent">
+    <div class="page_header">
+        <div class="fleft padding_top">
+            <h2 class=""><?=$page_title?></h2>
+        </div>
+    </div>
+    <div class="contents">
+            
 <form name="loginfrm" method="post" action="">
-<table width="100%" height="100%" cellpadding="0" align="center" cellspacing="3">
-<tr><td width="100%" height="100%" align="center" valign="middle">
-
-<table cellpadding="0" cellspacing="3" style="border:2px solid #FA7E00; width:380px; height:190px;padding:5px 5px 5px 40px; margin-top:50px;">
-    <tr><td colspan="2" align="center" style="color:#336600;"><?php echo $msg; ?></td></tr>
-    <tr><td colspan="2" align="center" style="color:#FF0000;"><?php echo $msg1; ?></td></tr>
-    <tr><td colspan="2">&nbsp;</td></tr>
+<table class="list addedit login" cellpadding="0" cellspacing="0" border="0" align="center" width="30%">
     <tr>
         <td><strong>Username</strong></td>
-        <td><input type="text" name="username" id="username" class="search_bt" /></td>
+        <td><input type="text" name="username" id="username" class="textbox required" autocomplete='off' /></td>
     </tr>
-    <tr>
+    <tr class="altrow">
         <td><strong>Password</strong></td>
-        <td><input type="password" name="password" id="password" class="search_bt" /></td>
+        <td><input type="password" name="password" id="password" class="textbox required" /></td>
     </tr>
     <tr>
         <td><!--<a href="forgotpassword.php" style="text-decoration:underline;">Forgot Password</a>--></td>
-        <td><input type="submit" name="sbmt" id="sbmt" value="Submit" class="search_bt" /></td>
+        <td><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></td>
     </tr>
 </table>
-
-</td></tr>
-</table>
 </form>
+
 <?php include("footer.php"); ?>

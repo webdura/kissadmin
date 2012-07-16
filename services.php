@@ -167,19 +167,18 @@ switch ($action)
         $service_count = mysql_num_rows($service_rs);
         
         $pagination = '';
-//        echo $service_sql; exit;
-//        if($service_count>$perPage)
-//        {
-//            $service_sql  .= " LIMIT $offset, $perPage";
-//            $service_rs    = mysql_query($service_sql);
-//            
-//            $maxPage     = ceil($service_count/$perPage);
-//            $pagination  = pagination($maxPage, $pageNum);
-//            $pagination  = paginations($service_count, $perPage, 5);
-//        }
-        // echo "$service_count == $perPage == $service_sql;";
         
-        $links = '<a href="groups.php" title="Groups">Groups</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="services.php?action=import" title="Import services">Import services</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="services.php?action=add" title="Add new">Add new</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+//        $links = '<a href="groups.php" title="Groups">Groups</a><a href="services.php?action=import" title="Import services">Import services</a><a href="services.php?action=add" title="Add new">Add new</a><a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+        
+        $add_url    = 'services.php?action=add';
+        
+        $del_url    = 'javascript:void(0);';
+        $del_click  = 'deleteAll();';
+        
+        $other_urls[] = array('text'=>'Import', 'sign'=>'+', 'url'=>'services.php?action=import', 'click'=>'');
+        $other_urls[] = array('text'=>'Groups', 'sign'=>'+', 'url'=>'groups.php', 'click'=>'');
+        
+        $group_search = true;
         
         break;
 }
@@ -196,127 +195,89 @@ $page_title = 'Services';
 include('sub_header.php');
 if($action=='list') { ?>
 
-<form method="GET" name='searchform'>
-<div class="pagination" align="right">
-    <table border="0" width="100%">
-    <tr>
-        <td align="left" width="400" >
-            <b>Group&nbsp;:&nbsp;</b>
-            <select name="group_id" id="group_id" onchange="document.searchform.submit();" style="width:300px">
-                <option value="0">Select all</option>
-                <? foreach ($group_rows as $group) {
-                    $selected = ($group['id']==$group_id) ? 'selected' : '';
-                    
-                    echo "<option value='".$group['id']."' $selected>".$group['name']."</option>";
-                }
-                ?>
-            </select>
-        </td>
-        <td align="right"><?=$pagination?></td>
-    </tr>
-    </table>
-</div>
-</form>
-
 <form method="POST" id="listForm" name='listForm'>
 <input type="hidden" name="action" value="deleteall">
 <div class="client_display">
-    <table width="100%" class="client_display_table" cellpadding="3" cellspacing="3">
+    <table width="100%" class="list" cellpadding="0" cellspacing="0">
         <tr height="30">
-            <th class="thead"width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
-            <th width="30%" class="thead"><span>Group</span>&nbsp;<a href="?<?=$queryString ?>&orderby=group_name&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=group_name&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th class="thead"><span>Service Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=service_name&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=service_name&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="10%" class="thead"><span>Amount</span>&nbsp;<a href="?<?=$queryString ?>&orderby=amount&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=amount&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="10%" class="thead" align="center">Order</th>
-            <th width="10%" class="thead" align="center">Status</th>
-            <th width="10%" class="thead">Action</th>
+            <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
+            <th width="30%"><span>Group</span>&nbsp;<a href="?<?=$queryString ?>&orderby=group_name&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=group_name&order=DESC" class="desc"></a></th>
+            <th><span>Service Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=service_name&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=service_name&order=DESC" class="desc"></a></th>
+            <th width="10%"><span>Amount</span>&nbsp;<a href="?<?=$queryString ?>&orderby=amount&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=amount&order=DESC" class="desc"></a></th>
+            <th width="10%">Order</th>
+            <th width="10%">Status</th>
+            <th width="10%">Action</th>
         </tr>  
         <?php
         $j=0;
         while($service_row = mysql_fetch_assoc($service_rs))
         {
-            $class   = ((($j++)%2)==1) ? 'row2' : 'row1';
+            $class   = ((($j++)%2)==1) ? 'altrow' : '';
             $auto_id = $service_row['id'];
             ?>
             <tr class="<?=$class?>">
                 <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
                 <td><?=$service_row['group_name']?></td>
                 <td><?=$service_row['service_name']?></td>
-                <td align="right">R <?=formatMoney($service_row['amount'], true)?></td>
-                <td align="center"><input type="text" value="<?=$service_row['order']?>" onkeyup="changeOder('<?=$auto_id?>', 'serviceorder', this.value)" size="5" style="text-align:center;"></td>
-                <td align="center"><?=($service_row['status']==1 ? 'Active' : 'Inactive')?></td>
-                <td><a href="services.php?action=edit&service_id=<?=$auto_id?>">Edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="services.php?action=delete&service_id=<?=$auto_id?>" onclick="return window.confirm('Are you sure to delete this ?');">Delete</a></td>
+                <td>R <?=formatMoney($service_row['amount'], true)?></td>
+                <td><input type="text" value="<?=$service_row['order']?>" onkeyup="changeOder('<?=$auto_id?>', 'serviceorder', this.value)" size="5" style="text-align:center;"></td>
+                <td><?=($service_row['status']==1 ? 'Active' : 'Inactive')?></td>
+                <td><a href="services.php?action=edit&service_id=<?=$auto_id?>" class="btn_style">Edit</a>&nbsp;<a href="services.php?action=delete&service_id=<?=$auto_id?>" onclick="return window.confirm('Are you sure to delete this ?');" class="btn_style">Delete</a></td>
             </tr>
             <?php
         }
         if($service_count==0) { ?>
-           <tr><td class="message" colspan="10">No Records Found</td></tr>
+           <tr><td class="norecords" colspan="10">No Records Found</td></tr>
         <? } ?>
     </table>
 </div>
 </form>
 
-<div class="pagination" align="right">
-    <table border="0" width="100%">
-    <tr>
-        <td align="left" width="400" ></td>
-        <td align="center" width="450"><?=$chars?></td>
-        <td align="right"><?=$pagination?></td>
-    </tr>
-    </table>
-</div>
-
 <? } else if($action=='edit' || $action=='add') { ?>
 
-<div class="newinvoice">
-    <form method="POST" id="userForm" name='userForm'>
-        <table width="100%" class="send_credits" cellpadding="13" cellspacing="3">
-            <tr><td colspan="12" align="center" class="msg"><?php echo $msg; ?></td></tr>
-            <tr><td colspan="13" class="sc_head"><?=$title?><span class="back fright"><a href="services.php">Back</a></span></td></tr>
-        </table>
-        <table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-        <tr height="25" valign="middle">
-            <th class="row1" align="left" width="30%">Service Name</th>
-            <td class="row1"><input type="text" name="service_name" id="service_name" class="fleft textbox required" value="<?=@$service_row['service_name']?>" /></td>  
-        </tr> 
-        <tr valign="middle">
-            <th class="row1" align="left" width="30%">Service Description</th>
-            <td class="row1"><textarea name="description" rows="5" cols="30"><?=@$service_row['description']?></textarea>
-           </td>  
-        </tr> 
-        <tr height="25" valign="middle">
-            <th class="row2" align="left" width="30%">Group</th>
-            <td class="row2">
-                <select name="group_id" id="group_id" class="fleft textbox required">
-                    <option value="">Select any group</option>
-                    <? foreach ($group_rows as $group) {
-                        $selected = ($group['id']==$service_row['group_id']) ? 'selected' : '';
-                        
-                        echo "<option value='".$group['id']."' $selected>".$group['name']."</option>";
-                    }
-                    ?>
-                </select>
-            </td>  
-        </tr> 
-        <tr height="25">
-            <th class="row1" align="left">Amount</th>
-            <td class="row1"><input type="text" name="amount" id="amount" class="fleft textbox required number" value="<?=$service_row['amount']?>"/></td>  
-        </tr> 
-        <tr height="25">
-            <th class="row1" align="left">Order</th>
-            <td class="row1"><input type="text" name="order" id="order" class="fleft textbox required number" value="<?=$service_row['order']?>"/></td>  
-        </tr> 
-        <tr height="25">
-            <th class="row2" align="left">Active</th>
-            <td class="row2"><input type="checkbox" name="status" id="status" value="1" <?=(isset($service_row['status']) && $service_row['status']==1) ? 'checked' : ''?> /></td>  
-        </tr> 
-        <tr height="25">
-            <th class="row1">&nbsp;</th>
-            <td class="row1"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="search_bt" /></td>  
-        </tr>
-        </table>
-    </form>
-</div>
+<form method="POST" id="userForm" name='userForm'>
+
+<table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+    <tr><th colspan="3"><?=$title?>&nbsp;<span class="backlink"><a href="services.php">Back</a></span></td></tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td width="30%">Service Name</td>
+        <td><input type="text" name="service_name" id="service_name" class="fleft textbox required" value="<?=@$service_row['service_name']?>" /></td>  
+    </tr> 
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td width="30%">Service Description</td>
+        <td><textarea name="description" rows="5" cols="30"><?=@$service_row['description']?></textarea>
+       </td>  
+    </tr> 
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td width="30%">Group</td>
+        <td>
+            <select name="group_id" id="group_id" class="fleft textbox required">
+                <option value="">Select any group</option>
+                <? foreach ($group_rows as $group) {
+                    $selected = ($group['id']==$service_row['group_id']) ? 'selected' : '';
+                    
+                    echo "<option value='".$group['id']."' $selected>".$group['name']."</option>";
+                }
+                ?>
+            </select>
+        </td>  
+    </tr> 
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Amount</td>
+        <td><input type="text" name="amount" id="amount" class="fleft textbox required number" value="<?=$service_row['amount']?>"/></td>  
+    </tr> 
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Order</td>
+        <td><input type="text" name="order" id="order" class="fleft textbox required number" value="<?=$service_row['order']?>"/></td>  
+    </tr> 
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Active</td>
+        <td><input type="checkbox" name="status" id="status" value="1" <?=(isset($service_row['status']) && $service_row['status']==1) ? 'checked' : ''?> /></td>
+    </tr>
+</table>
+<div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
+</form>
+
 <script>
 $(document).ready(function() {
     jQuery("#userForm").validate();
@@ -324,28 +285,21 @@ $(document).ready(function() {
 </script>
 
 <?
-} else if($action=='import') { ?>
-<div class="newinvoice">
-    <? if($import==0) { ?>
+} else if($action=='import') { ?>    
+    <? if($import==0) { ?>    
         <form method="POST" id="userForm" name='userForm' enctype="multipart/form-data">
-        <table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-            <tr><td colspan="12" align="center" class="msg"><?php echo $msg; ?></td></tr>
-            <tr><td colspan="13" class="sc_head">Import services<span class="back"><a href="services.php">Back</a></span></td></tr>
+        <table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+            <tr><th colspan="3">Import services&nbsp;<span class="backlink"><a href="services.php">Back</a></span></td></tr>
+            <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+                <td width="20%">File (csv files only)</td>
+                <td><input type="file" name="file" id="file" class="required"></td>  
+            </tr> 
+            <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+                <td></td>
+                <td><a href="images/services.csv" target="_blank">Click here</a> for sample CSV file.</td>  
+            </tr>
         </table>
-        <table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-        <tr>
-            <th class="row1" align="left" width="20%">File (csv files only)<!--<a rel="tooltip" style="padding-top:9px;"><img src="images/icn_help.png"></a>--></th>
-            <td class="row1"><input type="file" name="file" id="file" class="required"></td>  
-        </tr> 
-        <tr>
-            <th class="row1"></th>
-            <td class="row1"><a href="images/services.csv" target="_blank">Click here</a> for sample CSV file.</td>  
-        </tr>
-        <tr>
-            <th class="row1"></th>
-            <td class="row1"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="search_bt" /></td>  
-        </tr>
-        </table>
+        <div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
         </form>
         <script>
         $(document).ready(function() {
@@ -387,32 +341,27 @@ $(document).ready(function() {
             
         });
         </script>
-<div id="tooltip_help" style="display:none">
-    <b>Create a csv:</b><br>
-    1.Open Excel and Save As from the file menu<br>
-    2.Select Comma separated values (csv) from the 'File Type' dropdown (below the file name input)<br>
-    3.Save<br><br>
-    <b>Payment data:</b><br>
-    1.Export payments from online banking as csv<br>
-    2.Or create you payment file from scratch in Excel then Save As csv<br>
-    3.Three columns required<br>
-    &nbsp;&nbsp;1.Client<br>
-    &nbsp;&nbsp;2.Date<br>
-    &nbsp;&nbsp;3.Amount
-</div>
-        
+        <div id="tooltip_help" style="display:none">
+            <b>Create a csv:</b><br>
+            1.Open Excel and Save As from the file menu<br>
+            2.Select Comma separated values (csv) from the 'File Type' dropdown (below the file name input)<br>
+            3.Save<br><br>
+            <b>Payment data:</b><br>
+            1.Export payments from online banking as csv<br>
+            2.Or create you payment file from scratch in Excel then Save As csv<br>
+            3.Three columns required<br>
+            &nbsp;&nbsp;1.Client<br>
+            &nbsp;&nbsp;2.Date<br>
+            &nbsp;&nbsp;3.Amount
+        </div>            
     <? } elseif($import==1) { ?>
         <form method="POST" id="batchForm" name='batchForm' enctype="multipart/form-data">
-        <table width="100%" class="send_credits" cellpadding="3" cellspacing="3" style="width:900px">
-            <tr><td colspan="12" align="center" class="msg"><?php echo $msg; ?></td></tr>
-            <tr><td colspan="13" class="sc_head">Import services<span class="back"><a href="services.php">Back</a></span></td></tr>
-        </table>
-        <table width="100%" class="send_credits" cellpadding="3" cellspacing="3" style="width:900px">
+        <table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
         <tr>
-            <th class="row1" align="center" width="10%" nowrap><b>Add</b></th>
-            <th class="row1" align="left" width="30%"><b>Group</b></th>
-            <th class="row1" align="left" width="30%"><b>Service</b></th>
-            <th class="row1" align="left" width="30%"><b>Amount</b></th>
+            <th width="10%"><b>Add</b></th>
+            <th width="30%"><b>Group</b></th>
+            <th width="30%"><b>Service</b></th>
+            <th width="30%"><b>Amount</b></th>
         </tr>
         <?
         $i=1;
@@ -442,25 +391,21 @@ $(document).ready(function() {
                         
             if($amount>0) { 
                 ?>
-                <tr>
-                    <td class="row1" align="center"><input type="checkbox" name="add[<?=$i?>]" id="add_<?=$i?>" value="<?=$i?>" checked /></td>  
-                    <td class="row1"><?=$group_details?><input type="hidden" name="group_name[<?=$i?>]" id="group_name_<?=$i?>" class="textbox required" value="<?=$group?>" /></td>  
-                    <td class="row1"><input type="text" name="service_name[<?=$i?>]" id="service_name_<?=$i?>" class="textbox required" value="<?=$service_name?>" /></td>  
-                    <td class="row1"><input type="text" name="amount[<?=$i?>]" id="amount_<?=$i?>" class="textbox number required" value="<?=$amount?>" /></td>  
+                <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+                    <td><input type="checkbox" name="add[<?=$i?>]" id="add_<?=$i?>" value="<?=$i?>" checked /></td>  
+                    <td><?=$group_details?><input type="hidden" name="group_name[<?=$i?>]" id="group_name_<?=$i?>" class="textbox required" value="<?=$group?>" /></td>  
+                    <td><input type="text" name="service_name[<?=$i?>]" id="service_name_<?=$i?>" class="textbox required" value="<?=$service_name?>" /></td>  
+                    <td><input type="text" name="amount[<?=$i?>]" id="amount_<?=$i?>" class="textbox number required" value="<?=$amount?>" /></td>  
                 </tr> 
                 <?
                 $i++; 
             }
         }
         ?>
-        <tr>
-            <th class="row1"></th>
-            <td class="row1"><input type="submit" name="upload" id="upload" value="Submit" class="search_bt" /></td>  
-        </tr>
         </table>
+        <div class="addedit_btn"><input type="submit" name="upload" id="upload" value="Submit" class="btn_style" /></div>
         </form>
     <? } ?>
-    </div>
 <? }
 include('footer.php');
 ?>

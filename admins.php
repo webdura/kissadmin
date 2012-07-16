@@ -148,7 +148,6 @@ switch ($action)
         {
             $userTypes[$admins_row['id']] = $admins_row['name'] . "|" . $admins_row['user'];
         }
-        //echo '<pre>'; print_r($userTypes); exit;
         
         $userModules = array();
         $modules_sql = "SELECT * FROM gma_modules WHERE id IN (SELECT module_id FROM gma_company_module WHERE status=1 AND companyId='$ses_companyId') AND display=1";
@@ -157,7 +156,6 @@ switch ($action)
         {
             $userModules[$modules_row['id']] = $modules_row['name'] . "|" . $modules_row['for_users'];
         }
-        // echo '<pre>'; print_r($userModules); exit;
         
         $permissionModules = array();
         $permission_sql = "SELECT * FROM gma_admins_permission WHERE admins_id>2 AND companyId='$ses_companyId'";
@@ -196,7 +194,11 @@ switch ($action)
             $pagination  = paginations($user_count, $perPage, 5);
         }
         
-        $links = '<a href="admins.php?action=add" title="Add new">Add new</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="admins.php?action=permission" title="Admin Permission">Admin Permission</a>';
+        //$links = '<a href="admins.php?action=add" title="Add new">Add new</a><a href="admins.php?action=permission" title="Admin Permission">Admin Permission</a>';
+        $search_box = true;
+        $add_url    = 'admins.php?action=add';
+        $other_urls[] = array('text'=>'Permission', 'sign'=>'+', 'url'=>'admins.php?action=permission', 'click'=>'');
+        
         $chars = '<a href="admins.php">All</a>';
         for($i=65;$i<91;$i++)
         {
@@ -218,89 +220,63 @@ $userType = userTypes($user_row['userType'], 1);
 include('sub_header.php');
 if($action=='list') { ?>
 
-<form method="POST">
-<div class="pagination" align="right">
-    <table border="0" width="100%">
-    <tr>
-        <td align="left" width="35%" >
-            <b>Search&nbsp;:&nbsp;</b>
-            <input type="text" class="inputbox_green" name="srchtxt" id="srchtxt" size="23" value="<?=$srchtxt?>" />&nbsp;
-            <input type="submit"  value="Search"  class="search_bt" name="sbmt" id="sbmt" />
-        </td>
-        <td align="center" width="30%"><?=$chars?></td>
-        <td align="right" width="35%"><?=$pagination?></td>
+<table width="100%" class="list" cellpadding="0" cellspacing="0">
+    <tr valign="middle">
+        <th width="25%"><span>Full Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=fullName&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=fullName&order=DESC" class="desc"></a></th>
+        <th width="20%"><span>Username</span>&nbsp;<a href="?<?=$queryString ?>&orderby=userName&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=userName&order=DESC" class="desc"></a></th>
+        <th width="25%"><span>Email</span>&nbsp;<a href="?<?=$queryString ?>&orderby=email&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=email&order=DESC" class="desc"></a></th>
+        <th width="20%"><span>Admin Type</span>&nbsp;<a href="?<?=$queryString ?>&orderby=userType&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=userType&order=DESC" class="desc"></a></th>
+        <th width="10%">Action</th>
     </tr>
-    </table>
-</div>
-</form>
-
-<div class="client_display">
-    <table width="100%" class="client_display_table" cellpadding="3" cellspacing="3">
-        <tr valign="middle">
-            <th width="25%" class="thead"><span>Full Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=fullName&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=fullName&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="20%" class="thead"><span>Username</span>&nbsp;<a href="?<?=$queryString ?>&orderby=userName&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=userName&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="25%" class="thead"><span>Email</span>&nbsp;<a href="?<?=$queryString ?>&orderby=email&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=email&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="20%" class="thead"><span>Admin Type</span>&nbsp;<a href="?<?=$queryString ?>&orderby=userType&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=userType&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="10%" class="thead">Action</th>
+    <?php
+    $j=0;
+    while($user_row = mysql_fetch_assoc($user_rs))
+    {
+        $class   = ((($j++)%2)==1) ? 'altrow' : '';
+        $auto_id = $user_row['userId'];
+        ?>
+        <tr class="<?=$class?>">
+            <td><?=$user_row['fullName']?></td>
+            <td><?=$user_row['userName']?></td>
+            <td><?=$user_row['email']?></td>
+            <td><?=$user_row['name']?></td>
+            <td><a href="admins.php?action=view&user_id=<?=$auto_id?>" alt="View Details" title="View Details" class="btn_style">View</a>&nbsp;<a href="admins.php?action=edit&user_id=<?=$auto_id?>" alt="Edit Details" title="Edit Details" class="btn_style">Edit</a>&nbsp;<a href="admins.php?action=delete&user_id=<?=$auto_id?>" alt="Delete Details" title="Delete Details" class="btn_style">Delete</a></td>
         </tr>
         <?php
-        $j=0;
-        while($user_row = mysql_fetch_assoc($user_rs))
-        {
-            $class   = ((($j++)%2)==1) ? 'row2' : 'row1';
-            $auto_id = $user_row['userId'];
-            ?>
-            <tr class="<?=$class?>">
-                <td><?=$user_row['fullName']?></td>
-                <td><?=$user_row['userName']?></td>
-                <td><?=$user_row['email']?></td>
-                <td><?=$user_row['name']?></td>
-                <td><a href="admins.php?action=view&user_id=<?=$auto_id?>" alt="View Details" title="View Details">View</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="admins.php?action=edit&user_id=<?=$auto_id?>" alt="Edit Details" title="Edit Details">Edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="admins.php?action=delete&user_id=<?=$auto_id?>" alt="Delete Details" title="Delete Details">Delete</a></td>
-            </tr>
-            <?php
-        }
-        if($user_count==0) { ?>
-           <tr><td class="message" colspan="10">No Records Found</td></tr>
-        <? } ?>
-    </table>
-</div>
+    }
+    if($user_count==0) { ?>
+       <tr><td class="norecords" colspan="10">No Records Found</td></tr>
+    <? } ?>
+</table>
 </form>
 
 <? } else if($action=='edit' || $action=='add') { ?>
 
-<div class="newinvoice">
 <form name="userForm" id="userForm" method="post" action="">
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-    <tr><td colspan="12" align="center" class="msg"><?php echo $msg; ?></td></tr>
-    <tr><td colspan="13" class="sc_head">EDIT ADMIN DETAILS&nbsp;<span class="back"><a href="admins.php">Back</a></span></td></tr>
+<table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+    <tr><th colspan="3"><?=($action=='add' ? 'ADD' : 'EDIT')?> ADMIN DETAILS&nbsp;<span class="backlink"><a href="admins.php">Back</a></span></td></tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td width="20%">Username</td>
+        <td><input type="text" name="userName" id="userName" class="textbox required" value="<?=$user_row['userName']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Password</td>
+        <td><input type="text" name="password" id="password" class="textbox required" value="<?=$user_row['password']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Full Name</td>
+        <td><input type="text" name="fullName" id="fullName" class="textbox required" value="<?=$user_row['fullName']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Email</td>
+        <td><input type="text" name="email" id="email" class="textbox required email" value="<?=$user_row['email']?>"/></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>User Type</td>
+        <td><?=$userType?></td>  
+    </tr>      
 </table>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-<tr>
-    <th class="row2" align="left" width="20%">Username</th>
-    <td class="row2"><input type="text" name="userName" id="userName" class="textbox required" value="<?=$user_row['userName']?>" /></td>  
-</tr>
-<tr>
-    <th class="row1" align="left">Password</th>
-    <td class="row1"><input type="text" name="password" id="password" class="textbox required" value="<?=$user_row['password']?>" /></td>  
-</tr>
-<tr>
-    <th class="row2" align="left">Full Name</th>
-    <td class="row2"><input type="text" name="fullName" id="fullName" class="textbox required" value="<?=$user_row['fullName']?>" /></td>  
-</tr>
-<tr>
-    <th class="row1" align="left">Email</th>
-    <td class="row1"><input type="text" name="email" id="email" class="textbox required email" value="<?=$user_row['email']?>"/></td>  
-</tr>
-<tr>
-    <th class="row2" align="left">User Type</th>
-    <td class="row2"><?=$userType?></td>  
-</tr> 
-<tr>
-    <th class="row2">&nbsp;</th>
-    <td class="row2"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="search_bt" /></td>  
-</tr>      
-</table>
-</div>
+<div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
 </form>
 
 <script>
@@ -320,14 +296,6 @@ $(document).ready(function() {
             },
             email: {
                 required: true,
-//                remote: {
-//                    url: "ajax_check.php",
-//                    type: "post",
-//                    data: {
-//                        task: 'checkEmail',
-//                        user_id: '<?=$userId?>'
-//                    }
-//                }
             }
         },
         messages: {
@@ -344,86 +312,71 @@ $(document).ready(function() {
 
 <? } else if($action=='view') { ?>
 
-<div class="newinvoice">
-<br>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-    <tr><td colspan="13" class="sc_head">VIEW ADMIN DETAILS&nbsp;<span class="back"><a href="admins.php">Back</a></span></td></tr>
-</table>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-<tr>
-    <th class="row2" align="left">Username</th>
-    <td class="row2"><?=$user_row['userName']?></td>
-</tr>
-<tr>
-    <th class="row1" align="left">Full Name</th>
-    <td class="row1"><?=$user_row['fullName']?></td>
-</tr>
-<tr>
-    <th class="row2" align="left">Email</th>
-    <td class="row2"><?=$user_row['email']?></td>
-</tr>
-<tr>
-    <th class="row1" align="left">User Type</th>
-    <td class="row1"><?=$user_row['userType']?></td>
-</tr>
+<table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+    <tr><th colspan="3">VIEW ADMIN DETAILS&nbsp;<span class="backlink"><a href="admins.php">Back</a></span></td></tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">    
+        <td>Username</td>
+        <td><?=$user_row['userName']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Full Name</td>
+        <td><?=$user_row['fullName']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Email</td>
+        <td><?=$user_row['email']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>User Type</td>
+        <td><?=$user_row['userType']?></td>
+    </tr>
 </table>
 </div>
 
 <? } 
 else if($action=='permission') { 
-	foreach ($userTypes as $admins_id=>$name) { 
-	
-		$admn = explode("|", $name);
-		$name = $admn[0];
-		$adminType = $admn[1];
-	
-		echo '<div class="moduleContainer">';
-		echo '<div class="adminHead">' . $name . '</div>';
-		echo showPermissionGrid($adminType,$admins_id, $userModules, $permissionModules[$admins_id]);
-		echo '</div>';
-		echo '<div style="height:20px;"></div>';
-	
-	}         
-
-?>
-
-<script>
-$(document).ready(function() {
-    $('input').bind('click', function() {
-        var id      = $(this).attr("id");
-        var checked = 0;
-        if($(this).attr("checked"))
-            checked = 1;
+ 
+    foreach ($userTypes as $admins_id=>$name) { 
+        $admn = explode("|", $name);
+        $name = $admn[0];
+        $adminType = $admn[1];
         
-        $.post("ajax_check.php", { task: 'permission', id: id, checked: checked } );
+        echo '<div class="moduleContainer">';
+        echo '<div class="adminHead">' . $name . '</div>';
+        echo showPermissionGrid($adminType,$admins_id, $userModules, $permissionModules[$admins_id]);
+        echo '</div>';
+        echo '<div style="height:20px;"></div>';
+    }
+    ?>
+    <script>
+    $(document).ready(function() {
+        $('input').bind('click', function() {
+            var id      = $(this).attr("id");
+            var checked = 0;
+            if($(this).attr("checked"))
+                checked = 1;
+            
+            $.post("ajax_check.php", { task: 'permission', id: id, checked: checked } );
+        });
     });
-});
-</script>
+    </script>
 
 <? }
-
 include('footer.php');
 
-
 function showPermissionGrid($adminType,$admins_id, $arrModuleNames, $arrPermissions){
-	
-	
-        foreach ($arrModuleNames as $module_id=>$module) {
-            $name    = $admins_id.'_'.$module_id;
-            
-            $checked = (in_array($module_id, $arrPermissions)) ? 'checked' : ''; 
-
-            $modool = explode("|", $module);
-        	$module = $modool[0];
-        	$moduleUsers = $modool[1];
-            	
-            if(strpos($moduleUsers,$adminType)===false) {
-            }
-        	else {
-           $moduleTable .= '<div class="moduleName"><input type="checkbox" id="'. $name. '" value="1" ' . $checkbox . $checked . '>' . $module. '</div>';
-         	}
+    foreach ($arrModuleNames as $module_id=>$module) {
+        $name    = $admins_id.'_'.$module_id;
+        $checked = (in_array($module_id, $arrPermissions)) ? 'checked' : ''; 
         
-        } 
-	return $moduleTable;
+        $modool = explode("|", $module);
+        $module = $modool[0];
+        $moduleUsers = $modool[1];
+        
+        if(strpos($moduleUsers,$adminType)===false) { } else { 
+            $moduleTable .= '<div class="moduleName"><input type="checkbox" id="'. $name. '" value="1" ' . $checkbox . $checked . '>' . $module. '</div>';
+        }
+   } 
+   return $moduleTable;
 }	
 ?>

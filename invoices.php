@@ -259,7 +259,7 @@ switch ($action)
         }
         
         if($ses_loginType!='user')
-            $links = '<a href="invoices.php?action=add" title="Create New Invoice">Create New Invoice</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+            $links = '<a href="invoices.php?action=add" title="Create New Invoice">Create New Invoice</a><a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
         break;
 }
     
@@ -307,16 +307,16 @@ foreach ($allGroups as $groups) {
         <table cellpadding="7" cellspacing="2" width="100%">
             <tr class="sc_subhead" >
                 <td class="sc_subhead">Service items</td>
-                <td class="sc_subhead" width="17%" align="center">Cost</td>     
-                <td class="sc_subhead" width="17%" align="center">Quantity</td>     
-                <td class="sc_subhead" width="17%" align="center">Discount%</td>
-                <td class="sc_subhead" width="17%" align="right">Amount</td>
+                <td class="sc_subhead" width="17%">Cost</td>     
+                <td class="sc_subhead" width="17%">Quantity</td>     
+                <td class="sc_subhead" width="17%">Discount%</td>
+                <td class="sc_subhead" width="17%">Amount</td>
             </tr>
         </table>
         <div id="service_<?=$group_id?>" style="display:none">
             <table cellpadding="7" cellspacing="3" width="100%" id="div_test">
                 <tr>
-                    <td class="row2">
+                    <td>
                         <? if($service_count>0) { ?>
                             <select  class="inputbox_green" style="width:300px;" name="service_id[test]" id="service_id_test" onchange="checkAmount(test)">
                                 <option value="">Select</option>
@@ -329,16 +329,16 @@ foreach ($allGroups as $groups) {
                             <input type="text" size="10" class="inputbox_green" name="service_name[test]" id="service_name_test" style="width:300px;" />
                         <? } ?>
                     </td>
-                    <td class="row2" align="center" id="creditquantity_div" width="17%">
+                    <td id="creditquantity_div" width="17%">
                         <input type="text" size="10" style="text-align:right;" class="invoicetextboxtxt_green" name="cost[test]" id="cost_test" <?=($service_count>0 ? 'readonly' : '')?> onchange="changeInvoice(test)" value="0">
                     </td>
-                    <td class="row2" align="center" id="creditquantity_div" width="17%">
+                    <td id="creditquantity_div" width="17%">
                         <input type="text" size="10" style="text-align:right;" class="invoicetextboxtxt_green" name="quantity[test]" id="quantity_test" <?=($service_count>0 ? '' : '')?> onchange="changeInvoice(test)" value="0">
                     </td>
-                    <td class="row2" align="center" id="creditquantity_div" width="17%">
+                    <td id="creditquantity_div" width="17%">
                         <input type="text" size="10" style="text-align:right;" class="<?=$discount_style?>" name="discount[test]" id="discount_test" value="<?=@$user_discount[$group_id]?>" <?=$discount_box?> onchange="changeInvoice(test)" />
                     </td>
-                    <td class="row2" align="right" width="17%">
+                    <td width="17%">
                         <input type="text" size="10" style="text-align:right;" name="amount[test]" id="amount_test" class="invoicetextbox_green" value="0" readonly />
                         <!--&nbsp;<a href="javascript:void(0)" onclick="removeServiceRow('test');">Delete</a>-->
                     </td>
@@ -353,7 +353,7 @@ foreach ($allGroups as $groups) {
                 ?>
                 <table cellpadding="7" cellspacing="3" width="100%">
                     <tr>
-                        <td class="row2">
+                        <td>
                             <? if($service_count>0) { ?>
                                 <select  class="inputbox_green" style="width:300px;" name="service_id[<?=$i?>]" id="service_id_<?=$i?>" onchange="checkAmount(<?=$i?>)">
                                     <option value="">Select</option>
@@ -368,16 +368,16 @@ foreach ($allGroups as $groups) {
                                 <input type="text" size="10" class="inputbox_green" name="service_name[<?=$i?>]" id="service_name_<?=$i?>" value="<?=$order['serviceName']?>" style="width:300px;" />
                             <? } ?>
                         </td>
-                        <td class="row2" align="center" id="creditquantity_div" width="17%">
+                        <td id="creditquantity_div" width="17%">
                             <input type="text" size="10" style="text-align:right;" class="invoicetextboxtxt_green" name="cost[<?=$i?>]" id="cost_<?=$i?>" <?=($service_count>0 ? 'readonly' : '')?> onchange="changeInvoice(<?=$i?>)" value="<?=$order['cost']?>" />
                         </td>
-                        <td class="row2" align="center" id="creditquantity_div" width="17%">
+                        <td id="creditquantity_div" width="17%">
                             <input type="text" size="10" style="text-align:right;" class="invoicetextboxtxt_green" name="quantity[<?=$i?>]" id="quantity_<?=$i?>" <?=($service_count>0 ? '' : '')?> onchange="changeInvoice(<?=$i?>)" value="<?=$order['quantity']?>" />
                         </td>
-                        <td class="row2" align="center" id="creditquantity_div" width="17%">
+                        <td id="creditquantity_div" width="17%">
                             <input type="text" size="10" style="text-align:right;" class="<?=$discount_style?>" name="discount[<?=$i?>]" id="discount_<?=$i?>" value="<?=$order['discount']?>" <?=$discount_box?> onchange="changeInvoice(<?=$i?>)" />
                         </td>
-                        <td class="row2" align="right" width="17%">
+                        <td width="17%">
                             <input type="text" size="10" style="text-align:right;" name="amount[<?=$i?>]" id="amount_<?=$i?>" class="invoicetextbox_green" value="<?=$amount?>" readonly />
                         </td>
                     </tr>
@@ -388,7 +388,7 @@ foreach ($allGroups as $groups) {
         <? } else { ?>
         <table cellpadding="7" cellspacing="3" width="100%">
             <tr>
-                <td class="row2">
+                <td>
                     <? if($service_count>0) { ?>
                         <select  class="inputbox_green" style="width:300px;" name="service_id[<?=$i?>]" id="service_id_<?=$i?>" onchange="checkAmount(<?=$i?>)">
                             <option value="">Select</option>
@@ -401,16 +401,16 @@ foreach ($allGroups as $groups) {
                         <input type="text" size="10" class="inputbox_green" name="service_name[<?=$i?>]" id="service_name_<?=$i?>" style="width:300px;" />
                     <? } ?>
                 </td>
-                <td class="row2" align="center" id="creditquantity_div" width="17%">
+                <td id="creditquantity_div" width="17%">
                     <input type="text" size="10" style="text-align:right;" class="invoicetextboxtxt_green" name="cost[<?=$i?>]" id="cost_<?=$i?>" <?=($service_count>0 ? 'readonly' : '')?> onchange="changeInvoice(<?=$i?>)" value="0" />
                 </td>
-                <td class="row2" align="center" id="creditquantity_div" width="17%">
+                <td id="creditquantity_div" width="17%">
                     <input type="text" size="10" style="text-align:right;" class="invoicetextboxtxt_green" name="quantity[<?=$i?>]" id="quantity_<?=$i?>" <?=($service_count>0 ? '' : '')?> onchange="changeInvoice(<?=$i?>)" value="0" />
                 </td>
-                <td class="row2" align="center" id="creditquantity_div" width="17%">
+                <td id="creditquantity_div" width="17%">
                     <input type="text" size="10" style="text-align:right;" class="<?=$discount_style?>" name="discount[<?=$i?>]" id="discount_<?=$i?>" value="<?=@$user_discount[$group_id]?>" <?=$discount_box?> onchange="changeInvoice(<?=$i?>)" />
                 </td>
-                <td class="row2" align="right" width="17%">
+                <td width="17%">
                     <input type="text" size="10" style="text-align:right;" name="amount[<?=$i?>]" id="amount_<?=$i?>" class="invoicetextbox_green" value="0" readonly />
                 </td>
             </tr>
@@ -419,8 +419,8 @@ foreach ($allGroups as $groups) {
     </td></tr>
     <tr><td></td></tr>
 <? } ?>
-    <tr><td colspan="5" height="40" align="right" class="total"><span style="padding-right: 40px;">INVOICE TOTAL</span><input type="text" style="text-align:right;height:20px" class="invoicetextbox_green" name="total" id="total" value="<?=$total?>" size="10" readonly /></td></tr>
-    <tr><td colspan="5" align="right"><input type="submit" class="search_bt" name="save" id="save" value="Save" /><input type="submit" class="search_bt" name="sendMail" id="sendMail" value="Save & Send"/></td></tr>
+    <tr><td colspan="5" height="40" class="total"><span style="padding-right: 40px;">INVOICE TOTAL</span><input type="text" style="text-align:right;height:20px" class="invoicetextbox_green" name="total" id="total" value="<?=$total?>" size="10" readonly /></td></tr>
+    <tr><td colspan="5"><input type="submit" class="search_bt" name="save" id="save" value="Save" /><input type="submit" class="search_bt" name="sendMail" id="sendMail" value="Save & Send"/></td></tr>
 </table>
 </div>
 </div> 
@@ -434,15 +434,15 @@ var count = <?=$i?>;
 <? } else { ?>
 
 <form name="frm" id="frm" method="post" action="">
-<div class="pagination" align="right">
+<div class="pagination">
     <table border="0" width="100%">
     <tr>
-        <td align="left" width="400" >
+        <td width="400" >
             <b>Search&nbsp;:&nbsp;</b>
             <input type="text" class="inputbox_green" name="srchtxt" value="<?=@$_REQUEST['srchtxt']?>" id="srchtxt" size="23" />
             <input type="submit"  value="Search"  class="search_bt" name="sbmt" id="sbmt" />
         </td>
-        <td align="right"><?=$pagination?></td>
+        <td><?=$pagination?></td>
     </tr>
     </table>
 </div>
@@ -451,17 +451,17 @@ var count = <?=$i?>;
 <form method="POST" id="listForm" name='listForm'>
 <input type="hidden" name="action" value="deleteall">
 <div class="client_display">
-    <table width="100%" class="client_display_table" cellpadding="3" cellspacing="3">
+    <table width="100%" class="list" cellpadding="0" cellspacing="0">
         <tr height="30">
-            <th class="thead" width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
-            <th width="15%" class="thead"><span>Invoice Id.</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="15%" class="thead"><span>Order Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
+            <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
+            <th width="15%"><span>Invoice Id.</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoiceId&order=DESC" class="desc"></a></th>
+            <th width="15%"><span>Order Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderDate&order=DESC" class="desc"></a></th>
             <? if($ses_loginType!='user') { ?>
-                <th class="thead"><span>Client</span>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
+                <th><span>Client</span>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=businessName&order=DESC" class="desc"></a></th>
             <? } ?>
-            <th width="10%" class="thead"><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="10%" class="thead"><span>Status</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderStatus&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=orderStatus&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th class="thead" width="30%">Action</th>
+            <th width="10%"><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC" class="desc"></a></th>
+            <th width="10%"><span>Status</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderStatus&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderStatus&order=DESC" class="desc"></a></th>
+            <th width="30%">Action</th>
         </tr>  
         <?php
         $j=0;
@@ -485,16 +485,16 @@ var count = <?=$i?>;
                 <td>
                     <a href="invoices.php?action=view&orderId=<?=$orderId?>">View</a>
                     <? if($ses_loginType!='user') { ?>
-                        &nbsp;&nbsp;|&nbsp;&nbsp;<a href="invoices.php?action=edit&orderId=<?=$orderId?>">Edit</a>
-                        &nbsp;&nbsp;|&nbsp;&nbsp;<a href="invoices.php?action=delete&orderId=<?=$orderId?>">Delete</a>
+                        <a href="invoices.php?action=edit&orderId=<?=$orderId?>">Edit</a>
+                        <a href="invoices.php?action=delete&orderId=<?=$orderId?>">Delete</a>
                     <? } ?>
-                    &nbsp;&nbsp;|&nbsp;&nbsp;<a href="invoices.php?action=resendMail&orderId=<?=$orderId?>" title="Send invoice to my email">Send</a>
+                    <a href="invoices.php?action=resendMail&orderId=<?=$orderId?>" title="Send invoice to my email">Send</a>
                 </td>
             </tr>
             <?php
         }
         if($order_count==0) { ?>
-            <tr><td class="message" colspan="10">No Records Found</td></tr>
+            <tr><td class="norecords" colspan="10">No Records Found</td></tr>
         <? } ?>
     </table>
 </div>

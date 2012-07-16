@@ -48,7 +48,7 @@ include('sub_header.php');
                     $val       = $newUserResAry['userCount']+$val;
                     $userCount = ($newUserResAry['userCount']=='')?0:$newUserResAry['userCount'];
                     echo '<tr>
-                        <td class="'.$class.'" align="right"><strong>'.$text.':</strong></td>
+                        <td class="'.$class.'"><strong>'.$text.':</strong></td>
                         <td class="'.$class.'" style="padding-left:15px;">'.$userCount.'</td>
                     </tr>';
                     $i++;
@@ -56,8 +56,8 @@ include('sub_header.php');
                 ?>					
                 <tr><td>&nbsp;</td></tr>
                 <tr>
-                    <td class="row2" align="right" width="45%"><strong>Average:</strong></td>
-                    <td class="row2" style="padding-left:15px;"><?php printf ("%01.2f", $val/13);?></td>						
+                    <td width="45%"><strong>Average:</strong></td>
+                    <td style="padding-left:15px;"><?php printf ("%01.2f", $val/13);?></td>						
                 </tr>
                 <tr><td>&nbsp;</td></tr>
             </table>
@@ -91,7 +91,7 @@ include('sub_header.php');
                 $totalCount   = ($total=='') ? 0 : $total;
                 
                 echo '<tr>
-                    <td class="'.$class.'" align="right"><strong>'.$text.':</strong></td>
+                    <td class="'.$class.'"><strong>'.$text.':</strong></td>
                     <td class="'.$class.'" style="padding-left:15px;">R '.str_replace(".00","",formatMoney($creditTotal,true)).'</td>									
                     <td class="'.$class.'">R '.str_replace(".00","",formatMoney($otherTotal,true)).'</td>
                     <td class="'.$class.'">R '.str_replace(".00","",formatMoney($totalCount,true)).'</td>
@@ -101,10 +101,10 @@ include('sub_header.php');
             ?>
             <tr><td colspan="4">&nbsp;</td></tr>
             <tr>
-                <td class="row2" align="right" width="28%"><strong>Average:</td>           
+                <td width="28%"><strong>Average:</td>           
                 <td class="even" style="padding-left:15px;">R <?php $creditsTotal1 = $creditsTotal/13; echo formatMoney($creditsTotal1,true); ?></td>
-                <td class="row2">R <?php $othersTotal1 = $othersTotal/13; echo formatMoney($othersTotal1,true); ?></td>
-                <td class="row2">R <?php $OverAlltotal1 = $OverAlltotal/13; echo formatMoney($OverAlltotal1,true); ?></td>
+                <td>R <?php $othersTotal1 = $othersTotal/13; echo formatMoney($othersTotal1,true); ?></td>
+                <td>R <?php $OverAlltotal1 = $OverAlltotal/13; echo formatMoney($OverAlltotal1,true); ?></td>
             </tr>
             <tr><td colspan="4">&nbsp;</td></tr>
         </table>
@@ -122,7 +122,7 @@ include('sub_header.php');
                     $val      = $sendSizeResAry['sendsize']+$val;
                     $sendsize = ($sendSizeResAry['sendsize']=='')?0:$sendSizeResAry['sendsize'];
                     echo '<tr>
-                        <td class="'.$class.'" align="right"><strong>'.$text.':</strong></td>
+                        <td class="'.$class.'"><strong>'.$text.':</strong></td>
                         <td class="'.$class.'" style="padding-left:15px;">'.str_replace(".00","",formatMoney($sendsize,true)).'</td>	
                     </tr>';
                     $i++;
@@ -130,8 +130,8 @@ include('sub_header.php');
                 ?>
                 <tr><td>&nbsp;</td></tr>
                 <tr>
-                    <td class="row2" width="45%" align="right"><strong>Average:</strong></td>
-                    <td class="row2" style="padding-left:15px;"><?php $val1 = $val/13; echo str_replace(".00","",formatMoney($val1,true));?></td>
+                    <td width="45%"><strong>Average:</strong></td>
+                    <td style="padding-left:15px;"><?php $val1 = $val/13; echo str_replace(".00","",formatMoney($val1,true));?></td>
                 </tr>
                 <tr><td>&nbsp;</td></tr>
             </table>

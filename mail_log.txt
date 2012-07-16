@@ -498,3 +498,20 @@ client2@company.com, rajeev@company.com, 13-07-2012 04:53:18, Invoice
 </td></tr>
 </table>
 
+vinayak@webduratech.com, admin@gnetmail.co.za, 13-07-2012 09:35:49, New client welcome email
+Hi Vinayak Saseendran,<br />
+<br />
+An account has been created for you with the following details,<br />
+<br />
+Client Name : Vinayak<br />
+Company Name : Gnet Mail<br />
+Username : vinayak<br />
+Password : admin123<br />
+Email Address : vinayak@webduratech.com<br />
+<br />
+Please click <a href='http://localhost/gnetmail/admin/index.php'>Click here</a> to login. Or copy paste the below URL in browser http://localhost/gnetmail/admin/index.php<br />
+<br />
+-----<br />
+Administrator<br />
+Gnet Mail
+

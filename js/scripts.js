@@ -204,12 +204,14 @@ function deleteAll()
             ids = ids + ',' + this.value;
     });
     
-    if(ids==0)
-    {
+    if(ids==0) {
         alert("Please select any records to delete ");
         return false;
+    } else {
+        var confirm = window.confirm("Are you sure to delete all selected records ?");
+        if(confirm)
+            $('#listForm').submit();
     }
-    $('#listForm').submit();
 }
 
 

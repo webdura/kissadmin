@@ -14,9 +14,8 @@ $userTypes  = userTypes('', 0, 1);
 $userTypes  = "'".implode("', '", $userTypes)."'";
 $page_title = 'Clients';
 
-if( strtolower(trim($_SESSION['ses_userType']))=='client'){
-	if($action!="view")
-		$action = "list";
+if($ses_loginType=='user' && $action!="view") {
+    $action = "list";
 }
 
 
@@ -262,10 +261,12 @@ switch ($action)
             $pagination  = paginations($user_count, $perPage, 5);
         }
         
-        if( strtolower(trim($_SESSION['ses_userType']))=='client')
-			$links = "";
-		else 
-	        $links = '<a href="users.php?action=add" title="Add new">Add new</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+        if($ses_loginType!='user') {
+            //$links = '<a href="users.php?action=add" title="Add new">Add new</a><a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+            $add_url   = 'users.php?action=add';
+            $del_url   = 'javascript:void(0);';
+            $del_click = 'deleteAll();';
+        }
 	        
         $chars = '<a href="users.php">All</a>';
         for($i=65;$i<91;$i++)
@@ -274,6 +275,7 @@ switch ($action)
             $selected  = ($char==$search ? "class='selected'" : '');
             $chars    .= "&nbsp;<a href='users.php?search=$char' $selected>$char</a>";
         }
+        $search_box = true;
         break;
 }
 $group_sql = "companyId='$ses_companyId' AND status=1";
@@ -288,214 +290,177 @@ $userType = userTypes($user_row['userType']);
 include('sub_header.php');
 if($action=='list') { ?>
 
-<form method="POST">
-<div class="pagination" align="right">
-    <table border="0" width="100%">
-    <tr>
-        <td align="left" width="24%" >
-            <b>Search&nbsp;:&nbsp;</b>
-            <input type="text" class="inputbox_green" name="srchtxt" id="srchtxt" size="23" value="<?=$srchtxt?>" />&nbsp;
-            <input type="submit"  value="Search"  class="search_bt" name="sbmt" id="sbmt" />
-        </td>
-        <td align="center" width="30%"><?=$chars?></td>
-        <td align="right" width="35%"><?=$pagination?></td>
-    </tr>
-    </table>
-</div>
-</form>
-
 <form method="POST" id="listForm" name='listForm'>
 <input type="hidden" name="action" value="deleteall">
-<div class="client_display">
-    <table width="100%" class="client_display_table" cellpadding="3" cellspacing="3">
-        <tr height="30">
-            <th class="thead"width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
-            <? $width=15; if($companyId==0 && 1==2) { $width=10; ?>
-            <th width="<?=$width?>%" class="thead" valign="middle"><span>Company Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=companyName&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=companyName&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
+<table width="100%" class="list" cellpadding="0" cellspacing="0">
+    <tr height="30">
+        <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
+        <? $width=15; if($companyId==0 && 1==2) { $width=10; ?>
+        <th width="<?=$width?>%" valign="middle"><span>Company Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=companyName&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=companyName&order=DESC" class="desc"></a></th>
+        <? } ?>
+        <th width="<?=$width?>%" valign="middle"><span>Client Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=businessName&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=businessName&order=DESC" class="desc"></a></th>
+        <th width="<?=$width?>%"><span>Contact Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=firstName&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=firstName&order=DESC" class="desc"></a></th>
+        <th width="10%"><span>Username</span>&nbsp;<a href="?<?=$queryString ?>&orderby=userName&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=userName&order=DESC" class="desc"></a></th>
+        <th width="15%"><span>Email</span>&nbsp;<a href="?<?=$queryString ?>&orderby=email&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=email&order=DESC" class="desc"></a></th>
+        <th width="10%">Tel No.</th>
+        <th width="20%">Action</th>
+    </tr>
+    <?php
+    $j=0;
+    while($user_row = mysql_fetch_assoc($user_rs))
+    {
+        $class   = ((($j++)%2)==1) ? 'altrow' : '';
+        $auto_id = $user_row['userId'];
+        ?>
+        <tr class="<?=$class?>">
+            <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
+            <? if($companyId==0 && 1==2) { ?>
+                <td><?=$user_row['companyName']?></td>
             <? } ?>
-            <th width="<?=$width?>%" class="thead" valign="middle"><span>Client Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=businessName&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=businessName&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="<?=$width?>%" class="thead"><span>Contact Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=firstName&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=firstName&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="10%" class="thead"><span>Username</span>&nbsp;<a href="?<?=$queryString ?>&orderby=userName&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=userName&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="15%" class="thead"><span>Email</span>&nbsp;<a href="?<?=$queryString ?>&orderby=email&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=email&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="10%" class="thead">Tel No.</th>
-            <th width="20%" class="thead">Action</th>
+            <td><?=$user_row['businessName']?></td>
+            <td><?=$user_row['firstName'].' '.$user_row['lastName']?></td>
+            <td><?=$user_row['userName']?></td>
+            <td><?=$user_row['email']?></td>
+            <td><?=$user_row['phone']?></td>
+            <td class="buttons">
+                <a href="users.php?action=view&user_id=<?=$auto_id?>" alt="View Details" title="View Details" class="btn_style">View</a>
+                <?php if( strtolower(trim($_SESSION['ses_userType']))!='client') { ?>
+                    <a href="users.php?action=edit&user_id=<?=$auto_id?>" alt="Edit Details" title="Edit Details" class="btn_style">Edit</a>&nbsp;<a href="users.php?action=delete&user_id=<?=$auto_id?>" onclick="return window.confirm('Are you sure to delete this ?');" class="btn_style">Delete</a>&nbsp;<a href="invoices.php?action=add&userId=<?=$auto_id?>" class="btn_style">Invoice</a>&nbsp;<a href="users.php?action=login&userId=<?=$auto_id?>" class="btn_style">Login</a>
+                <? } ?>
+            </td>
         </tr>
         <?php
-        $j=0;
-        while($user_row = mysql_fetch_assoc($user_rs))
-        {
-            $class   = ((($j++)%2)==1) ? 'row2' : 'row1';
-            $auto_id = $user_row['userId'];
-            ?>
-            <tr class="<?=$class?>">
-                <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
-                <? if($companyId==0 && 1==2) { ?>
-                    <td><?=$user_row['companyName']?></td>
-                <? } ?>
-                <td><?=$user_row['businessName']?></td>
-                <td><?=$user_row['firstName'].' '.$user_row['lastName']?></td>
-                <td><?=$user_row['userName']?></td>
-                <td><?=$user_row['email']?></td>
-                <td><?=$user_row['phone']?></td>
-<?php
-        if( strtolower(trim($_SESSION['ses_userType']))=='client')
-	        echo '<td><a href="users.php?action=view&user_id='. $auto_id. '" alt="View Details" title="View Details">View</a>&nbsp;';
-		else 
-	        echo '<td><a href="users.php?action=view&user_id='. $auto_id. '" alt="View Details" title="View Details">View</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="users.php?action=edit&user_id='. $auto_id. '" alt="Edit Details" title="Edit Details">Edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="users.php?action=delete&user_id='. $auto_id. '" onclick="return window.confirm(\'Are you sure to delete this ?\');">Delete</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="invoices.php?action=add&userId='. $auto_id. '">Create Invoice</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="users.php?action=login&userId='. $auto_id. '">Login</a></td>';
-?>
-                
-            </tr>
-            <?php
-        }
-        if($user_count==0) { ?>
-           <tr><td class="message" colspan="10">No Records Found</td></tr>
-        <? } ?>
-    </table>
-</div>
+    }
+    if($user_count==0) { ?>
+       <tr><td class="norecords" colspan="10">No Records Found</td></tr>
+    <? } ?>
+</table>
 </form>
-
-<div class="pagination" align="right">
-    <table border="0" width="100%">
-    <tr>
-        <td align="left" width="24%" ></td>
-        <td align="center" width="30%"><?=$chars?></td>
-        <td align="right" width="35%"><?=$pagination?></td>
-    </tr>
-    </table>
-</div>
-
+    
 <? } else if($action=='edit' || $action=='add') { ?>
 
 <script type="text/javascript" src="js/date.js"></script>
 <script type="text/javascript" src="js/jquery.datePicker.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/datePicker.css">
 
-<div class="newinvoice">
 <form name="userForm" id="userForm" method="post" action="">
-<br>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-    <tr><td colspan="13" class="sc_head"><?=($action=='add' ? 'ADD' : 'EDIT')?> CLIENT DETAILS&nbsp;<span class="back"><a href="users.php">Back</a></span></td></tr>
-</table>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-<tr>
-    <th class="row2" align="left">Account Grading</th>
-    <td class="row2"><input type="text" name="grade" id="grade" class="textbox number" value="<?=$user_row['grade']?>" /></td>  
-</tr>  
-<tr valign="top">
-    <th class="row1" align="left">Discount Percentage</th>
-    <td class="row1">
+<table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+    <tr><th colspan="3"><?=($action=='add' ? 'ADD' : 'EDIT')?> CLIENT DETAILS&nbsp;<span class="backlink"><a href="users.php">Back</a></span></td></tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td width="200">Account Grading</th>
+        <td><input type="text" name="grade" id="grade" class="textbox number" value="<?=$user_row['grade']?>" /></td>  
+    </tr>  
+    <tr valign="top" class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Discount Percentage</th>
+        <td>
+        
+        <? foreach ($group_rows as $group_id=>$group_row) { ?>
+            <b><?=$group_row['name']?>&nbsp;:&nbsp;</b><input type="text" name="discount[<?=$group_id?>]" id="discount_<?=$group_id?>" class="textbox number" style="width:200px;" value="<?=@$user_row['group_ids'][$group_id]?>" /><br>
+        <? } ?>
+        
+        </td>  
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Username</th>
+        <td><input type="text" name="userName" id="userName" class="textbox required" value="<?=$user_row['userName']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Password</th>
+        <td><input type="text" name="password" id="password" class="textbox required" value="<?=$user_row['password']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Client Name</th>
+        <td><input type="text" name="businessName" id="businessName" class="textbox required" value="<?=$user_row['businessName']?>" /></td>  
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>First Name</th>
+        <td><input type="text" name="firstName" id="firstName" class="textbox required" value="<?=$user_row['firstName']?>" /></td>  
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Last Name</th>
+        <td><input type="text" name="lastName" id="lastName" class="textbox required" value="<?=$user_row['lastName']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Email</th>
+        <td><input type="text" name="email" id="email" class="textbox required email" value="<?=$user_row['email']?>"/></td>  
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Tel No.</th>
+        <td><input type="text" name="phone" id="phone" class="textbox required" value="<?=$user_row['phone']?>" /></td>  
+    </tr> 
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Owner/Manager First Name</th>
+        <td><input type="text" name="ownerFirstName" id="ownerFirstName" class="textbox" value="<?=$user_row['ownerFirstName']?>" /></td>  
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Owner/Manager Last Name</th>
+        <td><input type="text" name="ownerLastName" id="ownerLastName" class="textbox" value="<?=$user_row['ownerLastName']?>" /></td>  
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Owner/Manager Email</th>
+        <td><input type="text" name="ownerEmail" id="ownerEmail" class="textbox email" value="<?=$user_row['ownerEmail']?>"/></td>  
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Owner/Manager Tel No.</th>
+        <td><input type="text" name="ownerPhone" id="ownerPhone" class="textbox" value="<?=$user_row['ownerPhone']?>" /></td>  
+    </tr> 
     
-    <? foreach ($group_rows as $group_id=>$group_row) { ?>
-        <b><?=$group_row['name']?>&nbsp;:&nbsp;</b><input type="text" name="discount[<?=$group_id?>]" id="discount_<?=$group_id?>" class="textbox number" style="width:200px;" value="<?=@$user_row['group_ids'][$group_id]?>" /><br>
-    <? } ?>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Address</th>
+        <td><input type="text" name="address" id="address" class="textbox" value="<?=$user_row['address']?>" /></td>  
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Payment Method</th>
+        <td><input type="text" name="paymentMethod" id="paymentMethod" class="textbox" value="<?=$user_row['paymentMethod']?>" /></td>  
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Payment Details Method</th>
+        <td><input type="text" name="paymentDetailsMethod" id="paymentDetailsMethod" class="textbox" value="<?=$user_row['paymentDetailsMethod']?>" /></td>  
+    </tr>  
     
-    </td>  
-</tr>  
-<tr>
-    <th class="row2" align="left">Username</th>
-    <td class="row2"><input type="text" name="userName" id="userName" class="textbox required" value="<?=$user_row['userName']?>" /></td>  
-</tr>
-<tr>
-    <th class="row1" align="left">Password</th>
-    <td class="row1"><input type="text" name="password" id="password" class="textbox required" value="<?=$user_row['password']?>" /></td>  
-</tr>
-<tr>
-    <th class="row2" align="left" width="25%">Client Name</th>
-    <td class="row2"><input type="text" name="businessName" id="businessName" class="textbox required" value="<?=$user_row['businessName']?>" /></td>  
-</tr>  
-<tr>
-    <th class="row1" align="left">First Name</th>
-    <td class="row1"><input type="text" name="firstName" id="firstName" class="textbox required" value="<?=$user_row['firstName']?>" /></td>  
-</tr>  
-<tr>
-    <th class="row2" align="left">Last Name</th>
-    <td class="row2"><input type="text" name="lastName" id="lastName" class="textbox required" value="<?=$user_row['lastName']?>" /></td>  
-</tr>
-<tr>
-    <th class="row1" align="left">Email</th>
-    <td class="row1"><input type="text" name="email" id="email" class="textbox required email" value="<?=$user_row['email']?>"/></td>  
-</tr>  
-<tr>
-    <th class="row2" align="left">Tel No.</th>
-    <td class="row2"><input type="text" name="phone" id="phone" class="textbox required" value="<?=$user_row['phone']?>" /></td>  
-</tr> 
-<tr>
-    <th class="row1" align="left">Owner/Manager First Name</th>
-    <td class="row1"><input type="text" name="ownerFirstName" id="ownerFirstName" class="textbox" value="<?=$user_row['ownerFirstName']?>" /></td>  
-</tr>  
-<tr>
-    <th class="row2" align="left">Owner/Manager Last Name</th>
-    <td class="row2"><input type="text" name="ownerLastName" id="ownerLastName" class="textbox" value="<?=$user_row['ownerLastName']?>" /></td>  
-</tr>  
-<tr>
-    <th class="row1" align="left">Owner/Manager Email</th>
-    <td class="row1"><input type="text" name="ownerEmail" id="ownerEmail" class="textbox email" value="<?=$user_row['ownerEmail']?>"/></td>  
-</tr>  
-<tr>
-    <th class="row2" align="left">Owner/Manager Tel No.</th>
-    <td class="row2"><input type="text" name="ownerPhone" id="ownerPhone" class="textbox" value="<?=$user_row['ownerPhone']?>" /></td>  
-</tr> 
-
-<tr>
-    <th class="row1" align="left">Address</th>
-    <td class="row1"><input type="text" name="address" id="address" class="textbox" value="<?=$user_row['address']?>" /></td>  
-</tr>  
-<tr>
-    <th class="row2" align="left">Payment Method</th>
-    <td class="row2"><input type="text" name="paymentMethod" id="paymentMethod" class="textbox" value="<?=$user_row['paymentMethod']?>" /></td>  
-</tr>  
-<tr>
-    <th class="row1" align="left">Payment Details Method</th>
-    <td class="row1"><input type="text" name="paymentDetailsMethod" id="paymentDetailsMethod" class="textbox" value="<?=$user_row['paymentDetailsMethod']?>" /></td>  
-</tr>  
-
-<tr>
-    <th class="row2" align="left">Bank Name</th>
-    <td class="row2"><input type="text" name="bankName" id="bankName" class="textbox" value="<?=$user_row['bankName']?>" /></td>  
-</tr>  
-<tr>
-    <th class="row1" align="left">Account Name</th>
-    <td class="row1"><input type="text" name="accountName" id="accountName" class="textbox" value="<?=$user_row['accountName']?>" /></td>  
-</tr>    
-<tr>
-    <th class="row2" align="left">Account Type</th>
-    <td class="row2"><input type="text" name="accountType" id="accountType" class="textbox" value="<?=$user_row['accountType']?>" /></td>  
-</tr>
-<tr>
-    <th class="row1" align="left">Account No</th>
-    <td class="row1"><input type="text" name="accountNo" id="accountNo" class="textbox" value="<?=$user_row['accountNo']?>" /></td>  
-</tr>  
-<tr>
-    <th class="row2" align="left">Branch Code</th>
-    <td class="row2"><input type="text" name="branchCode" id="branchCode" class="textbox" value="<?=$user_row['branchCode']?>" /></td>  
-</tr>
-
-<tr>
-    <th class="row1" align="left">Vat No</th>
-    <td class="row1"><input type="text" name="vatNo" id="vatNo" class="textbox required" value="<?=$user_row['vatNo']?>" /></td>  
-</tr>    
-<tr>
-    <th class="row2" align="left">User Status</th>
-    <td class="row2"><input type="text" name="userStatus" id="userStatus" class="textbox" value="<?=$user_row['userStatus']?>" /></td>  
-</tr>    
-<tr>
-    <th class="row1" align="left">Join Date</th>
-    <td class="row1"><input type="text" name="joinDate" id="joinDate" class="textbox required" value="<?=$user_row['joinDate']?>" readonly /></td>  
-</tr>
-<tr>
-    <th class="row2" align="left">User Type</th>
-    <td class="row2"><?=$userType?></td>  
-</tr> 
-<tr>
-    <th class="row1" align="left">Lead</th>
-    <td class="row1"><input type="text" name="lead" id="lead" class="textbox" value="<?=$user_row['lead']?>" /></td>  
-</tr>  
-<tr>
-    <th class="row2">&nbsp;</th>
-    <td class="row2"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="search_bt" /></td>  
-</tr>      
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Bank Name</th>
+        <td><input type="text" name="bankName" id="bankName" class="textbox" value="<?=$user_row['bankName']?>" /></td>  
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account Name</th>
+        <td><input type="text" name="accountName" id="accountName" class="textbox" value="<?=$user_row['accountName']?>" /></td>  
+    </tr>    
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account Type</th>
+        <td><input type="text" name="accountType" id="accountType" class="textbox" value="<?=$user_row['accountType']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account No</th>
+        <td><input type="text" name="accountNo" id="accountNo" class="textbox" value="<?=$user_row['accountNo']?>" /></td>  
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Branch Code</th>
+        <td><input type="text" name="branchCode" id="branchCode" class="textbox" value="<?=$user_row['branchCode']?>" /></td>  
+    </tr>
+    
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Vat No</th>
+        <td><input type="text" name="vatNo" id="vatNo" class="textbox required" value="<?=$user_row['vatNo']?>" /></td>  
+    </tr>    
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>User Status</th>
+        <td><input type="text" name="userStatus" id="userStatus" class="textbox" value="<?=$user_row['userStatus']?>" /></td>  
+    </tr>    
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Join Date</th>
+        <td><input type="text" name="joinDate" id="joinDate" class="textbox required" value="<?=$user_row['joinDate']?>" readonly /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>User Type</th>
+        <td><?=$userType?></td>  
+    </tr> 
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Lead</th>
+        <td><input type="text" name="lead" id="lead" class="textbox" value="<?=$user_row['lead']?>" /></td>  
+    </tr>
 </table>
-</div>
+<div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
 </form>
 
 <script>
@@ -541,126 +506,120 @@ $(document).ready(function() {
 
 <? } else if($action=='view') { ?>
 
-<div class="newinvoice">
-<br>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-    <tr><td colspan="13" class="sc_head">VIEW CLIENT DETAILS&nbsp;<span class="back"><a href="users.php">Back</a></span></td></tr>
-</table>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-<tr>
-    <th class="row1" align="left">Account Grading</th>
-    <td class="row1"><?=$user_row['grade']?></td>
-</tr>
-<tr valign="top">
-    <th class="row2" align="left">Discount Percentage</th>
-    <td class="row2">
+<table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+    <tr><th colspan="3">VIEW CLIENT DETAILS&nbsp;<span class="backlink"><a href="users.php">Back</a></span></td></tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account Grading</th>
+        <td><?=$user_row['grade']?></td>
+    </tr>
+    <tr valign="top" class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Discount Percentage</th>
+        <td>
+        
+        <? foreach ($group_rows as $group_id=>$group_row) { ?>
+            <?=$group_row['name']?>&nbsp;:&nbsp;<?=@$user_row['group_ids'][$group_id]?><br>
+        <? } ?>
+        
+        </td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Username</th>
+        <td><?=$user_row['userName']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td width="25%">Client Name</th>
+        <td><?=$user_row['businessName']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>First Name</th>
+        <td><?=$user_row['firstName']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Last Name</th>
+        <td><?=$user_row['lastName']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Email</th>
+        <td><?=$user_row['email']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Tel No.</th>
+        <td><?=$user_row['phone']?></td>
+    </tr> 
     
-    <? foreach ($group_rows as $group_id=>$group_row) { ?>
-        <?=$group_row['name']?>&nbsp;:&nbsp;<?=@$user_row['group_ids'][$group_id]?><br>
-    <? } ?>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Owner/Manager First Name</th>
+        <td><?=$user_row['ownerFirstName']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Owner/Manager Last Name</th>
+        <td><?=$user_row['ownerLastName']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Owner/Manager Email</th>
+        <td><?=$user_row['ownerEmail']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Owner/Manager Tel No.</th>
+        <td><?=$user_row['ownerPhone']?></td>
+    </tr> 
     
-    </td>
-</tr>
-<tr>
-    <th class="row1" align="left">Username</th>
-    <td class="row1"><?=$user_row['userName']?></td>
-</tr>
-<tr>
-    <th class="row2" align="left" width="25%">Client Name</th>
-    <td class="row2"><?=$user_row['businessName']?></td>
-</tr>
-<tr>
-    <th class="row1" align="left">First Name</th>
-    <td class="row1"><?=$user_row['firstName']?></td>
-</tr>
-<tr>
-    <th class="row2" align="left">Last Name</th>
-    <td class="row2"><?=$user_row['lastName']?></td>
-</tr>
-<tr>
-    <th class="row1" align="left">Email</th>
-    <td class="row1"><?=$user_row['email']?></td>
-</tr>
-<tr>
-    <th class="row2" align="left">Tel No.</th>
-    <td class="row2"><?=$user_row['phone']?></td>
-</tr> 
-
-<tr>
-    <th class="row1" align="left">Owner/Manager First Name</th>
-    <td class="row1"><?=$user_row['ownerFirstName']?></td>
-</tr>
-<tr>
-    <th class="row2" align="left">Owner/Manager Last Name</th>
-    <td class="row2"><?=$user_row['ownerLastName']?></td>
-</tr>
-<tr>
-    <th class="row1" align="left">Owner/Manager Email</th>
-    <td class="row1"><?=$user_row['ownerEmail']?></td>
-</tr>
-<tr>
-    <th class="row2" align="left">Owner/Manager Tel No.</th>
-    <td class="row2"><?=$user_row['ownerPhone']?></td>
-</tr> 
-
-<tr>
-    <th class="row1" align="left">Address</th>
-    <td class="row1"><?=$user_row['address']?></td>
-</tr>
-<tr>
-    <th class="row2" align="left">Payment Method</th>
-    <td class="row2"><?=$user_row['paymentMethod']?></td>
-</tr>
-<tr>
-    <th class="row1" align="left">Payment Details Method</th>
-    <td class="row1"><?=$user_row['paymentDetailsMethod']?></td>
-</tr>
-
-<tr>
-    <th class="row2" align="left">Bank Name</th>
-    <td class="row2"><?=$user_row['bankName']?></td>
-</tr>
-<tr>
-    <th class="row1" align="left">Account Name</th>
-    <td class="row1"><?=$user_row['accountName']?></td>
-</tr>  
-<tr>
-    <th class="row2" align="left">Account Type</th>
-    <td class="row2"><?=$user_row['accountType']?></td>
-</tr>
-<tr>
-    <th class="row1" align="left">Account No</th>
-    <td class="row1"><?=$user_row['accountNo']?></td>
-</tr>
-<tr>
-    <th class="row2" align="left">Branch Code</th>
-    <td class="row2"><?=$user_row['branchCode']?></td>
-</tr>
-
-<tr>
-    <th class="row1" align="left">Vat No</th>
-    <td class="row1"><?=$user_row['vatNo']?></td>
-</tr>
-<tr>
-    <th class="row2" align="left">User Status</th>
-    <td class="row2"><?=$user_row['userStatus']?></td>
-</tr>
-<tr>
-    <th class="row1" align="left">Join Date</th>
-    <td class="row1"><?=$user_row['joinDate']?></td>
-</tr>
-<tr>
-    <th class="row2" align="left">User Type</th>
-    <td class="row2"><?=$user_row['userType']?></td>
-</tr>
-<tr>
-    <th class="row1" align="left">Lead</th>
-    <td class="row1"><?=$user_row['lead']?></td>
-</tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Address</th>
+        <td><?=$user_row['address']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Payment Method</th>
+        <td><?=$user_row['paymentMethod']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Payment Details Method</th>
+        <td><?=$user_row['paymentDetailsMethod']?></td>
+    </tr>
+    
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Bank Name</th>
+        <td><?=$user_row['bankName']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account Name</th>
+        <td><?=$user_row['accountName']?></td>
+    </tr>  
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account Type</th>
+        <td><?=$user_row['accountType']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account No</th>
+        <td><?=$user_row['accountNo']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Branch Code</th>
+        <td><?=$user_row['branchCode']?></td>
+    </tr>
+    
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Vat No</th>
+        <td><?=$user_row['vatNo']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>User Status</th>
+        <td><?=$user_row['userStatus']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Join Date</th>
+        <td><?=$user_row['joinDate']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>User Type</th>
+        <td><?=$user_row['userType']?></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Lead</th>
+        <td><?=$user_row['lead']?></td>
+    </tr>
 </table>
-</div>
 
 <? }
-
 include('footer.php');
 ?>

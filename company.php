@@ -28,11 +28,8 @@ while($module_row = mysql_fetch_assoc($module_rs))
 {
     $allModulesInsert[$module_row['id']] = $module_row;
 }
-// echo '<pre>'; print_r($allModules); exit;
-
 
 $company_sql  = "SELECT *,gma_company.status AS company_status FROM gma_logins,gma_company,gma_admin_details WHERE gma_admin_details.userId=gma_logins.userId AND gma_company.companyId=gma_logins.companyId AND gma_logins.userType!='gnet_admin' AND gma_logins.userType='super_admin'";
-//echo $company_sql;exit;
 switch ($action)
 {
     case 'add':
@@ -148,8 +145,8 @@ switch ($action)
         break;
         
     case 'deleteall':
-        $group_id   = implode(',', $_REQUEST['delete']);
-        echo $group_id;exit;
+//        $group_id   = implode(',', $_REQUEST['delete']);
+//        echo $group_id;exit;
         
         header("Location: company.php?d");        
         break;
@@ -184,7 +181,12 @@ switch ($action)
             $pagination  = paginations($company_count, $perPage, 5);
         }
         
-        $links = '<a href="company.php?action=add" title="Add new">Add new</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+        //$links = '<a href="company.php?action=add" title="Add new">Add new</a><a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+        $add_url   = 'company.php?action=add';
+        $del_url   = 'javascript:void(0);';
+        $del_click = 'deleteAll();';
+        $search_box = true;
+            
         $chars = '<a href="company.php">All</a>';
         for($i=65;$i<91;$i++)
         {
@@ -198,166 +200,129 @@ switch ($action)
 include('sub_header.php');
 if($action=='list') { ?>
 
-<form method="POST">
-<div class="pagination" align="right">
-    <table border="0" width="100%">
-    <tr>
-        <td align="left" width="24%" >
-            <b>Search&nbsp;:&nbsp;</b>
-            <input type="text" class="inputbox_green" name="srchtxt" id="srchtxt" size="23" value="<?=$srchtxt?>" />&nbsp;
-            <input type="submit"  value="Search"  class="search_bt" name="sbmt" id="sbmt" />
-        </td>
-        <td align="center" width="30%"><?=$chars?></td>
-        <td align="right" width="35%"><?=$pagination?></td>
-    </tr>
-    </table>
-</div>
-</form>
-
 <form method="POST" id="listForm" name='listForm'>
 <input type="hidden" name="action" value="deleteall">
-<div class="client_display">
-    <table width="100%" class="client_display_table" cellpadding="3" cellspacing="3">
-        <tr height="30">
-            <th class="thead"width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
-            <th class="thead" valign="middle"><span>Company Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=companyName&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=companyName&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th class="thead" valign="middle"><span>Owner Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=fullName&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString ?>&orderby=fullName&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="5%" class="thead" align="center">Status</th>
-            <th width="10%" class="thead">Action</th>
+<table width="100%" class="list" cellpadding="0" cellspacing="0">
+    <tr height="30">
+        <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
+        <th valign="middle"><span>Company Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=companyName&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=companyName&order=DESC" class="desc"></a></th>
+        <th valign="middle"><span>Owner Name</span>&nbsp;<a href="?<?=$queryString ?>&orderby=fullName&order=ASC" class="asc"></a><a href="?<?=$queryString ?>&orderby=fullName&order=DESC" class="desc"></a></th>
+        <th width="5%">Status</th>
+        <th width="10%">Action</th>
+    </tr>
+    <?php
+    $j=0;
+    while($company_row = mysql_fetch_assoc($company_rs))
+    {
+        $class   = ((($j++)%2)==1) ? 'altrow' : '';
+        $auto_id = $company_row['companyId'];
+        $ownerId = $company_row['ownerId'];
+        ?>
+        <tr class="<?=$class?>">
+            <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
+            <td><?=$company_row['companyName']?></td>
+            <td><?=$company_row['fullName']?></td>
+            <td><?=($company_row['company_status']==1 ? 'Active' : 'Inactive')?></td>
+            <td><a href="company.php?action=edit&company_id=<?=$auto_id?>" alt="Edit Details" title="Edit Details" class="btn_style">Edit</a>&nbsp;<a href="company.php?action=delete&user_id=<?=$auto_id?>" onclick="return window.confirm('Are you sure to delete this ?');" class="btn_style">Delete</a>&nbsp;<a href="company.php?action=login&userId=<?=$ownerId?>" title="Login" class="btn_style">Login</a></td>
         </tr>
         <?php
-        $j=0;
-        while($company_row = mysql_fetch_assoc($company_rs))
-        {
-            $class   = ((($j++)%2)==1) ? 'row2' : 'row1';
-            $auto_id = $company_row['companyId'];
-            $ownerId = $company_row['ownerId'];
-            ?>
-            <tr class="<?=$class?>">
-                <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
-                <td><?=$company_row['companyName']?></td>
-                <td><?=$company_row['fullName']?></td>
-                <td align="center"><?=($company_row['company_status']==1 ? 'Active' : 'Inactive')?></td>
-                <td><a href="company.php?action=edit&company_id=<?=$auto_id?>" alt="Edit Details" title="Edit Details">Edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="company.php?action=delete&user_id=<?=$auto_id?>" onclick="return window.confirm('Are you sure to delete this ?');">Delete</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="company.php?action=login&userId=<?=$ownerId?>" title="Login">Login</a></td>
-            </tr>
-            <?php
-        }
-        if($company_count==0) { ?>
-           <tr><td class="message" colspan="10">No Records Found</td></tr>
-        <? } ?>
-    </table>
-</div>
+    }
+    if($company_count==0) { ?>
+       <tr><td class="norecords" colspan="10">No Records Found</td></tr>
+    <? } ?>
+</table>
 </form>
-
-<div class="pagination" align="right">
-    <table border="0" width="100%">
-    <tr>
-        <td align="left" width="24%" ></td>
-        <td align="center" width="30%"><?=$chars?></td>
-        <td align="right" width="35%"><?=$pagination?></td>
-    </tr>
-    </table>
-</div>
 
 <? } else if($action=='edit' || $action=='add') { ?>
 
-<div class="newinvoice">
 <form name="userForm" id="userForm" method="post" action="">
-<br>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-    <tr><td colspan="13" class="sc_head"><?=($action=='add' ? 'ADD' : 'EDIT')?> COMPANY DETAILS&nbsp;<span class="back"><a href="company.php">Back</a></span></td></tr>
-</table>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-<tr class="row1">
-    <th align="left" width="30%">Company Name</th>
-    <td><input type="text" name="companyName" id="companyName" class="textbox required" value="<?=$company_row['companyName']?>" /></td>  
-</tr>
-<tr class="row2">
-    <th align="left">Vat No</th>
-    <td><input type="text" name="companyVatNo" id="companyVatNo" class="textbox" value="<?=$company_row['companyVatNo']?>" /></td>  
-</tr>
-<tr class="row1">
-    <th align="left">Account Email</th>
-    <td><input type="text" name="companyAccountEmail" id="companyAccountEmail" class="textbox email" value="<?=$company_row['companyAccountEmail']?>" /></td>  
-</tr>
-<tr class="row2">
-    <th align="left">Account Tel</th>
-    <td><input type="text" name="companyAccountTel" id="companyAccountTel" class="textbox" value="<?=$company_row['companyAccountTel']?>" /></td>  
-</tr>
-<tr class="row1">
-    <th align="left">Account Fax</th>
-    <td><input type="text" name="companyAccountFax" id="companyAccountFax" class="textbox" value="<?=$company_row['companyAccountFax']?>" /></td>  
-</tr>
-<tr class="row2">
-    <th align="left">Account Contact</th>
-    <td><input type="text" name="companyAccountContact" id="companyAccountContact" class="textbox" value="<?=$company_row['companyAccountContact']?>" /></td>  
-</tr>
-<tr class="row1">
-    <th align="left">Bank Name</th>
-    <td><input type="text" name="companyBankName" id="companyBankName" class="textbox" value="<?=$company_row['companyBankName']?>" /></td>  
-</tr>
-<tr class="row2">
-    <th align="left">Branch Name</th>
-    <td><input type="text" name="companyBranchName" id="companyBranchName" class="textbox" value="<?=$company_row['companyBranchName']?>" /></td>  
-</tr>
-<tr class="row1">
-    <th align="left">Branch No</th>
-    <td><input type="text" name="companyBranchNo" id="companyBranchNo" class="textbox" value="<?=$company_row['companyBranchNo']?>" /></td>  
-</tr>
-<tr class="row2">
-    <th align="left">Account Name</th>
-    <td><input type="text" name="companyAccountName" id="companyAccountName" class="textbox" value="<?=$company_row['companyAccountName']?>" /></td>  
-</tr>
-<tr class="row1">
-    <th align="left">Account Type</th>
-    <td><input type="text" name="companyAccountType" id="companyAccountType" class="textbox" value="<?=$company_row['companyAccountType']?>" /></td>  
-</tr>
-<tr class="row2">
-    <th align="left">Account No</th>
-    <td><input type="text" name="companyAccountNo" id="companyAccountNo" class="textbox" value="<?=$company_row['companyAccountNo']?>" /></td>  
-</tr>
-<tr class="row1">
-    <th align="left">Status</th>
-    <td><input type="checkbox" name="status" id="status" value="1" <?=((isset($company_row['company_status']) && $company_row['company_status']==1) || $action=='add') ? 'checked' : ''?> /></td>  
-</tr> 
-
-<tr class="row2">
-    <th align="left">Owner name</th>
-    <td><input type="text" name="fullName" id="fullName" class="textbox required" value="<?=$company_row['fullName']?>" /></td>  
-</tr>
-<tr class="row1">
-    <th align="left">Username</th>
-    <td><input type="text" name="userName" id="userName" class="textbox required" value="<?=$company_row['userName']?>" /></td>  
-</tr>
-<tr class="row2">
-    <th align="left">Password</th>
-    <td><input type="text" name="password" id="password" class="textbox required" value="<?=$company_row['password']?>" /></td>  
-</tr>
-<tr class="row1">
-    <th align="left">Email</th>
-    <td><input type="text" name="email" id="email" class="textbox required email" value="<?=$company_row['email']?>"/></td>  
-</tr>
-<tr class="row2" valign="top">
-    <th align="left">Modules</th>
-    <td align="left">
-    
-    <? $menu = 0; foreach ($allModules as $module) { ?>
-        <? if($menu!=$module['menu']) { if($menu!=0) { echo '<div class="clear">&nbsp;</div>'; } $menu = $module['menu']; ?>
-            <div class="clear"><b><?=($menu==1 ? 'Settings Menu' : 'Main Menu')?></b></div>
-        <? } ?>
-        <span class="fleft" style="width:30%"><input type="checkbox" name="module[<?=$module['id']?>]" id="module_<?=$module['id']?>" class="textbox number" style="width:20px;" value="<?=$module['id']?>" <?=((in_array($module['id'], $module_ids) || ($action=='add' && $module['default']==1)) ? 'checked' : '')?> /><?=$module['name']?></span>
-    <? } ?>
-    
-
-    </td>  
-</tr>   
-<tr class="row1">
-    <th>&nbsp;</th>
-    <td><input type="submit" name="sbmt" id="sbmt" value="Submit" class="search_bt" /></td>  
-</tr>      
-</table>
-</div>
 <input type="hidden" name="ownerId" id="ownerId" value="<?=$company_row['ownerId']?>"/>
+<table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+    <tr><th colspan="3"><?=($action=='add' ? 'ADD' : 'EDIT')?> COMPANY DETAILS&nbsp;<span class="backlink"><a href="company.php">Back</a></span></td></tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td width="30%">Company Name</td>
+        <td><input type="text" name="companyName" id="companyName" class="textbox required" value="<?=$company_row['companyName']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Vat No</td>
+        <td><input type="text" name="companyVatNo" id="companyVatNo" class="textbox" value="<?=$company_row['companyVatNo']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account Email</td>
+        <td><input type="text" name="companyAccountEmail" id="companyAccountEmail" class="textbox email" value="<?=$company_row['companyAccountEmail']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account Tel</td>
+        <td><input type="text" name="companyAccountTel" id="companyAccountTel" class="textbox" value="<?=$company_row['companyAccountTel']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account Fax</td>
+        <td><input type="text" name="companyAccountFax" id="companyAccountFax" class="textbox" value="<?=$company_row['companyAccountFax']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account Contact</td>
+        <td><input type="text" name="companyAccountContact" id="companyAccountContact" class="textbox" value="<?=$company_row['companyAccountContact']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Bank Name</td>
+        <td><input type="text" name="companyBankName" id="companyBankName" class="textbox" value="<?=$company_row['companyBankName']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Branch Name</td>
+        <td><input type="text" name="companyBranchName" id="companyBranchName" class="textbox" value="<?=$company_row['companyBranchName']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Branch No</td>
+        <td><input type="text" name="companyBranchNo" id="companyBranchNo" class="textbox" value="<?=$company_row['companyBranchNo']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account Name</td>
+        <td><input type="text" name="companyAccountName" id="companyAccountName" class="textbox" value="<?=$company_row['companyAccountName']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account Type</td>
+        <td><input type="text" name="companyAccountType" id="companyAccountType" class="textbox" value="<?=$company_row['companyAccountType']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Account No</td>
+        <td><input type="text" name="companyAccountNo" id="companyAccountNo" class="textbox" value="<?=$company_row['companyAccountNo']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Status</td>
+        <td><input type="checkbox" name="status" id="status" value="1" <?=((isset($company_row['company_status']) && $company_row['company_status']==1) || $action=='add') ? 'checked' : ''?> /></td>  
+    </tr> 
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Owner name</td>
+        <td><input type="text" name="fullName" id="fullName" class="textbox required" value="<?=$company_row['fullName']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Username</td>
+        <td><input type="text" name="userName" id="userName" class="textbox required" value="<?=$company_row['userName']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Password</td>
+        <td><input type="text" name="password" id="password" class="textbox required" value="<?=$company_row['password']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Email</td>
+        <td><input type="text" name="email" id="email" class="textbox required email" value="<?=$company_row['email']?>"/></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>" valign="top">
+        <td>Modules</td>
+        <td>
+        
+        <? $menu = 0; foreach ($allModules as $module) { ?>
+            <? if($menu!=$module['menu']) { if($menu!=0) { echo '<div class="clear">&nbsp;</div>'; } $menu = $module['menu']; ?>
+                <div class="clear"><b><?=($menu==1 ? 'Settings Menu' : 'Main Menu')?></b></div>
+            <? } ?>
+            <span class="fleft" style="width:30%"><input type="checkbox" name="module[<?=$module['id']?>]" id="module_<?=$module['id']?>" class="textbox number" style="width:20px;" value="<?=$module['id']?>" <?=((in_array($module['id'], $module_ids) || ($action=='add' && $module['default']==1)) ? 'checked' : '')?> /><?=$module['name']?></span>
+        <? } ?>
+        
+    
+        </td>  
+    </tr>
+</table>
+<div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
 </form>
 
 <script>

@@ -8,26 +8,25 @@ $service_rs = mysql_query($service_sql);
 $page_title = 'Pricing';
 include('sub_header.php');
 
-?>
-<div class="newinvoice" style="width:80%"><br><br>
-<?
 while ($service_row = mysql_fetch_assoc($service_rs)) {
 	   if($service_row['group_id']!=$group_id) {
-	        if($group_id!=0) echo '</tbody></table>';
-	        echo '<table width="100%" border="0" cellspacing="2" cellpadding="5" class="color3 fleft" style="margin:10px;">
-	            <tbody>
-             <tr><td colspan="10" class="color3"><div align="left"><b>'.$service_row['group_name'].'</b></div></td></tr>';
+	        if($group_id!=0) echo '</table>';
+         echo '<table class="list addedit fleft" cellpadding="0" cellspacing="0" style="margin:5px" width="100%">';
+         echo '<tr><th colspan="3">'.$service_row['group_name'].'</td></tr>';
+//	        echo '<table width="100%" border="0" cellspacing="2" cellpadding="5" class="color3 fleft" style="margin:10px;">
+//	            <tbody>
+//             <tr><td colspan="10" class="color3"><div><b>'.$service_row['group_name'].'</b></div></td></tr>';
 	        
 	        $group_id = $service_row['group_id'];
+	        $row_flag = 1;
 	   }
-	   echo '<tr>
-              <td class="color4 normaltext"><div align=left >'.$service_row['service_name'].'</div></td>
-              <td class="color4 normaltext" width="20%" nowrap><div align=left >R '.formatMoney($service_row['amount'],true).'</div></td>
+	   echo '<tr class="'.(($row_flag++)%2==1 ? '' : 'altrow').'">
+              <td width="300">'.$service_row['service_name'].'</td>
+              <td>R '.formatMoney($service_row['amount'],true).'</td>
           </tr>';
 }
-if($group_id!=0) echo '</tbody></table><br><br>';
-?>
-</div>
-<?
+if($group_id!=0) echo '</table>';
+echo '<div class="clear"></div>';
+
 include('footer.php');
 ?>

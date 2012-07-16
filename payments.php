@@ -244,10 +244,9 @@ switch ($action)
         $orderBy = ($_REQUEST['orderby']!='') ? 'ORDER BY '.$_REQUEST['orderby'].' '.$_REQUEST['order'] : 'ORDER BY date DESC ';        
         $payment_sql   .= ($userId>0) ? " AND gma_payments.userId='$userId'" : '';
 
-        print_r($_SESSION);
         
-        if( strtolower(trim($_SESSION['ses_userType']))=='client')
-			$payment_sql   .= " AND gma_payments.userId = " . $_SESSION['ses_userId'];
+        if($ses_userType=='user')
+			         $payment_sql .= " AND gma_payments.userId = " . $_SESSION['ses_userId'];
         
         $payment_sql   .= " $orderBy";
         
@@ -264,115 +263,66 @@ switch ($action)
             $pagination   = pagination($maxPage, $pageNum);
             $pagination   = paginations($payment_count, $perPage, 5);
         }
-        echo $payment_sql;
         
-
-	if( strtolower(trim($_SESSION['ses_userType']))=='client')
-		$links = '';
-    else    
-        $links = '<a href="#" onclick="javascript:return paymentExport();">Export</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="payments.php?action=import" title="Import batch payments">Import batch payments</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="payments.php?action=add" title="Add manual payment">Add manual payment</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
-        
+        if($ses_loginType!='user') {
+            //$links = '<a href="#" onclick="javascript:return paymentExport();">Export</a><a href="payments.php?action=import" title="Import batch payments">Import batch payments</a><a href="payments.php?action=add" title="Add manual payment">Add manual payment</a><a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+            $add_url    = 'payments.php?action=add';
+            
+            $del_url    = 'javascript:void(0);';
+            $del_click  = 'deleteAll();';
+            
+            $other_urls[] = array('text'=>'Export', 'sign'=>'+', 'url'=>'javascript:void(0);', 'click'=>'paymentExport();');
+            $other_urls[] = array('text'=>'Import', 'sign'=>'+', 'url'=>'payments.php?action=import', 'click'=>'');
+            
+            $user_search = true;
+        }
         break;
 }
 $page_title = 'Payments';
 
-$user_rows = array();
-$user_sql  = "SELECT * FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND companyId='$ses_companyId' GROUP BY userName ORDER BY businessName ASC"; 
-$user_rs   = mysql_query($user_sql);
-while ($user_row = mysql_fetch_assoc($user_rs)) {
-	   $user_rows[] = $user_row;
-}
-
 include('sub_header.php');
 if($action=='list') { ?>
 
-<form method="GET" name='searchform'>
-<div class="pagination" align="right">
-    <table border="0" width="100%">
-    <tr>
-        <td align="left" width="600">
-        <?php
-        	if( strtolower(trim($_SESSION['ses_userType']))=='client')
-        		echo '&nbsp;';
-			else {
-		?>
-            <b>Select Client : </b>
-            <select name="userId" id="userId" class="inputbox_green" style="width:;" onchange="document.searchform.submit();">
-                <option value="">Select All</option>
-                <? foreach ($user_rows as $user) {
-                    $user_Id  = $user['userId'];
-                    $name     = $user['businessName'].' - '.$user['userName'];
-                    $selected = ($userId==$user_Id) ? 'selected' : '';
-                    
-                    echo "<option value='$user_Id' $selected>$name</option>";
-                }
-                ?>
-            </select>
-            <!--&nbsp;<input type="submit"  value="Search"  class="search_bt" name="" id="sbmt" />-->
-           <?php } // END OF if( strtolower(trim($_SESSION['ses_userType']))=='client') ?>
-        </td>
-        <td align="right"><?=$pagination?></td>
-    </tr>
-    </table>
-</div>
-</form>
-
-
 <form method="POST" id="listForm" name='listForm'>
 <input type="hidden" name="action" value="deleteall">
-<div class="client_display">
-    <table width="100%" class="client_display_table" cellpadding="3" cellspacing="3">
-        <tr height="30">
-            <th class="thead"width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
-            <th class="thead"><span>Client</span>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <!--<th class="thead">Description</th>-->
-            <th width="20%" class="thead"><span>Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=date&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=date&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-            <th width="20%" class="thead"><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=amount&order=ASC"><img src="images/arrowAsc.png"  border="0"/></a>&nbsp;<a href="?<?=$queryString?>&orderby=amount&order=DESC"><img src="images/arrowDec.png"  border="0"/></a></th>
-         <?php
-        	if( strtolower(trim($_SESSION['ses_userType']))!='client')
-           		echo '<th width="10%" class="thead" align="center">Delete</th>';
-          ?>
-           		
-        </tr>  
+<table width="100%" class="list" cellpadding="0" cellspacing="0">
+    <tr height="30">
+        <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
+        <th><span>Client</span>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=businessName&order=DESC" class="desc"></a></th>
+        <!--<th>Description</th>-->
+        <th width="20%"><span>Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=date&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=date&order=DESC" class="desc"></a></th>
+        <th width="20%"><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=amount&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=amount&order=DESC" class="desc"></a></th>
+        <?php if($ses_userType!='user') { ?>
+            <th width="10%">Delete</th>
+        <? } ?>           		
+    </tr>  
+    <?php
+    $j=0; $val=0;
+    while($payment_row = mysql_fetch_assoc($payment_rs))
+    {
+        $val++;
+        
+        $class     = ((($j++)%2)==1) ? 'altrow' : '';
+        $total     = $payment_row['amount'];
+        $paymentId = $auto_id = $payment_row['paymentId'];
+        ?>
+        <tr class="<?=$class?>">
+            <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
+            <td><?=$payment_row['businessName']?></td>
+            <td><?=$payment_row['date']?></td>
+            <td>R <?=formatMoney($total, true)?></td>
+            <?php if($ses_userType!='user') { ?>
+                <td class="buttons"><a href="payments.php?action=edit&payment_id=<?=$paymentId?>&userId=<?=$userId?>&page=<?=$pageNum?>" class="btn_style">Edit</a>&nbsp;<a href="payments.php?action=delete&payment_id=<?=$paymentId?>&userId=<?=$userId?>&page=<?=$pageNum?>" onclick="return window.confirm('Are you sure to delete this ?');" class="btn_style">Delete</a></td>
+            <?php } ?>
+        </tr>
         <?php
-        $j=0; $val=0;
-        while($payment_row = mysql_fetch_assoc($payment_rs))
-        {
-            $j++;
-            $val++;
-            
-            $class     = (($j%2)==0) ? 'row2' : 'row1';
-            $total     = $payment_row['amount'];
-            $paymentId = $auto_id = $payment_row['paymentId'];
-            ?>
-            <tr class="<?=$class?>">
-                <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
-                <td><?=$payment_row['businessName']?></td>
-                <td><?=$payment_row['date']?></td>
-                <td>R <?=formatMoney($total, true)?></td>
-         <?php
-        	if( strtolower(trim($_SESSION['ses_userType']))!='client') {
-        	?>
-                <td align="center"><a href="payments.php?action=edit&payment_id=<?=$paymentId?>&userId=<?=$userId?>&page=<?=$pageNum?>">Edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="payments.php?action=delete&payment_id=<?=$paymentId?>&userId=<?=$userId?>&page=<?=$pageNum?>" onclick="return window.confirm('Are you sure to delete this ?');">Delete</a></td>
-         <?php } ?>
-            </tr>
-            <?php
-        }
-        if($j==0) { ?>
-        <tr><td class="message" colspan="10">No Records Found</td></tr>
-        <? } ?>
-    </table>
-</div>
-
-<div class="pagination">
-    <table border="0" width="100%">
-    <tr>
-        <td align="left" width="600"></td>
-        <td align="right"><?=$pagination?></td>
-    </tr>
-    </table>
-</div>
-
+    }
+    if($j==0) { ?>
+    <tr><td class="norecords" colspan="10">No Records Found</td></tr>
+    <? } ?>
+</table>
+</form>
+    
 <? } else if($action=='edit' || $action=='add') { ?>
 
 <script type="text/javascript" src="js/date.js"></script>
@@ -383,56 +333,50 @@ if($action=='list') { ?>
 <form method="POST" id="userForm" name='userForm' onsubmit="return checkOrderAmount();">
 <input type="hidden" name="payment_id" id="payment_id" value="<?=$payment_id?>">
 <input type="hidden" name="pending_amount" id="pending_amount" value="<?=$pending_amount?>">
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-    <tr><td colspan="12" align="center" class="msg"><?php echo $msg; ?></td></tr>
-    <tr><td colspan="13" class="sc_head">Add manual payment&nbsp;<span class="back"><a href="payments.php">Back</a></span></td></tr>
+<table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+    <tr><th colspan="3">Add manual payment&nbsp;<span class="backlink"><a href="payments.php">Back</a></span></td></tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td width="200">Client</td>
+        <td>
+            <select name="userId" id="userId" class="textbox required" style="width:260px;" onchange="userOrders(this.value);">
+                <option value="">Select Client</option>
+                <? foreach ($company_users as $user) {
+                    $user_Id  = $user['userId'];
+                    $name     = $user['businessName'].' - '.$user['userName'];
+                    $selected = ($userId==$user_Id || $payment_row['userId']==$user_Id) ? 'selected' : '';
+                    
+                    echo "<option value='$user_Id' $selected>$name</option>";
+                }
+                ?>
+            </select>
+        </td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Date</td>
+        <td><input type="text" name="date" id="date" class="textbox required" value="<?=dateFormat($payment_row['date'])?>" readonly /></td>  
+    </tr> 
+    <!--<tr class="<?//=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td colspan="2" height="0">
+        
+            <table id="pending_amount_div" style="display:none"><tr>
+                <td width="215">Previous Balance</th>
+                <td id="pending_amount_td"></td>  
+            </tr></table>
+        
+        </td>
+    </tr>-->
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Amount</td>
+        <td><input type="text" name="amount" id="amount" value="<?=$payment_row['amount']?>" class="textbox number required" /></td>  
+    </tr> 
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>" valign="top">
+        <td>Orders</td>
+        <td id="order_div">
+            Please select any user
+        </td>  
+    </tr>
 </table>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-<tr>
-    <th class="row1" align="left" width="200">Client</th>
-    <td class="row1">
-        <select name="userId" id="userId" class="textbox required" style="width:260px;" onchange="userOrders(this.value);">
-            <option value="">Select Client</option>
-            <? foreach ($user_rows as $user) {
-                $user_Id  = $user['userId'];
-                $name     = $user['businessName'].' - '.$user['userName'];
-                $selected = ($userId==$user_Id || $payment_row['userId']==$user_Id) ? 'selected' : '';
-                
-                echo "<option value='$user_Id' $selected>$name</option>";
-            }
-            ?>
-        </select>
-    </td>  
-</tr>
-<tr>
-    <th class="row2" align="left">Date</th>
-    <td class="row2"><input type="text" name="date" id="date" class="textbox required" value="<?=dateFormat($payment_row['date'])?>" readonly /></td>  
-</tr> 
-<tr>
-    <td colspan="2" height="0">
-    
-        <table id="pending_amount_div" style="display:none"><tr>
-            <td class="row1" align="left" width="215">Previous Balance</th>
-            <td class="row1" id="pending_amount_td"></td>  
-        </tr></table>
-    
-    </td>
-</tr> 
-<tr>
-    <th class="row2" align="left">Amount</th>
-    <td class="row2"><input type="text" name="amount" id="amount" value="<?=$payment_row['amount']?>" class="textbox number required" /></td>  
-</tr> 
-<tr valign="top">
-    <th class="row1" align="left">Orders</th>
-    <td class="row1" id="order_div">
-        Please select any user
-    </td>  
-</tr> 
-<tr>
-    <th class="row2">&nbsp;</th>
-    <td class="row2"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="search_bt" /></td>  
-</tr>
-</table>
+<div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
 </form>
 
 </div>
@@ -455,34 +399,26 @@ $(document).ready(function() {
 <div class="newinvoice">
 <? if($import==0) { ?>
 <form method="POST" id="userForm" name='userForm' enctype="multipart/form-data">
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-    <tr><td colspan="12" align="center" class="msg"><?php echo $msg; ?></td></tr>
-    <tr><td colspan="13" class="sc_head">Import batch payments<span class="back"><a href="payments.php">Back</a></span></td></tr>
+<table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+    <tr><th colspan="3">Import batch payments&nbsp;<span class="backlink"><a href="payments.php">Back</a></span></td></tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td width="20%">File (csv files only) <a rel="tooltip" style="padding-top:9px;"><img src="images/icn_help.png"></a></td>
+        <td><input type="file" name="file" id="file" class="required"></td>  
+    </tr> 
 </table>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3">
-<tr>
-    <th class="row1" align="left" width="20%">File (csv files only) <a rel="tooltip" style="padding-top:9px;"><img src="images/icn_help.png"></a></th>
-    <td class="row1"><input type="file" name="file" id="file" class="required"></td>  
-</tr> 
-<tr>
-    <th class="row1"></th>
-    <td class="row1"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="search_bt" /></td>  
-</tr>
-</table>
+<div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
 </form>
+
 <? } elseif($import==1) { ?>
 <form method="POST" id="batchForm" name='batchForm' enctype="multipart/form-data">
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3" style="width:900px">
-    <tr><td colspan="12" align="center" class="msg"><?php echo $msg; ?></td></tr>
-    <tr><td colspan="13" class="sc_head">Import batch payments<span class="back"><a href="payments.php">Back</a></span></td></tr>
-</table>
-<table width="100%" class="send_credits" cellpadding="3" cellspacing="3" style="width:900px">
-<tr>
-    <th class="row1" align="center" width="10%" nowrap>Add</th>
-    <th class="row1" align="left" width="30%">Client</th>
-    <th class="row1" align="left" width="30%">Date</th>
-    <th class="row1" align="left" width="30%">Amount</th>
-</tr>
+<table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+    <!--<tr><th colspan="5">Import batch payments&nbsp;<span class="backlink"><a href="payments.php">Back</a></span></td></tr>-->
+    <tr>
+        <th width="10%" nowrap>Add</th>
+        <th width="30%">Client</th>
+        <th width="30%">Date</th>
+        <th width="30%">Amount</th>
+    </tr>
 <?
 $i=1;
 $filename = 'admin_'.$ses_userId.'.csv';
@@ -498,7 +434,7 @@ while ($row = fgetcsv($fp)) {
     
     $user_details  = '<select name="userId['.$i.']" id="userId_'.$i.'" class="textbox required">';
     $user_details .= '<option value="">Select Client</option>';
-    foreach ($user_rows as $user_row)
+    foreach ($company_users as $user_row)
     {
         $user_Id  = $user_row['userId'];
         $name     = $user_row['businessName'].' - '.$user_row['userName'];
@@ -510,11 +446,11 @@ while ($row = fgetcsv($fp)) {
     $user_details .= '</select>';
     if($amount>0) { 
         ?>
-        <tr>
-            <td class="row1" align="center"><input type="checkbox" name="add[<?=$i?>]" id="add_<?=$i?>" value="<?=$i?>" checked /></td>  
-            <td class="row1"><?=$user_details?></td>  
-            <td class="row1"><input type="text" name="date[<?=$i?>]" id="date_<?=$i?>" class="textbox required" value="<?=$date?>" readonly /></td>  
-            <td class="row1"><input type="text" name="amount[<?=$i?>]" id="amount_<?=$i?>" class="textbox number required" value="<?=$amount?>" /></td>  
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td><input type="checkbox" name="add[<?=$i?>]" id="add_<?=$i?>" value="<?=$i?>" checked /></td>  
+            <td><?=$user_details?></td>  
+            <td><input type="text" name="date[<?=$i?>]" id="date_<?=$i?>" class="textbox required" value="<?=$date?>" readonly /></td>  
+            <td><input type="text" name="amount[<?=$i?>]" id="amount_<?=$i?>" class="textbox number required" value="<?=$amount?>" /></td>  
         </tr> 
         <script> $('#date_<?=$i?>').datePicker({startDate: start_date, dateFormat: date_format}); </script>
         <?
@@ -522,11 +458,8 @@ while ($row = fgetcsv($fp)) {
     }
 }
 ?>
-<tr>
-    <th class="row1"></th>
-    <td class="row1"><input type="submit" name="upload" id="upload" value="Submit" class="search_bt" /></td>  
-</tr>
 </table>
+<div class="addedit_btn"><input type="submit" name="upload" id="upload" value="Submit" class="btn_style" /></div>
 </form>
 <? } ?>
 

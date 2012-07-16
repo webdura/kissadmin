@@ -85,10 +85,8 @@ if($ses_loginType=='admin')
             else
                 $company_email_sql = "UPDATE gma_emails SET subject=$subject,content=$content,variables=$variables,upload=$upload,module_id=$module_id WHERE companyId='$ses_companyId' AND template=$template";
         }
-//        echo "$template == $company_email_sql<hr>";
         mysql_query($company_email_sql);
     }
-//    exit;
     
     $allModules = array();
     $module_sql = "SELECT * FROM gma_company_module WHERE companyId='$ses_companyId' ORDER BY module_id ASC";
@@ -178,6 +176,13 @@ if(in_array($filename, $systemModules)) {
     }
 }
 
+$company_users = array();
+$user_sql  = "SELECT * FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND companyId='$ses_companyId' GROUP BY userName ORDER BY businessName ASC"; 
+$user_rs   = mysql_query($user_sql);
+while ($user_row = mysql_fetch_assoc($user_rs)) {
+	   $company_users[] = $user_row;
+}
+
 $message = '';
 if(isset($_GET['msg']) && $_GET['msg']=='updated')
     $message = 'Details successfully updated !.';
@@ -242,56 +247,73 @@ $queryString = $queryString[0];
 	//else 
 	//	$_SESSION['displayName'] = $_SESSION['displayName'];
 
+	
+	
+//echo '<pre>'; print_r($main_menu); print_r($top_menu); exit;
+$row_flag = 1;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>GNet Mail</title>
+    <title>KissAdmin</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link href="style.php" rel="stylesheet" type="text/css" />
     <script src="js/jquery-1.4.4.min.js" type="text/JavaScript"></script>
     <script src="js/jquery.validate.js" type="text/JavaScript"></script>
+    <script src="js/animatedcollapse.js" type="text/JavaScript"></script>
     <script src="js/thickbox-compressed.js" type="text/JavaScript"></script>
     <script src="js/scripts.js" type="text/JavaScript"></script>
     <link rel="stylesheet" href="css/thickbox.css" type="text/css" media="screen" />
     <script src="js/jquery.alerts.js" type="text/JavaScript"></script>
     <link rel="stylesheet" href="css/jquery.alerts.css" type="text/css" media="screen" />
     <script>
-    var date_format = 'dd/mm/yyyy';
-//    var date_format = 'yyyy-mm-dd';
-    var start_date  = '01/01/1940';
+        var date_format = 'dd/mm/yyyy';
+        var start_date  = '01/01/1940';
+        
+        animatedcollapse.addDiv('successmsg', 'fade=1');
+        animatedcollapse.init();
+        setTimeout("animatedcollapse.hide('successmsg');", 6000);
     </script>
 </head>
 <body>
 <div id="wrapper">
+
     <div id="head">
         <div id="head_left">
-        <img src="images/company/admin_logo.png" align="right"></div>
+            <div class="head_left"></div>
+            <div class="logo"><img src="<?=$site_logo?>" align="center"></div>
+            <div class="head_right"></div>
+        </div>
         <div id="head_right">
-            <span class="logout">
-                Logged in as "<?=$_SESSION['displayName']?>"&nbsp;&nbsp;&nbsp;|&nbsp;
+            <img src="images/KISSAdmin_logo.png" align="right">
+            <div class="right_links">
+                <div class="login">
+                    Logged in as "<?=$_SESSION['displayName']?>"&nbsp;&nbsp;&nbsp;|&nbsp;
+                    <? if(count($top_menu)>0) { ?>
+                        <a href="javascript:void(0);" onclick="settingsTab();">Settings</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                    <? } ?>
+                    <a href="index.php?logoff=signout">Logout</a>
+                </div>
                 <? if(count($top_menu)>0) { ?>
-                    <a href="javascript:void(0);" onclick="settingsTab();">Settings</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-                <? } ?>
-                <a href="index.php?logoff=signout">Logout</a>
-            </span>
-            <? if(count($top_menu)>0) { ?>
-                <span class="settings" id="settings" <?=($top_menu_active ? 'style="display:block;"' : 'style="display:none;"')?>>
+                    <div class="submenu">
                     <? foreach ($top_menu as $key=>$menu) { ?>
                         <? if($key!=0) { ?> &nbsp;|&nbsp; <? } ?>
                         <a href="<?=$menu['filename']?>" title="<?=$menu['name']?>"><?=$menu['name']?></a>
                     <? } ?>
-                </span>
-            <? } ?>
+                    </div>
+                <? } ?>
+            </div>
         </div>
     </div>
-    <div class="clear"></div>
     <div id="top_buttons">
-        <ul class="buttons">
+        <ul>
             <? foreach ($main_menu as $key=>$menu) { ?>
-                <li class="button"><a href="<?=$menu['filename']?>" class="<?=$menu['class']?>"></a></li>
+                <li><a href="<?=$menu['filename']?>" class="<?=$menu['class']?>"></a></li>
             <? } ?>
         </ul> 
     </div>
-    <div class="clear"></div>
-    <div class="message" <?=($message=='' ? 'style="display:none"' : '')?>><?=$message?></div>
+    <div id="maincontent">
+    
+<div class="block" <?=($message=='' ? 'style="display:none"' : '')?>>
+    <div class="message successmsg" style="display: block;" id="successmsg"><span id=""><?=$message?></span><span title="Dismiss" class="close" onclick="animatedcollapse.hide('successmsg');"></span></div>
+</div>

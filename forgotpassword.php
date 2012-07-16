@@ -52,11 +52,11 @@
 ?>
 
 <form name="form" id="form" method="post" action="">
-<table width="100%" cellpadding="0" align="center" cellspacing="0">
-	<tr><td width="100%" align="center" valign="middle">
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr><td width="100%" valign="middle">
 		<table cellpadding="0" cellspacing="3" style="border:2px solid #7688A8; width:380px; height:190px;padding:5px 5px 5px 10px; background-color:#E7EAF9;margin-top:50px; ">
-		<tr><td colspan="2" align="center" class="msg"><?php echo $msg; ?></td></tr>
-		<tr><td colspan="2" align="center" style="color:#FF0000;"><?php echo $msg1; ?></td></tr>
+		<tr><td colspan="2" class="msg"><?php echo $msg; ?></td></tr>
+		<tr><td colspan="2" style="color:#FF0000;"><?php echo $msg1; ?></td></tr>
 		<tr><td colspan="2">&nbsp;</td></tr>
 		<tr>
 		<td><strong>Email</strong></td>

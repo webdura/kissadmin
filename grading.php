@@ -42,15 +42,15 @@ include_once('sub_header.php');
 <tr><td>
 
     <table width="100%" border="0" cellspacing="2" cellpadding="5">
-        <tr class="row1">
+        <tr>
             <td width="20%" valign="top">Grading 1</td>
             <td><textarea name="grade_1" id="grade_1" class="required textarea"><?=$grade_row['grade_1']?></textarea></td>
         </tr>
-        <tr class="row2">
+        <tr>
             <td valign="top">Grading 2</td>
             <td><textarea name="grade_2" id="grade_2" class="required textarea"><?=$grade_row['grade_2']?></textarea></td>
         </tr>
-        <tr class="row1">
+        <tr>
             <td valign="top">Grading 3</td>
             <td><textarea name="grade_3" id="grade_3" class="required textarea"><?=$grade_row['grade_3']?></textarea></td>
         </tr>

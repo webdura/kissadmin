@@ -1,3 +1,13 @@
- Client, Date, Total
-Client,11-04-12,2000
-Client name,20-04-12,3000
+Group ,service,amount
+Group 1,Email campaign - basic,450
+Group 1,Email newsletter creation,450
+Group 1,General labour,270
+Group 1,Mailing List services,240
+Group 1,MONTHLY CONTRACT,200
+Group 2,Picture advert creation,350
+Group 2,SEND CREDITS - Pay As You Go,260
+Group 2,Send to a friend system,360
+Group 3,Specialised Labour,400
+Group 3,Starter Package,1600
+Group 3,Subscription form,360
+Group 4,Template creation,760

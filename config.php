@@ -24,5 +24,5 @@ if($_SERVER['HTTP_HOST']=='localhost') {
 $con = mysql_connect($localhost,$username,$password) or die(mysql_error());
 $db  = mysql_select_db($dbname,$con);
 
-	$_SESSION['perpageval'] = 1;
+	$_SESSION['perpageval'] = 15;
 ?>
