@@ -74,10 +74,14 @@ function addNewServiceRow(group_id)
     count = eval(count) + 1;
     
     var html = $('#service_'+group_id).html();
+    
+    
     for(var i=0;i<20;i++)
         html = html.replace("test", count)
         
     $('#service_list_'+group_id).append(html);
+    selectClientDiscountToAll(group_id, count)
+
 }
 
 function removeServiceRow(div_id)
@@ -148,12 +152,14 @@ function selectClientDiscount(userId)
             var group_id = data_new[0];
             var discount = data_new[1];
             
+ //           alert(group_id +" " + discount);
             jQuery.each($('#service_list_'+group_id+' input'), function(i, val) {
                 cost_id = val.id;
-                //alert(cost_id + ' == ' + cost_id.search("discount_"))
-                if(cost_id.search("discount_")>=0)
+                 if(cost_id.search("discount_")>=0)
                 {
-                    $('#'+cost_id).val(discount);
+					$('#service_'+group_id).find('#discount_test').val(discount);
+					selectClientDiscountToAll(group_id);
+                
                 }
             });
         }
@@ -161,6 +167,26 @@ function selectClientDiscount(userId)
      
      
     });
+}
+
+function selectClientDiscountToAll(group_id, newId)
+{
+	
+	if(newId == undefined) {
+	
+	    jQuery.each($('#service_list_'+group_id+' input'), function(i, val) {
+	        cost_id = val.id;
+	         if(cost_id.search("discount_")>=0 && cost_id != 'discount_test')
+	        {
+	        	$('#'+cost_id).val($('#service_'+group_id).find('#discount_test').val());
+	        }
+	    });
+	}
+	else
+	{
+		$('#service_list_'+group_id).find('#discount_'+newId).val($('#service_'+group_id).find('#discount_test').val());
+	}
+
 }
 
 function changeTheme(theme_id)
@@ -204,14 +230,12 @@ function deleteAll()
             ids = ids + ',' + this.value;
     });
     
-    if(ids==0) {
+    if(ids==0)
+    {
         alert("Please select any records to delete ");
         return false;
-    } else {
-        var confirm = window.confirm("Are you sure to delete all selected records ?");
-        if(confirm)
-            $('#listForm').submit();
     }
+    $('#listForm').submit();
 }
 
 

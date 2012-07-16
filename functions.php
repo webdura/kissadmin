@@ -39,8 +39,8 @@ $theme_row = mysql_fetch_assoc($theme_rs);
 
 $theme_theme_id   = $active_theme['theme_id']       = (isset($theme_row['theme_id'])) ? $theme_row['theme_id'] : $theme_row['id'];
 $theme_theme      = $active_theme['theme']          = $theme_row['theme'];
-$site_logo        = $active_theme['site_logo']      = (isset($theme_row['site_logo']) && $theme_row['site_logo']!='') ? 'images/company/'.$theme_row['site_logo'] : 'images/logo.png';
-$invoice_logo     = $active_theme['invoice_logo']   = (isset($theme_row['invoice_logo']) && $theme_row['invoice_logo']!='') ? 'images/company/'.$theme_row['invoice_logo'] : '';
+$site_logo        = $active_theme['site_logo']      = (isset($theme_row['site_logo'])) ? $theme_row['site_logo'] : '';
+$invoice_logo     = $active_theme['invoice_logo']   = (isset($theme_row['invoice_logo'])) ? $theme_row['invoice_logo'] : '';
 $invoice_status   = $active_theme['invoice_status'] = (isset($theme_row['invoice_status'])) ? $theme_row['invoice_status'] : 0;
 $theme_head_bg    = $active_theme['head_bg']        = $theme_row['head_bg'];
 $theme_head_color = $active_theme['head_color']     = $theme_row['head_color'];
@@ -49,7 +49,7 @@ $theme_color2     = $active_theme['color2']         = $theme_row['color2'];
 $theme_color3     = $active_theme['color3']         = $theme_row['color3'];
 $theme_color4     = $active_theme['color4']         = $theme_row['color4'];
 
-$invoice_logo_mail = ($invoice_status==1 || $invoice_logo=='') ? $site_logo : $invoice_logo;
+$invoice_logo_mail = ($invoice_status==1) ? $site_logo : $invoice_logo;
 
 function userTypes($user_type='', $flag=0, $array=0)
 {
@@ -222,50 +222,48 @@ function paginations($totalrecord,$pagerecord,$rows,$page='page')
     for($i=$startpage,$links='';$i<=$endpage;$i++)
     {	
         if ($i==$currentpage)
-            $links	.= 	"<span class='current btn_style'>$i</span> ";
+            $links	.= 	"<span class='current'>$i</span> ";
         else
-            $links 	.= 	"<a href='$filename&$page=$i' class='btn_style'>$i</a> ";
+            $links 	.= 	"<a href='$filename&$page=$i'>$i</a> ";
     }
     
     //	Previous Record
     if ($currentpage>1)
     {
         $i  		= 	$currentpage - 1;
-        $prev  	= 	"<a href='$filename&$page=$i' class='btn_style'>&#171; Previous</a>";
+        $prev  	= 	"<a href='$filename&$page=$i'>&#171; Previous</a>";
     }
     else
-        $prev  	= 	"<span class='inactive btn_style'>&#171; Previous</span>";
+        $prev  	= 	"<span class='nextprev'>&#171; Previous</span>";
     
     //	Previous Page
     if($startpage>1)
     {
         $i 			= 	$startpage	-	1;
-        $previous	=  "<a href='$filename&$page=$i' class='btn_style'>&#171; Previous Page</a>";	
+        $previous	=  "<a href='$filename&$page=$i'>&#171; Previous Page</a>";	
     }
     else
-        $previous = " <span class='inactive btn_style'>&#171; Previous Page</span> ";
+        $previous = " <span class='nextprev'>&#171; Previous Page</span> ";
     
     if ($currentpage<$totalpages)
     {
         $i 		= 	$currentpage + 1;
-        $next 	= 	"<a href='$filename&$page=$i' class='btn_style'>Next &#187;</a> ";
+        $next 	= 	"<a href='$filename&$page=$i'>Next &#187;</a> ";
     }
     else
-        $next 	= 	"<span class='inactive btn_style'>Next &#187;</span> ";		
+        $next 	= 	"<span class='nextprev'>Next &#187;</span> ";		
     
     if($endpage<$totalpages)
     {
         $i 		=	$endpage	+	1;
-        $more 	=  	"<a href='$filename&$page=$i' class='btn_style'>Next Page&#187;  &nbsp;</a>";
+        $more 	=  	"<a href='$filename&$page=$i'>Next Page&#187;  &nbsp;</a>";
     }
     else
-        $more = " <span class='inactive btn_style'>Next Page &#187;</span> "; // we're on the last page, don't print next link
+        $more = " <span class='nextprev'>Next Page &#187;</span> "; // we're on the last page, don't print next link
     
-//    $more1	=	'<font color="#ffffff"></font>';	
-//    $result	=	"<table align='center' border='0' width='100%' class='nostyle'><tr><td class='pages bodytag' >$previous $prev  $links  $next $more $more1</td></tr></table>";
-//    $result	=	"<table align='right' border='0' class='nostyle'><tr><td class='pages bodytag' ><span class='text'>Page: (Page $currentpage of $totalpages )</span> $previous $prev  $links  $next $more $more1</td></tr></table>";
-    $result	=	"$previous $prev  $links  $next $more $more1";
-    $result	=	"$prev  $links  $next";
+    $more1	=	'<font color="#ffffff"></font>';	
+    $result	=	"<table align='center' border='0' width='100%' class='nostyle'><tr><td class='pages bodytag' >$previous $prev  $links  $next $more $more1</td></tr></table>";
+    $result	=	"<table align='right' border='0' class='nostyle'><tr><td class='pages bodytag' ><span class='text'>Page: (Page $currentpage of $totalpages )</span> $previous $prev  $links  $next $more $more1</td></tr></table>";
     
 //    if($totalpages<=1)
 //        $result	=	'';
@@ -697,8 +695,6 @@ function invoiceDetails($orderId, $flag=0)
         $quantity    = $order_detail_row['quantity'];
         $discount    = $order_detail_row['discount'];
         $amount      = $order_detail_row['order_amount'];
-        if($cost>0)
-        {
             $details .= "<tr>
                 <td bgcolor=white class='color4'><div align=left >".$i++."</div></td>
                 <td bgcolor=white class='color4'><div align=left >".$serviceName."</div></td>
@@ -710,7 +706,6 @@ function invoiceDetails($orderId, $flag=0)
                 
             $details .= "<td bgcolor=white class='color4'><div align=right>R " .formatMoney($amount,true)."</div></td>
             </tr>";
-        }
     }
     $result .= "<tr>
                     <td width='35' class='color3'><div align='left'><b>ITEM</b></div></td>
@@ -781,8 +776,6 @@ function quotationDetails_old($orderId, $flag=0)
         $quantity    = $order_detail_row['quantity'];
         $discount    = $order_detail_row['discount'];
         $amount      = $order_detail_row['order_amount'];
-        if($cost>0)
-        {
             $details .= "<tr>
                 <td bgcolor=white class='color4'><div align=left >".$i++."</div></td>
                 <td bgcolor=white class='color4'><div align=left >".$serviceName."</div></td>
@@ -794,7 +787,6 @@ function quotationDetails_old($orderId, $flag=0)
                 
             $details .= "<td bgcolor=white class='color4'><div align=right>R " .formatMoney($amount,true)."</div></td>
             </tr>";
-        }
     }
     $result .= "<tr>
                     <td width='35' class='color3'><div align='left'><b>ITEM</b></div></td>
@@ -859,8 +851,6 @@ function quotationDetails($quotationId, $flag=0)
         $quantity    = $quotation_detail_row['quantity'];
         $discount    = $quotation_detail_row['discount'];
         $amount      = $quotation_detail_row['quotation_amount'];
-        if($cost>0)
-        {
             $details .= "<tr>
                 <td bgcolor=white class='color4'><div align=left >".$i++."</div></td>
                 <td bgcolor=white class='color4'><div align=left >".$serviceName."</div></td>
@@ -872,8 +862,7 @@ function quotationDetails($quotationId, $flag=0)
                 
             $details .= "<td bgcolor=white class='color4'><div align=right>R " .formatMoney($amount,true)."</div></td>
             </tr>";
-        }
-    }
+     }
     $result .= "<tr>
                     <td width='35' class='color3'><div align='left'><b>ITEM</b></div></td>
                     <td width='400' class='color3'><div align='left'><b>DESCRIPTION</b></div></td>
@@ -981,15 +970,26 @@ function upload_photo($photo_dest, $file_tempname, $file_maxwidth = "", $file_ma
     return true;
 }
 
-function dateFormat($date)
+function dateFormat($date, $showTime='N')
 {
+/*	
     $dates = explode(' ', $date);
     $dates = explode('-', $dates[0]);
     
     // 'DD/MM/YYYY'
     $date = $dates[2].'/'.$dates[1].'/'.$dates[0];
-    
-    return $date;
+*/    
+
+
+	if($date=="0000-00-00 00:00:00")
+	 	return '';
+	 	
+	if(strtolower($showTime)=='y')
+		$date = date("d/m/Y H:i", strtotime($date));
+	else
+		$date = date("d/m/Y", strtotime($date));
+
+	return $date;
 }
 
 function convertToMysqlDate($date)
@@ -1011,14 +1011,5 @@ function paymentStatus($status) {
         return 'Paid';
     else if($status==2) 
         return 'Partial';    
-}
-
-function userCheck($userId) {
-   global $ses_companyId;
-   
-   $login_sql  = "SELECT * FROM gma_logins WHERE userId='$userId' AND companyId='$ses_companyId'";
-   $login_rs   = mysql_query($login_sql);
-   
-   return (mysql_num_rows($login_rs)==0) ? 0 : $userId;
 }
 ?>
