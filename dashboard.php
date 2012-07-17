@@ -110,16 +110,16 @@ include('sub_header.php');
                 ?>
                 <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
                     <td><?=$textName?></td>
-                    <td>R <?=formatMoney($credits)?></td>
-                    <td>R <?=formatMoney($others)?></td>
-                    <td>R <?=formatMoney($totals)?></td>
+                    <td ><?=formatMoney($credits)?></td>
+                    <td><?=formatMoney($others)?></td>
+                    <td><?=formatMoney($totals)?></td>
                 </tr>
             <? } ?>            
             <tr class="footer">
                 <td><strong>Average</strong></td>
-                <td>R <?=formatMoney($creditTotal/$order_month_count)?></td>
-                <td>R <?=formatMoney($otherTotal/$order_month_count)?></td>
-                <td>R <?=formatMoney($Total/$order_month_count)?></td>
+                <td ><?=formatMoney($creditTotal/$order_month_count)?></td>
+                <td><?=formatMoney($otherTotal/$order_month_count)?></td>
+                <td><?=formatMoney($Total/$order_month_count)?></td>
             </tr>
         <? } else { ?>
             <tr><td class="norecords" colspan="4">No Invoices</td></tr>

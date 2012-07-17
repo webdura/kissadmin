@@ -172,18 +172,19 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
 }
 
 function formatMoney($number, $fractional=false) { 
-    if ($fractional) { 
-        $number = sprintf('%.2f', $number); 
+ /*    if ($fractional) { 
+        $number = sprintf("%01.2f", $number); 
     } 
-    while (true) { 
+   while (true) { 
         $replaced = preg_replace('/(-?\d+)(\d\d\d)/', '$1,$2', $number); 
         if ($replaced != $number) { 
             $number = $replaced; 
         } else { 
             break; 
         } 
-    } 
-    return $number; 
+    } */
+  $number = "R " . sprintf("%01.2f", $number); 
+  return $number; 
 } 
 
 function paginations($totalrecord,$pagerecord,$rows,$page='page')
