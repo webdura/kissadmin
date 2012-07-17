@@ -12,17 +12,21 @@ $date_range  = (isset($_REQUEST['date'])) ? $_REQUEST['date'] : '3months';
 $startdate   = (isset($_REQUEST['startdate'])) ? $_REQUEST['startdate'] : '';
 $enddate     = (isset($_REQUEST['enddate'])) ? $_REQUEST['enddate'] : '';
 
-if(isset($_REQUEST['userId']) && $_REQUEST['userId']>=0){
-    if($ses_loginType!='user')
-        $userId = $_REQUEST['userId'];
-    else 
-        $userId = $ses_userId;
-    
-    $_SESSION['clientId'] = $userId;
+if(isset($_REQUEST['userId']) && $_REQUEST['userId']>0){
+	if($ses_loginType!='user')
+		$userId = $_REQUEST['userId'];
+	else 
+		$userId = $ses_userId;
+	
+	$_SESSION['clientId'] = $userId;
 } else {
-    $_SESSION['clientId'] = $ses_userId;
+	if(isset($_SESSION['clientId']) && $_SESSION['clientId']>0)
+		$userId = $_SESSION['clientId'];
+	else 
+		$userId = $ses_userId;
+	
 }
-$userId = $_SESSION['clientId'];
+
 $userId = userCheck($userId);
 
 if($date_range!='thismonth' && $date_range!='lastmonth' && $date_range!='all' && $date_range!='3months' && $date_range!='daterange')
