@@ -5,7 +5,7 @@ $templateModified = time();
 header("Content-Type: text/css");
 
 //$theme_theme = 'blue_theme';
-$files   = array('style', 'pagination', 'thickbox', $theme_theme);
+$files   = array('style', 'pagination', 'thickbox', $default_theme);
 $content = '';
 foreach ($files as $file)
 {

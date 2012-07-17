@@ -209,6 +209,13 @@ switch ($action)
         break;
 }
 
+$theme_rows = array();
+$theme_sql = "SELECT * FROM gma_theme WHERE 1 ORDER BY name ASC";
+$theme_rs  = mysql_query($theme_sql);
+while ($theme_row = mysql_fetch_assoc($theme_rs)) {
+	   $theme_rows[$theme_row['id']] = $theme_row;
+}
+
 $group_sql = "SELECT * FROM gma_groups WHERE 1 ORDER BY name ASC";
 $group_rs  = mysql_query($group_sql);
 while ($group_row = mysql_fetch_assoc($group_rs)) {
@@ -275,6 +282,17 @@ if($action=='list') { ?>
         <td>User Type</td>
         <td><?=$userType?></td>  
     </tr>      
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Theme</td>
+        <td>
+            <select class="textbox" name="theme_id" id="theme_id">
+                <option value="0">Company Theme</option>
+                <? foreach ($theme_rows as $theme_id=>$theme_row) { ?>
+                    <option value="<?=$theme_id?>" <?=($user_row['theme_id']==$theme_id ? 'selected' : '')?>><?=$theme_row['name']?></option>
+                <? } ?>
+            </select>        
+        </td>
+    </tr>  
 </table>
 <div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
 </form>

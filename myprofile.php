@@ -49,12 +49,12 @@ if(isset($_POST['userName']))
     }
     else
     {
-        $sql = "UPDATE gma_admin_details SET fullName=".GetSQLValueString($_POST['fullName'],'text')." WHERE userId='$ses_userId'";
+        $sql = "UPDATE gma_admin_details SET fullName=".GetSQLValueString($_POST['fullName'],'text').",theme_id=".GetSQLValueString($_POST['theme_id'],'text')." WHERE userId='$ses_userId'";
         mysql_query($sql);
         
-//        if($ses_userType=='gnet_admin' || $ses_userType=='super_admin')
+        if($ses_userType=='gnet_admin' || $ses_userType=='super_admin')
         {
-            $sql = "UPDATE gma_company SET companyName=".GetSQLValueString($_POST['companyName'], 'text').",companyVatNo=".GetSQLValueString($_POST['companyVatNo'], 'text').",companyAccountEmail=".GetSQLValueString($_POST['companyAccountEmail'], 'text').",companyAccountTel=".GetSQLValueString($_POST['companyAccountTel'], 'text').",companyAccountFax=".GetSQLValueString($_POST['companyAccountFax'], 'text').",companyAccountContact=".GetSQLValueString($_POST['companyAccountContact'], 'text').",companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text').",companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text').",companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text').",companyAccountName=".GetSQLValueString($_POST['companyAccountName'], 'text').",companyAccountType=".GetSQLValueString($_POST['companyAccountType'], 'text').",companyAccountNo=".GetSQLValueString($_POST['companyAccountNo'], 'text')." WHERE companyId='$ses_companyId'";
+            $sql = "UPDATE gma_company SET companyName=".GetSQLValueString($_POST['companyName'], 'text').",companyVatNo=".GetSQLValueString($_POST['companyVatNo'], 'text').",companyAccountEmail=".GetSQLValueString($_POST['companyAccountEmail'], 'text').",companyAccountTel=".GetSQLValueString($_POST['companyAccountTel'], 'text').",companyAccountFax=".GetSQLValueString($_POST['companyAccountFax'], 'text').",companyAccountContact=".GetSQLValueString($_POST['companyAccountContact'], 'text').",companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text').",companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text').",companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text').",companyAccountName=".GetSQLValueString($_POST['companyAccountName'], 'text').",companyAccountType=".GetSQLValueString($_POST['companyAccountType'], 'text').",companyAccountNo=".GetSQLValueString($_POST['companyAccountNo'], 'text').",companyDiscount=".GetSQLValueString($_POST['companyDiscount'], 'text')." WHERE companyId='$ses_companyId'";
             mysql_query($sql);
         }
     }
@@ -62,6 +62,14 @@ if(isset($_POST['userName']))
     header("Location: myprofile.php?msg=updated");
     exit;
 }
+
+$theme_rows = array();
+$theme_sql = "SELECT * FROM gma_theme WHERE 1 ORDER BY name ASC";
+$theme_rs  = mysql_query($theme_sql);
+while ($theme_row = mysql_fetch_assoc($theme_rs)) {
+	   $theme_rows[$theme_row['id']] = $theme_row;
+}
+
 $page_title = "Business Details";
 include_once('sub_header.php');
 ?>
@@ -245,63 +253,80 @@ $(document).ready(function() {
         <td>Email address</td>
         <td><input type="text" name="email" id="email" class="required textbox email" value="<?=$user_row['email']?>"></td>
     </tr>
-</table>
-<? $row_flag = 1; ?><br>
-<table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
-    <tr><th colspan="3">Company Details</th></tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td width="20%">Company Name</td>
-        <td><input type="text" name="companyName" id="companyName" class="textbox required" value="<?=$company_row['companyName']?>" /></td>  
-    </tr>
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Vat No</td>
-        <td><input type="text" name="companyVatNo" id="companyVatNo" class="textbox" value="<?=$company_row['companyVatNo']?>" /></td>  
-    </tr>
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Account Email</td>
-        <td><input type="text" name="companyAccountEmail" id="companyAccountEmail" class="textbox email" value="<?=$company_row['companyAccountEmail']?>" /></td>  
-    </tr>
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Account Tel</td>
-        <td><input type="text" name="companyAccountTel" id="companyAccountTel" class="textbox" value="<?=$company_row['companyAccountTel']?>" /></td>  
-    </tr>
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Account Fax</td>
-        <td><input type="text" name="companyAccountFax" id="companyAccountFax" class="textbox" value="<?=$company_row['companyAccountFax']?>" /></td>  
-    </tr>
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Account Contact</td>
-        <td><input type="text" name="companyAccountContact" id="companyAccountContact" class="textbox" value="<?=$company_row['companyAccountContact']?>" /></td>  
+        <td>Theme</td>
+        <td>
+            <select class="textbox" name="theme_id" id="theme_id">
+                <option value="0">Company Theme</option>
+                <? foreach ($theme_rows as $theme_id=>$theme_row) { ?>
+                    <option value="<?=$theme_id?>" <?=($user_theme_id==$theme_id ? 'selected' : '')?>><?=$theme_row['name']?></option>
+                <? } ?>
+            </select>        
+        </td>
     </tr>
 </table>
-<? $row_flag = 1; ?><br>
-<table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
-    <tr><th colspan="3">Bank Details</th></tr>
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td width="20%">Bank Name</td>
-        <td><input type="text" name="companyBankName" id="companyBankName" class="textbox" value="<?=$company_row['companyBankName']?>" /></td>  
-    </tr>
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Branch Name</td>
-        <td><input type="text" name="companyBranchName" id="companyBranchName" class="textbox" value="<?=$company_row['companyBranchName']?>" /></td>  
-    </tr>
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Branch No</td>
-        <td><input type="text" name="companyBranchNo" id="companyBranchNo" class="textbox" value="<?=$company_row['companyBranchNo']?>" /></td>  
-    </tr>
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Account Name</td>
-        <td><input type="text" name="companyAccountName" id="companyAccountName" class="textbox" value="<?=$company_row['companyAccountName']?>" /></td>  
-    </tr>
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Account Type</td>
-        <td><input type="text" name="companyAccountType" id="companyAccountType" class="textbox" value="<?=$company_row['companyAccountType']?>" /></td>  
-    </tr>
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Account No</td>
-        <td><input type="text" name="companyAccountNo" id="companyAccountNo" class="textbox" value="<?=$company_row['companyAccountNo']?>" /></td>  
-    </tr>
-</table>
+<? if($ses_userType=='gnet_admin' || $ses_userType=='super_admin') { ?>
+    <? $row_flag = 1; ?><br>
+    <table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+        <tr><th colspan="3">Company Details</th></tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td width="20%">Company Name</td>
+            <td><input type="text" name="companyName" id="companyName" class="textbox required" value="<?=$company_row['companyName']?>" /></td>  
+        </tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td>Vat No</td>
+            <td><input type="text" name="companyVatNo" id="companyVatNo" class="textbox" value="<?=$company_row['companyVatNo']?>" /></td>  
+        </tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td>Account Email</td>
+            <td><input type="text" name="companyAccountEmail" id="companyAccountEmail" class="textbox email" value="<?=$company_row['companyAccountEmail']?>" /></td>  
+        </tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td>Account Tel</td>
+            <td><input type="text" name="companyAccountTel" id="companyAccountTel" class="textbox" value="<?=$company_row['companyAccountTel']?>" /></td>  
+        </tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td>Account Fax</td>
+            <td><input type="text" name="companyAccountFax" id="companyAccountFax" class="textbox" value="<?=$company_row['companyAccountFax']?>" /></td>  
+        </tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td>Account Contact</td>
+            <td><input type="text" name="companyAccountContact" id="companyAccountContact" class="textbox" value="<?=$company_row['companyAccountContact']?>" /></td>  
+        </tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td>Overall Discount</td>
+            <td><input type="text" name="companyDiscount" id="companyDiscount" class="textbox number" value="<?=$company_row['companyDiscount']?>" /></td>  
+        </tr>
+    </table>
+    <? $row_flag = 1; ?><br>
+    <table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+        <tr><th colspan="3">Bank Details</th></tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td width="20%">Bank Name</td>
+            <td><input type="text" name="companyBankName" id="companyBankName" class="textbox" value="<?=$company_row['companyBankName']?>" /></td>  
+        </tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td>Branch Name</td>
+            <td><input type="text" name="companyBranchName" id="companyBranchName" class="textbox" value="<?=$company_row['companyBranchName']?>" /></td>  
+        </tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td>Branch No</td>
+            <td><input type="text" name="companyBranchNo" id="companyBranchNo" class="textbox" value="<?=$company_row['companyBranchNo']?>" /></td>  
+        </tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td>Account Name</td>
+            <td><input type="text" name="companyAccountName" id="companyAccountName" class="textbox" value="<?=$company_row['companyAccountName']?>" /></td>  
+        </tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td>Account Type</td>
+            <td><input type="text" name="companyAccountType" id="companyAccountType" class="textbox" value="<?=$company_row['companyAccountType']?>" /></td>  
+        </tr>
+        <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <td>Account No</td>
+            <td><input type="text" name="companyAccountNo" id="companyAccountNo" class="textbox" value="<?=$company_row['companyAccountNo']?>" /></td>  
+        </tr>
+    </table>
+<? } ?>
 
 <div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
 
@@ -328,6 +353,9 @@ $(document).ready(function() {
                 minlength: 5,
                 equalTo: "#password"
             },
+            companyDiscount: {
+                maxlength: 2
+            },
             email: {
                 required: true,
                 remote: {
@@ -349,6 +377,9 @@ $(document).ready(function() {
             },
             cpassword: {
                 equalTo: jQuery.format("Whoops: Your passwords don't match. Please enter them again.")
+            },
+            companyDiscount: {
+                maxlength: jQuery.format("Whoops: Maxmimum discount allowded is 99.")
             }
         }
     });

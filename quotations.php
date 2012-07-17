@@ -133,7 +133,6 @@ switch ($action)
                     $discount    = $_REQUEST['discount'][$key];
                     $amount      = $_REQUEST['amount'][$key];
                     
-                    
                     $order_sql = "INSERT INTO gma_quotation_details SET quotationId='$quotationId',group_id='$group_id',service_id='$service_id',serviceName='$serviceName',cost='$cost',quantity='$quantity',discount='$discount',amount='$amount'";
                     mysql_query($order_sql);
                     
@@ -174,17 +173,16 @@ switch ($action)
             $total     = $order_row['invoice_amount'];
             
             $order_details     = array();
-            $order_detail_sql  = "SELECT * FROM gma_quotation_details WHERE quotationId='$quotationId' AND group_id > 0 AND service_id > 0";
+            $order_detail_sql  = "SELECT * FROM gma_quotation_details WHERE quotationId='$quotationId'";
             $order_detail_rs   = mysql_query($order_detail_sql);
             while($order_detail_row = mysql_fetch_assoc($order_detail_rs))
             {
                 $service_id = ($order_detail_row['service_id']>0) ? $order_detail_row['service_id'] : 0;
                 
-                //if($service_id>0)
-                //    $order_details[$order_detail_row['group_id']][$service_id] = $order_detail_row;
-                //else
+                if($service_id>0)
+                    $order_details[$order_detail_row['group_id']][$service_id] = $order_detail_row;
+                else
                     $order_details[$order_detail_row['group_id']][] = $order_detail_row;
-                 $ordersDetails[] =   $order_detail_row;
             }
             foreach ($order_details as $group_id=>$orders)
             {

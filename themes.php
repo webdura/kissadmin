@@ -4,6 +4,10 @@ $settings  = false;
 include("header.php");
 include("config.php");
 
+$company_theme_sql = "SELECT * FROM gma_company_theme WHERE `companyId`='$ses_companyId'";
+$company_theme_rs  = mysql_query($company_theme_sql);
+$company_theme_row = mysql_fetch_assoc($company_theme_rs);
+    
 if(isset($_POST['theme_id']) && $_POST['theme_id']>0)
 {
     if(isset($_FILES['site_logo']) && $_FILES['site_logo']['size']>0)
@@ -23,6 +27,8 @@ if(isset($_POST['theme_id']) && $_POST['theme_id']>0)
         if($filename != $site_logo)
             @unlink($old_name);
         $site_logo = $filename;
+    } else {
+        $site_logo = $company_theme_row['site_logo'];
     }
     if(isset($_FILES['invoice_logo']) && $_FILES['invoice_logo']['size']>0)
     {
@@ -41,10 +47,9 @@ if(isset($_POST['theme_id']) && $_POST['theme_id']>0)
         if($filename != $invoice_logo)
             @unlink($old_name);
         $invoice_logo = $filename;
+    } else {
+        $invoice_logo = $company_theme_row['invoice_logo'];
     }
-    
-    $site_logo      = str_replace('images/company/', '', $site_logo);
-    $invoice_logo   = str_replace('images/company/', '', $invoice_logo);
     
     $site_logo      = GetSQLValueString($site_logo, 'text');
     $invoice_logo   = GetSQLValueString($invoice_logo, 'text');
@@ -86,24 +91,24 @@ include('sub_header.php');
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td width="20%">Select Theme&nbsp;:&nbsp;</td>
         <td>
-            <select class="inputbox_green" style="width:300px;" name="theme_id" id="theme_id" onchange="changeTheme(this.value);">
+            <select class="inputbox_green" style="width:300px;" name="theme_id" id="theme_id">
                 <? foreach ($theme_rows as $theme_id=>$theme_row) { ?>
-                    <option value="<?=$theme_id?>" <?=($theme_theme_id==$theme_id ? 'selected' : '')?>><?=$theme_row['name']?></option>
+                    <option value="<?=$theme_id?>" <?=($company_theme_id==$theme_id ? 'selected' : '')?>><?=$theme_row['name']?></option>
                 <? } ?>
             </select>
         </td>  
     </tr>  
-    <? if($site_logo!='') { ?>
+    <? if($company_theme_row['site_logo']!='') { ?>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Current site logo</td>
-        <td style="background-color:<?=$theme_head_bg?>" id="site_logo_div"><img src="<?=$site_logo?>"></td>
+        <td><img src="<?=$site_logo?>"></td>
     </tr>
     <? } ?>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td><? if($site_logo!='') { ?>New <? } ?>site logo</td>
         <td><input type="file" name="site_logo" id="site_logo" class="fleft file_size"></td>
     </tr>
-    <? if($invoice_logo!='') { ?>
+    <? if($company_theme_row['invoice_logo']!='') { ?>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Current invoice logo</td>
         <td><img src="<?=$invoice_logo?>"></td>

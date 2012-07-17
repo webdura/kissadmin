@@ -27,7 +27,7 @@ else if(isset($_GET['default']))
     $ses_companyId = 0;
 
 $theme_flag = 1;
-$theme_sql = "SELECT gma_company_theme.*,theme,color1,color2,color3,color4 FROM gma_company_theme,gma_theme WHERE id=theme_id AND companyId='$ses_companyId'";
+$theme_sql = "SELECT gma_company_theme.*,theme FROM gma_company_theme,gma_theme WHERE id=theme_id AND companyId='$ses_companyId'";
 $theme_rs  = mysql_query($theme_sql);
 if(mysql_num_rows($theme_rs)==0)
 {
@@ -37,19 +37,25 @@ if(mysql_num_rows($theme_rs)==0)
 }
 $theme_row = mysql_fetch_assoc($theme_rs);
 
-$theme_theme_id   = $active_theme['theme_id']       = (isset($theme_row['theme_id'])) ? $theme_row['theme_id'] : $theme_row['id'];
-$theme_theme      = $active_theme['theme']          = $theme_row['theme'];
-$site_logo        = $active_theme['site_logo']      = (isset($theme_row['site_logo']) && $theme_row['site_logo']!='') ? 'images/company/'.$theme_row['site_logo'] : 'images/logo.png';
-$invoice_logo     = $active_theme['invoice_logo']   = (isset($theme_row['invoice_logo']) && $theme_row['invoice_logo']!='') ? 'images/company/'.$theme_row['invoice_logo'] : '';
-$invoice_status   = $active_theme['invoice_status'] = (isset($theme_row['invoice_status'])) ? $theme_row['invoice_status'] : 0;
-$theme_head_bg    = $active_theme['head_bg']        = $theme_row['head_bg'];
-$theme_head_color = $active_theme['head_color']     = $theme_row['head_color'];
-$theme_color1     = $active_theme['color1']         = $theme_row['color1'];
-$theme_color2     = $active_theme['color2']         = $theme_row['color2'];
-$theme_color3     = $active_theme['color3']         = $theme_row['color3'];
-$theme_color4     = $active_theme['color4']         = $theme_row['color4'];
+$company_theme_id = (isset($theme_row['theme_id'])) ? $theme_row['theme_id'] : $theme_row['id'];
+$company_theme    = $theme_row['theme'];
 
+$site_logo        = (isset($theme_row['site_logo']) && $theme_row['site_logo']!='') ? 'images/company/'.$theme_row['site_logo'] : 'images/logo.png';
+$invoice_logo     = (isset($theme_row['invoice_logo']) && $theme_row['invoice_logo']!='') ? 'images/company/'.$theme_row['invoice_logo'] : $site_logo;
+$invoice_status   = (isset($theme_row['invoice_status'])) ? $theme_row['invoice_status'] : 0;
+$theme_head_color = $theme_row['head_color'];
 $invoice_logo_mail = ($invoice_status==1) ? $site_logo : $invoice_logo;
+
+if($ses_userType!='user') {
+    $theme_sql = "SELECT * FROM gma_admin_details,gma_theme WHERE id=theme_id AND userId='$ses_userId'";
+    $theme_rs  = mysql_query($theme_sql);
+    $theme_row = mysql_fetch_assoc($theme_rs);
+    
+    $user_theme_id = (isset($theme_row['theme_id'])) ? $theme_row['theme_id'] : 0;
+    $user_theme    = (isset($theme_row['theme'])) ? $theme_row['theme'] : '';
+}
+
+$default_theme = ($user_theme!='') ? $user_theme : $company_theme;
 
 function userTypes($user_type='', $flag=0, $array=0)
 {
