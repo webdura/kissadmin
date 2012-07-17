@@ -78,6 +78,26 @@ switch ($task)
         
         echo implode('~!~', $user_discount);
         break;
+
+    case 'checkAmountandDiscount':
+        $request    = (isset($_REQUEST['service_id']) && $_REQUEST['service_id']!='') ? $_REQUEST['service_id'] : 0;
+        $request    = explode('_', $request);
+        $service_id = GetSQLValueString($request[0], 'int');
+        $group_id = GetSQLValueString($request[1], 'int');
+         
+        $group_sql = "SELECT gma_services.description, gma_services.amount, gma_user_discount.discount  " . 
+					" FROM (gma_services JOIN gma_groups ON gma_groups.id = gma_services.group_id ) " . 
+					" LEFT JOIN gma_user_discount ON  gma_services.group_id = gma_user_discount.group_id " .
+					" WHERE gma_services.id = " . $service_id . " AND gma_services.group_id = " . $group_id;
+        $group_rs  = mysql_query($group_sql);
+        $group_row = mysql_fetch_assoc($group_rs);
+        
+        if ($group_row['amount'] < 0) $group_row['amount'] = 0;
+        if ($group_row['discount'] < 0 || $group_row['discount']==NULL) $group_row['discount'] = 0;
+        
+        echo json_encode($group_row);
+        break;
+        
         
     case 'permission':
         $per_id  = (isset($_REQUEST['id']) && $_REQUEST['id']!='') ? $_REQUEST['id'] : '';

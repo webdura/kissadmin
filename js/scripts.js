@@ -99,6 +99,56 @@ function checkAmount(div_id)
     });
 }
 
+function checkAmountandDiscount(div_id)
+{
+    service_id = $('#service_id_'+div_id).val();
+    $.post("ajax_check.php", { service_id: service_id, task: 'checkAmountandDiscount' }, function(data) {
+    	//alert(data);
+    var obj = jQuery.parseJSON(data);
+        $('#cost_'+div_id).val(obj.amount);
+        $('#discount_'+div_id).val(obj.discount);
+        $('#description_'+div_id).html(obj.description);
+        
+        changeFormTotal(div_id)
+    });
+}
+
+function changeFormTotal(div_id)
+{
+//    alert(div_id + ' == ' + count)
+    var total = 0;
+    for(i=1;i<count;i++)
+    {
+        if($('#cost_'+i))
+        {
+            var cost     = $('#cost_'+i).val();
+            var quantity = $('#quantity_'+i).val();
+            var discount = $('#discount_'+i).val();
+            var discount_val = 0;
+            
+            if(quantity<=0 && cost>0)
+                quantity = 1;
+            $('#quantity_'+i).val(quantity);
+            
+            var amount   = cost * quantity;
+            
+            if(discount>0)
+                discount_val = ((amount * discount) / 100);
+                
+            amount =  (amount - discount_val);
+            total  = total + amount;
+            
+//            alert(amount + '==' + discount + '==' + discount_val + '==' + total)
+            amount =  amount.toFixed(2);
+            $('#amount_'+i).val(amount);
+        }
+    }
+    total = total.toFixed(2);
+    $('#total').val(total);
+}
+
+
+
 function changeInvoice(div_id)
 {
     //alert(div_id + ' == ' + count)

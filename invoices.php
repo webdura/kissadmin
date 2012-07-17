@@ -76,6 +76,7 @@ switch ($action)
 {
     case 'add':
     case 'edit':
+    	
         $title = ($action='add') ? 'Add Details' : 'Edit Details';
         
         if((isset($_REQUEST['sendMail']) || isset($_REQUEST['save'])))
@@ -132,6 +133,7 @@ switch ($action)
                     $discount    = $_REQUEST['discount'][$key];
                     $amount      = $_REQUEST['amount'][$key];
                     
+                    
                     $order_sql = "INSERT INTO gma_order_details SET orderId='$orderId',group_id='$group_id',service_id='$service_id',serviceName='$serviceName',cost='$cost',quantity='$quantity',discount='$discount',amount='$amount'";
                     mysql_query($order_sql);
                     
@@ -163,7 +165,7 @@ switch ($action)
         
         $total = 0;
         if($orderId>0)
-        {
+        { 
             $order_sql = "SELECT * FROM gma_order WHERE id='$orderId'";
             $order_rs  = mysql_query($order_sql);
             $order_row = mysql_fetch_assoc($order_rs);
@@ -172,23 +174,27 @@ switch ($action)
             $orderNo	= $order_row['order_number'];
              
             $order_details     = array();
-            $order_detail_sql  = "SELECT * FROM gma_order_details WHERE orderId='$orderId'";
+            $order_detail_sql  = "SELECT gma_order_details.*, gma_services.description FROM gma_order_details, gma_services ".
+            					" WHERE gma_services.id = gma_order_details.service_id AND" .
+            					" gma_services.group_id = gma_order_details.group_id AND" .
+             					" orderId='$orderId' AND gma_order_details.group_id > 0 AND gma_order_details.service_id > 0";
             $order_detail_rs   = mysql_query($order_detail_sql);
             while($order_detail_row = mysql_fetch_assoc($order_detail_rs))
             {
                 $service_id = ($order_detail_row['service_id']>0) ? $order_detail_row['service_id'] : 0;
                 
-                if($service_id>0)
-                    $order_details[$order_detail_row['group_id']][$service_id] = $order_detail_row;
-                else
+              //  if($service_id>0)
+              //      $order_details[$order_detail_row['group_id']][$service_id] = $order_detail_row;
+              //  else
                     $order_details[$order_detail_row['group_id']][] = $order_detail_row;
-            }
+                 $ordersDetails[] =   $order_detail_row;
+           }
             foreach ($order_details as $group_id=>$orders)
             {
                 $allGroups[$group_id]['orders'] = $orders;
             }
             //echo '<pre>'; print_r($allGroups); exit;
-        }
+        }        
         
         $user_discount = array();
         $discount_sql  = "SELECT * FROM gma_user_discount WHERE userId='$userId'";
