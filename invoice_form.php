@@ -49,7 +49,9 @@ $list_org = generateTableRow(array());
             ?>
         </select>
     </div>
+    <? if($invoice) { ?>
     <div class="fright"><b>Order Number&nbsp;:&nbsp;</b><input type="text" name="order_number" value="<?=$orderNo; ?>" class="textbox" maxlength="48" style="width:150px"></div>
+    <? } ?>
 </td></tr>
 <tr><td colspan="2">
     <table width="100%" class="list" id="invTable" cellpadding="0" cellspacing="0">

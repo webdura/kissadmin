@@ -96,7 +96,7 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
     $company_row = mysql_fetch_assoc($company_rs);
     $email_from  = $company_row['email'];
     
-   echo $email_sql = "SELECT * FROM gma_emails WHERE companyId=".GetSQLValueString($companyId, 'text')." AND template=".GetSQLValueString($email_template, 'text');
+    $email_sql = "SELECT * FROM gma_emails WHERE companyId=".GetSQLValueString($companyId, 'text')." AND template=".GetSQLValueString($email_template, 'text');
     $email_rs  = mysql_query($email_sql);
     $email_row = mysql_fetch_assoc($email_rs);
     $email_subject = $email_row['subject'];
@@ -590,89 +590,6 @@ function getFile($filename){
     }
 }
 
-function invoiceDetails_old($orderId, $flag=0)
-{
-    global $active_theme, $admin_email, $ses_companyId;
-    
-    $details   = $result = '';
-    $email_sql = "SELECT * FROM gma_emails WHERE companyId='$ses_companyId' AND template='invoice'";
-    $email_rs  = mysql_query($email_sql);
-    $email_row = mysql_fetch_assoc($email_rs);
-    $email_content  = $email_row['content'];
-    
-    $order_sql = "SELECT * FROM gma_order,gma_user_details,gma_logins,gma_company WHERE gma_logins.userId=gma_order.userId AND gma_order.userId=gma_user_details.userId AND gma_company.companyId=gma_logins.companyId AND id='$orderId'";
-    // echo $order_sql;exit;
-    $order_rs  = mysql_query($order_sql);
-    $order_row = mysql_fetch_assoc($order_rs);
-    
-    $order_detail_sql = "SELECT * FROM gma_order_details LEFT JOIN gma_services ON id=service_id WHERE orderId='$orderId' AND discount>0";
-    $order_detail_rs  = mysql_query($order_detail_sql);
-    $discount_flag    = mysql_num_rows($order_detail_rs);
-    
-    $order_detail_sql = "SELECT *,gma_order_details.amount AS order_amount FROM gma_order_details LEFT JOIN gma_services ON id=service_id WHERE orderId='$orderId'";
-    $order_detail_rs  = mysql_query($order_detail_sql);
-    $i = 1;
-    while ($order_detail_row = mysql_fetch_assoc($order_detail_rs))
-    {
-        $service_id  = $order_detail_row['id'];
-        //$serviceName = ($service_id==0) ? $order_detail_row['serviceName'] : $order_detail_row['service_name'];
-        $serviceName = $order_detail_row['serviceName'];
-        $cost        = $order_detail_row['cost'];
-        $quantity    = $order_detail_row['quantity'];
-        $discount    = $order_detail_row['discount'];
-        $amount      = $order_detail_row['order_amount'];
-        if($cost>0)
-        {
-            $details .= "<tr>
-                <td bgcolor=white class='color4'><div align=left >".$i++."</div></td>
-                <td bgcolor=white class='color4'><div align=left >".$serviceName."</div></td>
-                <td bgcolor=white class='color4'><div align=center >".$cost."</div></td>
-                <td bgcolor=white class='color4'><div align=center >".$quantity."</div></td>";
-            
-            if($discount_flag!=0)
-                $details .= "<td bgcolor=white class='color4'><div align=center >".$discount."%</div></td>";
-                
-            $details .= "<td bgcolor=white class='color4'><div align=right>R " .formatMoney($amount,true)."</div></td>
-            </tr>";
-        }
-    }
-    $result .= "<tr>
-                    <td width='35' class='color3'><div align='left'><b>ITEM</b></div></td>
-                    <td width='400' class='color3'><div align='left'><b>DESCRIPTION</b></div></td>
-                    <td width='87' class='color3'><div align='left'><b>COST</b></div></td>
-                    <td width='50' class='color3'><div align='left'><b>QUANTITY</b></div></td>";
-    
-    if($discount_flag!=0)
-        $result .= "<td width='87' class='color3'><div align='left'><b>DISCOUNT</b></div></td>";
-        
-    $result .= "   <td width='98' class='color3'><div align='right'><b>AMOUNT</b></div></td>
-                </tr>$details";
-    
-    
-    $result .= "<tr>
-                    <td colspan='".($discount_flag!=0 ? 5 : 4)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
-                    <td class='color1'><div align='right' class='style9'>R ".formatMoney($order_row['invoice_amount'], true)."</div></td>
-                </tr>";
-    
-    $order_row['date']           = date("j F Y", strtotime($order_row['orderDate']));
-    $order_row['invoiceDetails'] = $result;
-    $order_row['admin_email']    = $admin_email;
-    $order_row['email_content']  = nl2br($email_content);
-    $order_row['popup_display']  = ($flag==1) ? 'none' : 'block';
-    
-    $details = getFile('includes/invoice_mail.html');
-    foreach ($active_theme as $key => $value)
-    {
-        $details = str_replace("[$key]", $value, $details);
-    }
-    foreach ($order_row as $key => $value)
-    {
-        $details = str_replace("[$key]", $value, $details);
-    }
-    
-    return $details;
-}
-
 function invoiceDetails($orderId, $flag=0)
 {
     global $active_theme, $admin_email, $ses_companyId, $company_row;
@@ -748,87 +665,6 @@ function invoiceDetails($orderId, $flag=0)
     return $order_details;
 }
 
-function quotationDetails_old($orderId, $flag=0)
-{
-    global $active_theme, $admin_email, $ses_companyId;
-    
-    $details   = $result = '';
-    $email_sql = "SELECT * FROM gma_emails WHERE companyId='$ses_companyId' AND template='invoice'";
-    $email_rs  = mysql_query($email_sql);
-    $email_row = mysql_fetch_assoc($email_rs);
-    $email_content = $email_row['content'];
-    $email_content = ($email_row['update']==1) ? $email_content : nl2br($email_content);
-     
-    $order_sql = "SELECT * FROM gma_quotation,gma_user_details,gma_logins,gma_company WHERE gma_logins.userId=gma_quotation.userId AND gma_quotation.userId=gma_user_details.userId AND gma_company.companyId=gma_logins.companyId AND id='$orderId'";
-    // echo $order_sql;exit;
-    $order_rs  = mysql_query($order_sql);
-    $order_row = mysql_fetch_assoc($order_rs);
-    
-    $order_detail_sql = "SELECT * FROM gma_quotation_details LEFT JOIN gma_services ON id=service_id WHERE orderId='$orderId' AND discount>0";
-    $order_detail_rs  = mysql_query($order_detail_sql);
-    $discount_flag    = mysql_num_rows($order_detail_rs);
-    
-    $order_detail_sql = "SELECT *,gma_quotation_details.amount AS order_amount FROM gma_quotation_details LEFT JOIN gma_services ON id=service_id WHERE orderId='$orderId'";
-    $order_detail_rs  = mysql_query($order_detail_sql);
-    $i = 1;
-    while ($order_detail_row = mysql_fetch_assoc($order_detail_rs))
-    {
-        $service_id  = $order_detail_row['id'];
-        //$serviceName = ($service_id==0) ? $order_detail_row['serviceName'] : $order_detail_row['service_name'];
-        $serviceName = $order_detail_row['serviceName'];
-        $cost        = $order_detail_row['cost'];
-        $quantity    = $order_detail_row['quantity'];
-        $discount    = $order_detail_row['discount'];
-        $amount      = $order_detail_row['order_amount'];
-            $details .= "<tr>
-                <td bgcolor=white class='color4'><div align=left >".$i++."</div></td>
-                <td bgcolor=white class='color4'><div align=left >".$serviceName."</div></td>
-                <td bgcolor=white class='color4'><div align=center >".$cost."</div></td>
-                <td bgcolor=white class='color4'><div align=center >".$quantity."</div></td>";
-            
-            if($discount_flag!=0)
-                $details .= "<td bgcolor=white class='color4'><div align=center >".$discount."%</div></td>";
-                
-            $details .= "<td bgcolor=white class='color4'><div align=right>R " .formatMoney($amount,true)."</div></td>
-            </tr>";
-    }
-    $result .= "<tr>
-                    <td width='35' class='color3'><div align='left'><b>ITEM</b></div></td>
-                    <td width='400' class='color3'><div align='left'><b>DESCRIPTION</b></div></td>
-                    <td width='87' class='color3'><div align='left'><b>COST</b></div></td>
-                    <td width='50' class='color3'><div align='left'><b>QUANTITY</b></div></td>";
-    
-    if($discount_flag!=0)
-        $result .= "<td width='87' class='color3'><div align='left'><b>DISCOUNT</b></div></td>";
-        
-    $result .= "   <td width='98' class='color3'><div align='right'><b>AMOUNT</b></div></td>
-                </tr>$details";
-    
-    
-    $result .= "<tr>
-                    <td colspan='".($discount_flag!=0 ? 5 : 4)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
-                    <td class='color1'><div align='right' class='style9'>R ".formatMoney($order_row['invoice_amount'], true)."</div></td>
-                </tr>";
-    
-    $order_row['date']           = date("j F Y", strtotime($order_row['orderDate']));
-    $order_row['invoiceDetails'] = $result;
-    $order_row['admin_email']    = $admin_email;
-    $order_row['email_content']  = nl2br($email_content);
-    $order_row['popup_display']  = ($flag==1) ? 'none' : 'block';
-    
-    $details = getFile('includes/quotation_mail.html');
-    foreach ($active_theme as $key => $value)
-    {
-        $details = str_replace("[$key]", $value, $details);
-    }
-    foreach ($order_row as $key => $value)
-    {
-        $details = str_replace("[$key]", $value, $details);
-    }
-    
-    return $details;
-}
-
 function quotationDetails($quotationId, $flag=0)
 {
     global $active_theme, $admin_email, $ses_companyId, $company_row;
@@ -854,7 +690,7 @@ function quotationDetails($quotationId, $flag=0)
         $cost        = $quotation_detail_row['cost'];
         $quantity    = $quotation_detail_row['quantity'];
         $discount    = $quotation_detail_row['discount'];
-        $amount      = $quotation_detail_row['quotation_amount'];
+        $amount      = $quotation_detail_row['amount'];
             $details .= "<tr>
                 <td bgcolor=white class='color4'><div align=left >".$i++."</div></td>
                 <td bgcolor=white class='color4'><div align=left >".$serviceName."</div></td>
@@ -896,10 +732,10 @@ function quotationDetails($quotationId, $flag=0)
     $quotation_details['vatno']        = $quotation_row['vatNo'];    
     $quotation_details['order_number'] = $quotation_row['order_number'];    
     $quotation_details['email']        = $quotation_row['email'];        
-    $quotation_details['to_email']     = $quotation_row['email'];  
-//    echo '<pre>'; print_r($quotation_row); exit;  
-    
-    $quotation_details['quotationDetails'] = $result;
+    $quotation_details['to_email']     = $quotation_row['email'];
+     
+    $quotation_details['quotationDetails'] = $result; 
+    //echo '<pre>'; print_r($quotation_details); exit;  
     
     return $quotation_details;
 }
@@ -976,24 +812,14 @@ function upload_photo($photo_dest, $file_tempname, $file_maxwidth = "", $file_ma
 
 function dateFormat($date, $showTime='N')
 {
-/*	
-    $dates = explode(' ', $date);
-    $dates = explode('-', $dates[0]);
+    if($date=="0000-00-00 00:00:00" || $date=="0000-00-00")
+        $date = '';
+    else if(strtolower($showTime)=='y')
+        $date = date("d/m/Y H:i", strtotime($date));
+    else
+        $date = date("d/m/Y", strtotime($date));
     
-    // 'DD/MM/YYYY'
-    $date = $dates[2].'/'.$dates[1].'/'.$dates[0];
-*/    
-
-
-	if($date=="0000-00-00 00:00:00")
-	 	return '';
-	 	
-	if(strtolower($showTime)=='y')
-		$date = date("d/m/Y H:i", strtotime($date));
-	else
-		$date = date("d/m/Y", strtotime($date));
-
-	return $date;
+    return $date;
 }
 
 function convertToMysqlDate($date)
@@ -1025,6 +851,4 @@ function userCheck($userId) {
    
    return (mysql_num_rows($login_rs)==0) ? 0 : $userId;
 }
-
-
 ?>

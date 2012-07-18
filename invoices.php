@@ -116,7 +116,7 @@ switch ($action)
             $invoice_amount = $total = 0;
             foreach ($_REQUEST['service_id'] as $key=>$service_group_id)
             {
-                if($key>0 )
+                if($service_group_id!='' && $service_group_id!='0')
                 {
                     $request     = explode('_', $service_group_id);
                     $service_id  = $request[0];
@@ -284,7 +284,8 @@ switch ($action)
         }
         break;
 }
-    
+$invoice = true;
+
 $page_title = ($action=='add' || $action=='edit') ? ($action=='add' ? 'New Invoice' : 'Edit Invoice') : 'Invoices';
 include('sub_header.php');
 if($action=='add' || $action=='edit') {
@@ -325,7 +326,7 @@ if($action=='add' || $action=='edit') {
                 <td><?=paymentStatus($order_row['orderStatus'])?></td>
                 <td><?=dateFormat($order_row['sendDate'], 'Y') ?></td>
                 <td>
-                    <a href="invoices.php?action=view&orderId=<?=$orderId?>" class="btn_style">View</a>
+                    <a href="invoices.php?action=view&orderId=<?=$orderId?>&popup" class="btn_style thickbox">View</a>
                     <? if($ses_loginType!='user') { ?>
                         &nbsp;<a href="invoices.php?action=edit&orderId=<?=$orderId?>" class="btn_style">Edit</a>
                         &nbsp;<a href="invoices.php?action=delete&orderId=<?=$orderId?>" class="btn_style">Delete</a>

@@ -45,6 +45,7 @@ switch ($action)
             $userId = mysql_insert_id();
                 
             $values = "userId='$userId'"; //,joinDate=NOW()";
+            $_POST['discount_type'] = (isset($_POST['discount_type'])) ? 1 : 0;
             foreach ($_POST AS $name=>$value)
             {
                 if($values!='') $values .= ',';
@@ -105,6 +106,7 @@ switch ($action)
             $sql = "UPDATE gma_logins SET userName=".GetSQLValueString($userName, 'text').",email=".GetSQLValueString($useremail, 'text').",userType=".GetSQLValueString($userType, 'text')."$sql WHERE userId='$userId'";
             mysql_query($sql);
             
+            $_POST['discount_type'] = (isset($_POST['discount_type'])) ? 1 : 0;
             foreach ($_POST AS $name=>$value)
             {
                 if($values!='') $values .= ',';
@@ -353,9 +355,9 @@ if($action=='list') { ?>
     <tr valign="top" class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Discount Percentage</th>
         <td>
-        
+        <div><input type="checkbox" name="discount_type" id="discount_type" value="1" <?=($user_row['discount_type']==1 ? 'checked' : '')?> />&nbsp;Same overall discount</div>
         <? foreach ($group_rows as $group_id=>$group_row) { ?>
-            <b><?=$group_row['name']?>&nbsp;:&nbsp;</b><input type="text" name="discount[<?=$group_id?>]" id="discount_<?=$group_id?>" class="textbox number" style="width:200px;" value="<?=@$user_row['group_ids'][$group_id]?>" /><br>
+            <b><?=$group_row['name']?>&nbsp;:&nbsp;</b><input type="text" name="discount[<?=$group_id?>]" id="discount_<?=$group_id?>" class="textbox number discount" style="width:200px;" value="<?=@$user_row['group_ids'][$group_id]?>" /><br>
         <? } ?>
         
         </td>  
@@ -466,6 +468,20 @@ if($action=='list') { ?>
 <script>
 $(document).ready(function() {
     $('#joinDate').datePicker({startDate: start_date, dateFormat: date_format});
+    
+    var discount_type = $('#discount_type').attr('checked');
+    if(discount_type) {
+        $('.discount').attr('readonly', 'readonly')
+    }
+    $('#discount_type').click(function() {
+        var discount_type = $('#discount_type').attr('checked');
+        if(discount_type) {
+            $('.discount').attr('readonly', 'readonly')
+        } else {
+            $('.discount').removeAttr('readonly')
+        }
+    });
+    //alert(discount_type)
    
     jQuery("#userForm").validate({
         rules: {

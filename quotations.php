@@ -119,7 +119,7 @@ switch ($action)
             $invoice_amount = $total = 0;
             foreach ($_REQUEST['service_id'] as $key=>$service_group_id)
             {
-                if($key>0 )
+                if($service_group_id!='' && $service_group_id!='0')
                 {
                     $request     = explode('_', $service_group_id);
                     $service_id  = $request[0];
@@ -308,7 +308,7 @@ switch ($action)
         $details = quotationDetails($quotationId);
         $result  = emailSend('quotation', $details);
         if($result) {
-        	$sql  = "UPDATE gma_quotation SET sendDate=NOW()WHERE id='$quotationId'";
+        	   $sql  = "UPDATE gma_quotation SET sendDate=NOW()WHERE id='$quotationId'";
             mysql_query($sql);
             $smsg = "Quotation mail send successfully";
         }
@@ -355,7 +355,8 @@ switch ($action)
         }
         break;
 }
-    
+$invoice = false;
+
 $page_title = 'Quotation';
 include('sub_header.php');
 if($action=='add' || $action=='edit') { 
@@ -383,7 +384,7 @@ if($action=='add' || $action=='edit') {
         {
             $val++;
             
-            $invoiceId = $order_row['invoiceId'];
+            $quotationId = $order_row['invoiceId'];
             $orderId   = $auto_id = $order_row['id'];
             $userId    = $order_row['userId'];
             $class     = ((($j++)%2)==1) ? 'altrow' : '';
@@ -397,13 +398,13 @@ if($action=='add' || $action=='edit') {
                 <td><?=paymentStatus($order_row['orderStatus'])?></td>
                 <td><?=dateFormat($order_row['sendDate'], 'Y') ?></td>
                 <td>
-                <a href="quotations.php?action=view&quotationId=<?=$quotationId?>" class="btn_style">View</a>
+                <a href="quotations.php?action=view&quotationId=<?=$orderId?>&popup" class="btn_style thickbox">View</a>
                 <? if($ses_loginType!='user') { ?>
-                    &nbsp;<a href="quotations.php?action=edit&quotationId=<?=$quotationId?>" class="btn_style">Edit</a>
-                    &nbsp;<a href="quotations.php?action=delete&quotationId=<?=$quotationId?>" class="btn_style">Delete</a>
-                    &nbsp;<a href="javascript:void(0);" onclick="convertOrder('<?=$quotationId?>');" class="btn_style">Convert to Order</a>
+                    &nbsp;<a href="quotations.php?action=edit&quotationId=<?=$orderId?>" class="btn_style">Edit</a>
+                    &nbsp;<a href="quotations.php?action=delete&quotationId=<?=$orderId?>" class="btn_style">Delete</a>
+                    &nbsp;<a href="javascript:void(0);" onclick="convertOrder('<?=$orderId?>');" class="btn_style">Convert to Order</a>
                 <? } ?>
-                &nbsp;<a href="quotations.php?action=resendMail&quotationId=<?=$quotationId?>" title="Send invoice to my email" class="btn_style">Send</a>
+                &nbsp;<a href="quotations.php?action=resendMail&quotationId=<?=$orderId?>" title="Send invoice to my email" class="btn_style">Send</a>
                 </td>
             </tr>
             <?php
