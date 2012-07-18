@@ -5,33 +5,33 @@ a:hover, a.selected { color:#FF9000 !important; }
 .right_links, .right_links a { color:#fff; }
 
 #top_buttons, #top_buttons ul {
-    background: transparent url(imagesange_theme/nav_bg.jpg) repeat-x;
+    background: transparent url(images/orange_theme/nav_bg.jpg) repeat-x;
 }
 .summary_btn { 
-    background:url(imagesange_theme/summary_btn.jpg) no-repeat left top ;
+    background:url(images/orange_theme/summary_btn.jpg) no-repeat left top ;
 }
 .clients_btn { 
-    background:url(imagesange_theme/clients_btn.jpg) no-repeat left top ;
+    background:url(images/orange_theme/clients_btn.jpg) no-repeat left top ;
 }
 .quotation_btn { 
-    background:url(imagesange_theme/quotation_btn.jpg) no-repeat left top ;
+    background:url(images/orange_theme/quotation_btn.jpg) no-repeat left top ;
 }
 .invoices_btn { 
-    background:url(imagesange_theme/invoices_btn.jpg) no-repeat left top ;
+    background:url(images/orange_theme/invoices_btn.jpg) no-repeat left top ;
 }
 .statement_btn { 
-    background:url(imagesange_theme/statement_btn.jpg) no-repeat left top ;
+    background:url(images/orange_theme/statement_btn.jpg) no-repeat left top ;
 }
 .payment_btn { 
-    background:url(imagesange_theme/payment_btn.jpg) no-repeat left top ;
+    background:url(images/orange_theme/payment_btn.jpg) no-repeat left top ;
 }
 .pricing_btn { 
-    background:url(imagesange_theme/pricing_btn.jpg) no-repeat left top ;
+    background:url(images/orange_theme/pricing_btn.jpg) no-repeat left top ;
 }
 
 
 .btn_style {
-    background: transparent url(imagesange_theme/btn_bg.png) repeat-x left bottom;
+    background: transparent url(images/orange_theme/btn_bg.png) repeat-x left bottom;
     border:2px solid #F4D289;
     color:#000;
 }
@@ -46,7 +46,7 @@ a:hover, a.selected { color:#FF9000 !important; }
     background-color:#fff;
 }
 .page_header {
-    background: transparent url(imagesange_theme/heading_bg.png) repeat-x;
+    background: transparent url(images/orange_theme/heading_bg.png) repeat-x;
 }
 .page_header h2 { color:#000; }
 .page_header .addnew { color:#000; }
@@ -58,7 +58,7 @@ a:hover, a.selected { color:#FF9000 !important; }
 }
 .list { border:1px solid #FDD284; border-right:0px solid #FDD284; }
 .list th{ 
-    background: transparent url(imagesange_theme/action_bar_bg.jpg) repeat-x;
+    background: transparent url(images/orange_theme/action_bar_bg.jpg) repeat-x;
     color:#000;
 }
 .list th, .list td { border-right:1px solid #FDD284; }
@@ -66,8 +66,8 @@ a:hover, a.selected { color:#FF9000 !important; }
 .list tr.altrow td { background-color:#FFF9ED; }
 .list tr.footer td { background-color:#FDD284; }
 .list .asc { 
-    background: transparent url(imagesange_theme/arrow_up.png) no-repeat;
+    background: transparent url(images/orange_theme/arrow_up.png) no-repeat;
 }
 .list .desc { 
-    background: transparent url(imagesange_theme/arrow_down.png) repeat-x;
+    background: transparent url(images/orange_theme/arrow_down.png) repeat-x;
 }

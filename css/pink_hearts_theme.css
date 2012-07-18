@@ -1,37 +1,37 @@
-body { background: transparent url(imagesnk_hearts_theme/background.jpg) repeat; }
+body { background: transparent url(images/pink_hearts_theme/background.jpg) repeat; }
 a { color:#483bed; }
 a:hover, a.selected { color:#FF9000 !important; }
 
 .right_links, .right_links a { color:#fff; }
 
 #top_buttons, #top_buttons ul {
-    background: transparent url(imagesnk_hearts_theme/nav_bg.jpg) repeat-x;
+    background: transparent url(images/pink_hearts_theme/nav_bg.jpg) repeat-x;
 }
 .summary_btn { 
-    background:url(imagesnk_hearts_theme/summary_btn.jpg) no-repeat left top ;
+    background:url(images/pink_hearts_theme/summary_btn.jpg) no-repeat left top ;
 }
 .clients_btn { 
-    background:url(imagesnk_hearts_theme/clients_btn.jpg) no-repeat left top ;
+    background:url(images/pink_hearts_theme/clients_btn.jpg) no-repeat left top ;
 }
 .quotation_btn { 
-    background:url(imagesnk_hearts_theme/quotation_btn.jpg) no-repeat left top ;
+    background:url(images/pink_hearts_theme/quotation_btn.jpg) no-repeat left top ;
 }
 .invoices_btn { 
-    background:url(imagesnk_hearts_theme/invoices_btn.jpg) no-repeat left top ;
+    background:url(images/pink_hearts_theme/invoices_btn.jpg) no-repeat left top ;
 }
 .statement_btn { 
-    background:url(imagesnk_hearts_theme/statement_btn.jpg) no-repeat left top ;
+    background:url(images/pink_hearts_theme/statement_btn.jpg) no-repeat left top ;
 }
 .payment_btn { 
-    background:url(imagesnk_hearts_theme/payment_btn.jpg) no-repeat left top ;
+    background:url(images/pink_hearts_theme/payment_btn.jpg) no-repeat left top ;
 }
 .pricing_btn { 
-    background:url(imagesnk_hearts_theme/pricing_btn.jpg) no-repeat left top ;
+    background:url(images/pink_hearts_theme/pricing_btn.jpg) no-repeat left top ;
 }
 
 
 .btn_style {
-    background: transparent url(imagesnk_hearts_theme/btn_bg.png) repeat-x left bottom;
+    background: transparent url(images/pink_hearts_theme/btn_bg.png) repeat-x left bottom;
     border:2px solid #B0B09C;
     color:#000;
 }
@@ -46,7 +46,7 @@ a:hover, a.selected { color:#FF9000 !important; }
     background-color:#fff;
 }
 .page_header {
-    background: transparent url(imagesnk_hearts_theme/heading_bg.png) repeat-x;
+    background: transparent url(images/pink_hearts_theme/heading_bg.png) repeat-x;
 }
 .page_header h2 { color:#000; }
 .page_header .addnew { color:#000; }
@@ -58,7 +58,7 @@ a:hover, a.selected { color:#FF9000 !important; }
 }
 .list { border:1px solid #E1B1BD; border-right:0px solid #E1B1BD; }
 .list th{ 
-    background: transparent url(imagesnk_hearts_theme/action_bar_bg.jpg) repeat-x;
+    background: transparent url(images/pink_hearts_theme/action_bar_bg.jpg) repeat-x;
     color:#000;
 }
 .list th, .list td { border-right:1px solid #E1B1BD; }
@@ -66,8 +66,8 @@ a:hover, a.selected { color:#FF9000 !important; }
 .list tr.altrow td { background-color:#FCF2F3; }
 .list tr.footer td { background-color:#E1B1BD; }
 .list .asc { 
-    background: transparent url(imagesnk_hearts_theme/arrow_up.png) no-repeat;
+    background: transparent url(images/pink_hearts_theme/arrow_up.png) no-repeat;
 }
 .list .desc { 
-    background: transparent url(imagesnk_hearts_theme/arrow_down.png) repeat-x;
+    background: transparent url(images/pink_hearts_theme/arrow_down.png) repeat-x;
 }
