@@ -1,5 +1,6 @@
 --11-July
 ALTER TABLE gma_order ADD sendDate DATETIME NOT NULL AFTER orderDate;
+ALTER TABLE gma_quotation ADD sendDate DATETIME NOT NULL AFTER orderDate;
 ALTER TABLE gma_modules ADD for_users VARCHAR( 10 ) NOT NULL;
 
 

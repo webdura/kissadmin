@@ -8,39 +8,39 @@ else
     
 include("config.php");
 
-if( strtolower(trim($_SESSION['ses_userType']))=='client'){
-	if (isset($_GET['quotationId']) && $_GET['quotationId'] > 0) {
-		
-	   $order_sql = "SELECT count(id) AS orderCnt FROM gma_quotation WHERE gma_order.userId = " . $_SESSION['ses_userId'] .
-	    " AND gma_quotation.id = " . $_GET['quotationId'] ;
-	    $order_rs  = mysql_query($order_sql);
-		$order_row_count = mysql_fetch_assoc($order_rs);
-		$order_row_count = $order_row_count['orderCnt'];
-		if ($order_row_count == 0) {
-			$smsg = "Invalid Request";
-            return header("Location: quotations.php?msg=$smsg");
-            exit;
-		}
-	}
-} else if( strtolower(trim($_SESSION['ses_userType']))=='super_admin'){
-	if (isset($_GET['quotationId']) && $_GET['quotationId'] > 0) {
-		
-	   $order_sql = "SELECT count(id) AS orderCnt FROM gma_order, gma_logins ".
-	   " WHERE gma_quotation.userId = gma_logins.userId " .
-	   " AND gma_logins.companyId = " . $_SESSION['ses_companyId'] .
-	   " AND gma_quotation.id = " . $_GET['quotationId'] ; 
-	    $order_rs  = mysql_query($order_sql);
-		$order_row_count = mysql_fetch_assoc($order_rs);
-		$order_row_count = $order_row_count['orderCnt'];
-		if ($order_row_count == 0) {
-			$smsg = "Invalid Request";
-            return header("Location: quotations.php?msg=$smsg");
-            exit;
-		}
-	}
-	
-	
-}
+//if( strtolower(trim($_SESSION['ses_userType']))=='client'){
+//	if (isset($_GET['quotationId']) && $_GET['quotationId'] > 0) {
+//		
+//	   $order_sql = "SELECT count(id) AS orderCnt FROM gma_quotation WHERE gma_order.userId = " . $_SESSION['ses_userId'] .
+//	    " AND gma_quotation.id = " . $_GET['quotationId'] ;
+//	    $order_rs  = mysql_query($order_sql);
+//		$order_row_count = mysql_fetch_assoc($order_rs);
+//		$order_row_count = $order_row_count['orderCnt'];
+//		if ($order_row_count == 0) {
+//			$smsg = "Invalid Request";
+//            return header("Location: quotations.php?msg=$smsg");
+//            exit;
+//		}
+//	}
+//} else if( strtolower(trim($_SESSION['ses_userType']))=='super_admin'){
+//	if (isset($_GET['quotationId']) && $_GET['quotationId'] > 0) {
+//		
+//	   $order_sql = "SELECT count(id) AS orderCnt FROM gma_order, gma_logins ".
+//	   " WHERE gma_quotation.userId = gma_logins.userId " .
+//	   " AND gma_logins.companyId = " . $_SESSION['ses_companyId'] .
+//	   " AND gma_quotation.id = " . $_GET['quotationId'] ; 
+//	    $order_rs  = mysql_query($order_sql);
+//		$order_row_count = mysql_fetch_assoc($order_rs);
+//		$order_row_count = $order_row_count['orderCnt'];
+//		if ($order_row_count == 0) {
+//			$smsg = "Invalid Request";
+//            return header("Location: quotations.php?msg=$smsg");
+//            exit;
+//		}
+//	}
+//	
+//	
+//}
 
 
 $action    = (isset($_REQUEST['action']) && $_REQUEST['action']!='') ? $_REQUEST['action'] : 'list';
@@ -71,7 +71,6 @@ while($group_row = mysql_fetch_assoc($group_rs))
     $group_row['services'] = $services;
     $allGroups[$group_id] = $group_row;
 }
-// echo '<pre>'; print_r($allGroups); exit;
 
 switch ($action)
 {
@@ -348,7 +347,7 @@ switch ($action)
         }
         
         if($ses_loginType!='user') {
-            $links = '<a href="quotations.php?action=add" title="Create New Quotation">Create New Quotation</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+            $links = '<a href="quotations.php?action=add" title="Create New Quotation">Create New Quotation</a>&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
             $add_url    = 'quotations.php?action=add';
             $del_url    = 'javascript:void(0);';
             $del_click  = 'deleteAll();';
@@ -360,70 +359,68 @@ switch ($action)
 $page_title = 'Quotation';
 include('sub_header.php');
 if($action=='add' || $action=='edit') { 
-	include_once('new_invoice_form.php');
+	include_once('invoice_form.php');
 } else { ?>
 
-<form method="POST" id="listForm" name='listForm'>
-<input type="hidden" name="action" value="deleteall">
-
-<table width="100%" class="list" cellpadding="0" cellspacing="0">
-    <tr height="30">
-        <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
-        <th><span>Quotation Id.</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC" class="asc"></a>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=DESC" class="desc"></a></th>
-        <th><span>Order Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=ASC" class="asc"></a>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=DESC" class="desc"></a></th>
-        <? if($ses_loginType!='user') { ?>
-            <th><span>Client</span>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=ASC" class="asc"></a>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=DESC" class="desc"></a></th>
-        <? } ?>
-        <!--<th width="20%">Quantity</th>-->
-        <th><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC" class="asc"></a>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC" class="desc"></a></th>
-        <th><span>Sent</span>&nbsp;</th>
-        <th width="25%">Action</th>
-    </tr>  
-    <?php
-    $j=0;
-    while($order_row = mysql_fetch_array($order_rs))
-    {
-        $j++;
-        $val++;
-        
-        $invoiceId = $order_row['invoiceId'];
-        $quotationId   = $auto_id = $order_row['id'];
-        $userId    = $order_row['userId'];
-        $class     = (($j%2)==0) ? 'row2' : 'row1';
-        ?>
-        <tr class="<?=$class?>">
-            <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
-            <td><?=$invoiceId?></td>
-            <td><?=dateFormat($order_row['orderDate'], 'Y')?></td>
-            <? if($ses_loginType!='user') { ?> <td><?=$order_row['businessName']?></td> <? } ?>
-            <td>R <?=formatMoney($order_row['invoice_amount'], true)?></td>
-            <td><?=dateFormat($order_row['sendDate'], 'Y') ?></td>
-            <td>
-                <a href="quotations.php?action=view&quotationId=<?=$quotationId?>">View</a>
-                <? if($ses_loginType!='user') { ?>
-                    &nbsp;&nbsp;|&nbsp;&nbsp;<a href="quotations.php?action=edit&quotationId=<?=$quotationId?>">Edit</a>
-                    &nbsp;&nbsp;|&nbsp;&nbsp;<a href="quotations.php?action=delete&quotationId=<?=$quotationId?>">Delete</a>
-                    &nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" onclick="convertOrder('<?=$quotationId?>');">Convert to Order</a>
-                <? } ?>
-                &nbsp;&nbsp;|&nbsp;&nbsp;<a href="quotations.php?action=resendMail&quotationId=<?=$quotationId?>" title="Send invoice to my email">Send</a>
-            </td>
-        </tr>
+    <form method="POST" id="listForm" name='listForm'>
+    <input type="hidden" name="action" value="deleteall">    
+    <table width="100%" class="list" cellpadding="0" cellspacing="0">
+        <tr>
+            <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
+            <th width="15%"><span>Invoice Id.</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoiceId&order=DESC" class="desc"></a></th>
+            <th width="15%"><span>Order Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderDate&order=DESC" class="desc"></a></th>
+            <? if($ses_loginType!='user') { ?>
+                <th><span>Client</span>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=businessName&order=DESC" class="desc"></a></th>
+            <? } ?>
+            <th width="10%"><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC" class="desc"></a></th>
+            <th width="10%"><span>Status</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderStatus&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderStatus&order=DESC" class="desc"></a></th>
+            <th width="10%"><span>Sent</span>&nbsp;</th>
+            <th width="28%">Action</th>
+        </tr>  
         <?php
+        $j=0;
+        while($order_row = mysql_fetch_array($order_rs))
+        {
+            $val++;
+            
+            $invoiceId = $order_row['invoiceId'];
+            $orderId   = $auto_id = $order_row['id'];
+            $userId    = $order_row['userId'];
+            $class     = ((($j++)%2)==1) ? 'altrow' : '';
+            ?>
+            <tr class="<?=$class?>">
+                <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
+                <td><?=$invoiceId?></td>
+                <td><?=dateFormat($order_row['orderDate'], 'N')?></td>
+                <? if($ses_loginType!='user') { ?> <td><?=$order_row['businessName']?></td> <? } ?>
+                <td><?=formatMoney($order_row['invoice_amount'], true)?></td>
+                <td><?=paymentStatus($order_row['orderStatus'])?></td>
+                <td><?=dateFormat($order_row['sendDate'], 'Y') ?></td>
+                <td>
+                <a href="quotations.php?action=view&quotationId=<?=$quotationId?>" class="btn_style">View</a>
+                <? if($ses_loginType!='user') { ?>
+                    &nbsp;<a href="quotations.php?action=edit&quotationId=<?=$quotationId?>" class="btn_style">Edit</a>
+                    &nbsp;<a href="quotations.php?action=delete&quotationId=<?=$quotationId?>" class="btn_style">Delete</a>
+                    &nbsp;<a href="javascript:void(0);" onclick="convertOrder('<?=$quotationId?>');" class="btn_style">Convert to Order</a>
+                <? } ?>
+                &nbsp;<a href="quotations.php?action=resendMail&quotationId=<?=$quotationId?>" title="Send invoice to my email" class="btn_style">Send</a>
+                </td>
+            </tr>
+            <?php
+        }
+        if($order_count==0) { ?>
+            <tr><td class="norecords" colspan="10">No Records Found</td></tr>
+        <? } ?>
+    </table>
+    </form>    
+    <script>
+    function convertOrder(order_id) {
+        jPrompt('', '', 'Enter Order No', function(order_no) {
+            var url = 'quotations.php?action=convert&quotationId=' + order_id + '&order_no=' + order_no;
+            window.location = url;
+        });
     }
-    if($order_count==0) { ?>
-        <tr><td class="norecords" colspan="10">No Records Found</td></tr>
-    <? } ?>
-</table>
-</form>
-<script>
-function convertOrder(order_id) {
-    jPrompt('', '', 'Enter Order No', function(order_no) {
-        var url = 'quotations.php?action=convert&quotationId=' + order_id + '&order_no=' + order_no;
-        window.location = url;
-    });
-}
-</script>
-    
+    </script>    
 <? } ?>
 
 <?php include("footer.php");  ?>

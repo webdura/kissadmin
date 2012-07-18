@@ -34,7 +34,7 @@
                 <div class="search">
                     <form method="GET" name='searchform'>
                     <b>Client&nbsp;:&nbsp;</b>
-                    <select name="userId" id="userId" class="inputbox_green" style="width:;" onchange="document.searchform.submit();">
+                    <select name="userId" id="userId" class="inputbox_green" style="width:120px;" onchange="document.searchform.submit();">
                         <option value="">Select All</option>
                         <? foreach ($company_users as $user) {
                             $user_Id  = $user['userId'];
@@ -52,7 +52,7 @@
                 <div class="search">
                     <form method="GET" name='searchform'>
                         <b>Group&nbsp;:&nbsp;</b>
-                        <select name="group_id" id="group_id" onchange="document.searchform.submit();" style="width:300px">
+                        <select name="group_id" id="group_id" onchange="document.searchform.submit();" style="width:120px">
                             <option value="0">Select all</option>
                             <? foreach ($group_rows as $group) {
                                 $selected = ($group['id']==$group_id) ? 'selected' : '';

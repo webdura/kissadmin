@@ -1028,3 +1028,20 @@ Email@client.com, admin@gnetmail.co.za, 17-07-2012 10:42:50, Quotation
 </td></tr>
 </table>
 
+sdfsdf@fdgdf.dfgd, admin@gnetmail.co.za, 18-07-2012 04:44:12, New client welcome email
+Hi User 2 User 2,<br />
+<br />
+An account has been created for you with the following details,<br />
+<br />
+Client Name : sdfsdf<br />
+Company Name : Gnet Mail 1<br />
+Username : sdfsdffdssdf<br />
+Password : sdfsdf<br />
+Email Address : sdfsdf@fdgdf.dfgd<br />
+<br />
+Please click <a href='http://localhost/gnetmail/admin/index.php'>Click here</a> to login. Or copy paste the below URL in browser http://localhost/gnetmail/admin/index.php<br />
+<br />
+-----<br />
+Administrator<br />
+Gnet Mail 1
+

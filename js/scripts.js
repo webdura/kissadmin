@@ -99,23 +99,67 @@ function checkAmount(div_id)
     });
 }
 
+
+var discounts = new Array();
+function selectClientDiscount()
+{
+    var userId   = $('#userId').val();
+    $.post("ajax_check.php", { userId: userId, task: 'checkDiscount' }, function(data) {
+        var discount = data.split('~!~');
+        var length   = discount.length;
+        
+        var i, group_id, value, data_new;
+        for(var i=0;i<length;i++) {
+            data_new = discount[i].split('~~~');            
+            group_id = data_new[0];
+            value    = data_new[1];
+            
+            discounts[group_id] = value;
+        }
+        
+        jQuery.each($('.service'), function(i, val) {
+            group_id = $(val).val();
+            box_id   = $(val).attr('id');
+            if(group_id!='' && group_id!='0') {
+                group_id = group_id.split('_');
+                group_id = group_id[1];
+                
+                discount = discounts[group_id];
+                new_box  = box_id.replace("service_id_", 'discount_');
+                //if($('#'+new_box).val()==0 || $('#'+new_box).val()=='')
+                $('#'+new_box).val(discount);
+            }
+        });
+        
+        changeTotal();
+    });
+}
+
 function checkAmountandDiscount(div_id)
 {
     service_id = $('#service_id_'+div_id).val();
     $.post("ajax_check.php", { service_id: service_id, task: 'checkAmountandDiscount' }, function(data) {
-    	//alert(data);
-    var obj = jQuery.parseJSON(data);
-        $('#cost_'+div_id).val(obj.amount);
-        $('#discount_'+div_id).val(obj.discount);
-        $('#description_'+div_id).html(obj.description);
+     
+        var discount = 0;
+        if(service_id!='' && service_id!='0') {
+            group_id = service_id.split('_');
+            group_id = group_id[1];
+            
+            if(discounts[group_id])
+                discount = discounts[group_id];
+        }
         
-        changeFormTotal(div_id)
-    });
+        $('#cost_'+div_id).val(data.amount);
+        $('#discount_'+div_id).val(discount);
+        $('#quantity_'+div_id).val(data.quantity);
+        $('#description_'+div_id).html(data.description);
+        
+        changeTotal()
+    }, 'json');
 }
 
-function changeFormTotal(div_id)
+function changeTotal()
 {
-//    alert(div_id + ' == ' + count)
     var total = 0;
     for(i=1;i<count;i++)
     {
@@ -138,85 +182,12 @@ function changeFormTotal(div_id)
             amount =  (amount - discount_val);
             total  = total + amount;
             
-//            alert(amount + '==' + discount + '==' + discount_val + '==' + total)
             amount =  amount.toFixed(2);
             $('#amount_'+i).val(amount);
         }
     }
     total = total.toFixed(2);
     $('#total').val(total);
-}
-
-
-
-function changeInvoice(div_id)
-{
-    //alert(div_id + ' == ' + count)
-    var total = 0;
-    for(i=1;i<=count;i++)
-    {
-        if($('#cost_'+i))
-        {
-            var cost     = $('#cost_'+i).val();
-            var quantity = $('#quantity_'+i).val();
-            var discount = $('#discount_'+i).val();
-            var discount_val = 0;
-            
-            if(quantity<=0 && cost>0)
-                quantity = 1;
-            $('#quantity_'+i).val(quantity);
-            
-            var amount   = cost * quantity;
-            
-            if(discount>0)
-                discount_val = ((amount * discount) / 100);
-                
-            amount = amount - discount_val;
-            total  = total + amount;
-            
-            //alert(amount + '==' + discount + '==' + discount_val + '==' + total)
-            $('#amount_'+i).val(amount);
-        }
-    }
-    $('#total').val(total);
-}
-
-function selectClientDiscount(userId)
-{
-    $.post("ajax_check.php", { userId: userId, task: 'checkDiscount' }, function(data) {
-        
-     jQuery.each($('#all_forms input'), function(i, val) {
-         cost_id  = val.id;
-         discount = 0;
-         if(cost_id.search("discount_")>=0)
-         {
-             $('#'+cost_id).val(discount);
-         }
-     });
-     if(data!='')
-     {
-        datas = data.split('~!~');
-        for(var i=0;i<datas.length;i++)
-        {
-            var data_new = datas[i].split('~~~');            
-            var group_id = data_new[0];
-            var discount = data_new[1];
-            
- //           alert(group_id +" " + discount);
-            jQuery.each($('#service_list_'+group_id+' input'), function(i, val) {
-                cost_id = val.id;
-                 if(cost_id.search("discount_")>=0)
-                {
-					$('#service_'+group_id).find('#discount_test').val(discount);
-					selectClientDiscountToAll(group_id);
-                
-                }
-            });
-        }
-     }
-     
-     
-    });
 }
 
 function selectClientDiscountToAll(group_id, newId)
