@@ -57,6 +57,19 @@ if($ses_userType!='user') {
 
 $default_theme = ($user_theme!='') ? $user_theme : $company_theme;
 
+//$theme_sql = "SELECT * FROM gma_theme WHERE 1 ORDER BY rand()";
+//$theme_rs  = mysql_query($theme_sql);
+//$theme_row = mysql_fetch_assoc($theme_rs);
+//$default_theme = $theme_row['theme'];
+
+
+$theme_rows = array();
+$theme_sql = "SELECT * FROM gma_theme WHERE 1 ORDER BY name ASC";
+$theme_rs  = mysql_query($theme_sql);
+while ($theme_row = mysql_fetch_assoc($theme_rs)) {
+	   $theme_rows[$theme_row['id']] = $theme_row;
+}
+
 function userTypes($user_type='', $flag=0, $array=0)
 {
     $userTypes = array();
@@ -178,19 +191,8 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
 }
 
 function formatMoney($number, $fractional=false) { 
- /*    if ($fractional) { 
-        $number = sprintf("%01.2f", $number); 
-    } 
-   while (true) { 
-        $replaced = preg_replace('/(-?\d+)(\d\d\d)/', '$1,$2', $number); 
-        if ($replaced != $number) { 
-            $number = $replaced; 
-        } else { 
-            break; 
-        } 
-    } */
-  $number = "R " . sprintf("%01.2f", $number); 
-  return $number; 
+    $number = "R " . sprintf("%01.2f", $number); 
+    return $number; 
 } 
 
 function paginations($totalrecord,$pagerecord,$rows,$page='page')
@@ -446,7 +448,7 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
         $order_sql   .= " AND (orderDate>='$date1' AND orderDate<='$date2')";
     }
     
-   echo $payment_sql = "SELECT *,DATE_FORMAT(date,'%Y%m%d') AS date_new,DATE_FORMAT(date,'%d/%m/%Y') AS date FROM gma_payments WHERE $payment_sql ORDER BY date ASC";
+    $payment_sql = "SELECT *,DATE_FORMAT(date,'%Y%m%d') AS date_new,DATE_FORMAT(date,'%d/%m/%Y') AS date FROM gma_payments WHERE $payment_sql ORDER BY date ASC";
     $payment_rs  = mysql_query($payment_sql);
     while ($payment_row = mysql_fetch_assoc($payment_rs))
     {
@@ -534,7 +536,7 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
             <td>Balance Forward</td>
             <td></td>
             <td></td>
-            <td>R ".formatMoney($balance_forward, true)."</td>
+            <td>".formatMoney($balance_forward, true)."</td>
         </tr>";
     }
     $balance = $balance_forward;
@@ -560,9 +562,9 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
             $result .= "<tr class='$class'>
                 <td>$date</td>
                 <td>$desc</td>
-                <td>".(($type=='payment') ? 'R '.formatMoney($amount, true) : '')."</td>
-                <td>".(($type!='payment') ? 'R '.formatMoney($amount, true) : '')."</td>
-                <td>R ".formatMoney($balance, true)."</td>
+                <td>".(($type=='payment') ? formatMoney($amount, true) : '')."</td>
+                <td>".(($type!='payment') ? formatMoney($amount, true) : '')."</td>
+                <td>".formatMoney($balance, true)."</td>
             </tr>";
         }
     }
@@ -570,7 +572,7 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
         $class = 'footer';
         $result .= "<tr class='$class'>
             <td colspan='4' style='text-align:right'><b>Current Balance&nbsp;:&nbsp;</b></td>
-            <td align='right'><b>R ".formatMoney($balance_due, true)."</b></td>
+            <td align='right'><b>".formatMoney($balance_due, true)."</b></td>
         </tr>";
     } else { 
         $result .= "<tr><td class='norecords' colspan='10'>No Records Found</td></tr>";
@@ -628,7 +630,7 @@ function invoiceDetails($orderId, $flag=0)
             if($discount_flag!=0)
                 $details .= "<td bgcolor=white class='color4'><div align=center >".$discount."%</div></td>";
                 
-            $details .= "<td bgcolor=white class='color4'><div align=right>R " .formatMoney($amount,true)."</div></td>
+            $details .= "<td bgcolor=white class='color4'><div align=right>" .formatMoney($amount,true)."</div></td>
             </tr>";
     }
     $result .= "<tr>
@@ -646,7 +648,7 @@ function invoiceDetails($orderId, $flag=0)
     
     $result .= "<tr>
                     <td colspan='".($discount_flag!=0 ? 5 : 4)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
-                    <td class='color1'><div align='right' class='style9'>R ".formatMoney($order_row['invoice_amount'], true)."</div></td>
+                    <td class='color1'><div align='right' class='style9'>".formatMoney($order_row['invoice_amount'], true)."</div></td>
                 </tr>";
         
     $order_details['invoiceId']    = $order_row['invoiceId'];    
@@ -703,7 +705,7 @@ function quotationDetails($quotationId, $flag=0)
             if($discount_flag!=0)
                 $details .= "<td bgcolor=white class='color4'><div align=center >".$discount."%</div></td>";
                 
-            $details .= "<td bgcolor=white class='color4'><div align=right>R " .formatMoney($amount,true)."</div></td>
+            $details .= "<td bgcolor=white class='color4'><div align=right>" .formatMoney($amount,true)."</div></td>
             </tr>";
      }
     $result .= "<tr>
@@ -721,7 +723,7 @@ function quotationDetails($quotationId, $flag=0)
     
     $result .= "<tr>
                     <td colspan='".($discount_flag!=0 ? 5 : 4)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
-                    <td class='color1'><div align='right' class='style9'>R ".formatMoney($quotation_row['invoice_amount'], true)."</div></td>
+                    <td class='color1'><div align='right' class='style9'>".formatMoney($quotation_row['invoice_amount'], true)."</div></td>
                 </tr>";
         
     $quotation_details['invoiceId']    = $quotation_row['invoiceId'];    

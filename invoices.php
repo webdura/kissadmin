@@ -5,42 +5,7 @@ if(isset($_REQUEST['popup']))
     include("functions.php");
 else 
     include("header.php");
-
-//if( strtolower(trim($_SESSION['ses_userType']))=='client'){
-//	if (isset($_GET['orderId']) && $_GET['orderId'] > 0) {
-//		
-//	   $order_sql = "SELECT count(id) AS orderCnt FROM gma_order WHERE gma_order.userId = " . $_SESSION['ses_userId'] .
-//	    " AND gma_order.id = " . $_GET['orderId'] ;
-//	    $order_rs  = mysql_query($order_sql);
-//		$order_row_count = mysql_fetch_assoc($order_rs);
-//		$order_row_count = $order_row_count['orderCnt'];
-//		if ($order_row_count == 0) {
-//			$smsg = "Invalid Request";
-//            return header("Location: invoices.php?msg=$smsg");
-//            exit;
-//		}
-//	}
-//} else if( strtolower(trim($_SESSION['ses_userType']))=='super_admin'){
-//	if (isset($_GET['orderId']) && $_GET['orderId'] > 0) {
-//		
-//	   $order_sql = "SELECT count(id) AS orderCnt FROM gma_order, gma_logins ".
-//	   " WHERE gma_order.userId = gma_logins.userId " .
-//	   " AND gma_logins.companyId = " . $_SESSION['ses_companyId'] .
-//	   " AND gma_order.id = " . $_GET['orderId'] ; 
-//	    $order_rs  = mysql_query($order_sql);
-//		$order_row_count = mysql_fetch_assoc($order_rs);
-//		$order_row_count = $order_row_count['orderCnt'];
-//		if ($order_row_count == 0) {
-//			$smsg = "Invalid Request";
-//            return header("Location: invoices.php?msg=$smsg");
-//            exit;
-//		}
-//	}
-//	
-//	
-//}
-
-
+    
 $action    = (isset($_REQUEST['action']) && $_REQUEST['action']!='') ? $_REQUEST['action'] : 'list';
 $perPage   = ($_SESSION['perpageval']!='') ? $_SESSION['perpageval'] : 50;
 $pageNum   = ($_REQUEST['page']!='') ? $_REQUEST['page'] : 1;
@@ -296,15 +261,15 @@ if($action=='add' || $action=='edit') {
     <table width="100%" class="list" cellpadding="0" cellspacing="0">
         <tr>
             <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
-            <th width="15%"><span>Invoice Id.</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoiceId&order=DESC" class="desc"></a></th>
-            <th width="15%"><span>Order Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderDate&order=DESC" class="desc"></a></th>
+            <th width="10%">Invoice Id.<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoiceId&order=DESC" class="desc"></a></th>
+            <th width="12%">Order Date<a href="?<?=$queryString?>&orderby=orderDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderDate&order=DESC" class="desc"></a></th>
             <? if($ses_loginType!='user') { ?>
-                <th><span>Client</span>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=businessName&order=DESC" class="desc"></a></th>
+                <th>Client<a href="?<?=$queryString?>&orderby=businessName&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=businessName&order=DESC" class="desc"></a></th>
             <? } ?>
-            <th width="10%"><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC" class="desc"></a></th>
-            <th width="10%"><span>Status</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderStatus&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderStatus&order=DESC" class="desc"></a></th>
-            <th width="10%"><span>Sent</span>&nbsp;</th>
-            <th width="20%">Action</th>
+            <th width="10%">Total<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC" class="desc"></a></th>
+            <th width="9%">Status<a href="?<?=$queryString?>&orderby=orderStatus&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderStatus&order=DESC" class="desc"></a></th>
+            <th width="9%">Sent<a href="?<?=$queryString?>&orderby=sendDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sendDate&order=DESC" class="desc"></a></th>
+            <th width="27%">Action</th>
         </tr>  
         <?php
         $j=0;

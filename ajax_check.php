@@ -125,15 +125,15 @@ switch ($task)
         }
         break;
         
-    case 'changeTheme':
-        $theme_id = (isset($_REQUEST['theme_id']) && $_REQUEST['theme_id']>0) ? $_REQUEST['theme_id'] : 0;
-        $theme_id = GetSQLValueString($theme_id, 'int');
-        
-        $theme_sql = "SELECT * FROM gma_theme WHERE id=$theme_id";
-        $theme_rs  = mysql_query($theme_sql);
-        $theme_row = mysql_fetch_assoc($theme_rs);
-        echo json_encode($theme_row);
-        break;
+//    case 'changeTheme':
+//        $theme_id = (isset($_REQUEST['theme_id']) && $_REQUEST['theme_id']>0) ? $_REQUEST['theme_id'] : 0;
+//        $theme_id = GetSQLValueString($theme_id, 'int');
+//        
+//        $theme_sql = "SELECT * FROM gma_theme WHERE id=$theme_id";
+//        $theme_rs  = mysql_query($theme_sql);
+//        $theme_row = mysql_fetch_assoc($theme_rs);
+//        echo json_encode($theme_row);
+//        break;
         
     case 'userOrders':
         $user_id    = (isset($_REQUEST['user_id']) && $_REQUEST['user_id']>0) ? $_REQUEST['user_id'] : 0;
@@ -196,7 +196,7 @@ switch ($task)
         $pending_amount -= $order_row['invoice_amount'];
         // echo "$order_sql == $pending_amount<br>";
         
-       $results = array('orders'=>$orders, 'pending_amount'=>$pending_amount, 'pending_amount_div'=>'R '.formatMoney($pending_amount, true));
+       $results = array('orders'=>$orders, 'pending_amount'=>$pending_amount, 'pending_amount_div'=>formatMoney($pending_amount, true));
         echo json_encode($results);
         break;
         
@@ -242,5 +242,14 @@ switch ($task)
         }
         echo json_encode($result);
         break;
+        
+    case 'changeTheme':
+        $theme_id  = (isset($_REQUEST['theme_id'])) ? $_REQUEST['theme_id'] : 0;
+        $theme_id  = GetSQLValueString($theme_id, 'int');
+        
+        if($ses_userType!='user') {
+            $user_sql = "UPDATE gma_admin_details SET theme_id='$theme_id' WHERE userId=$ses_userId";
+            mysql_query($user_sql);
+        }
+        break;
 }
-exit;

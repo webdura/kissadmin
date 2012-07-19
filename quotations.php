@@ -8,41 +8,6 @@ else
     
 include("config.php");
 
-//if( strtolower(trim($_SESSION['ses_userType']))=='client'){
-//	if (isset($_GET['quotationId']) && $_GET['quotationId'] > 0) {
-//		
-//	   $order_sql = "SELECT count(id) AS orderCnt FROM gma_quotation WHERE gma_order.userId = " . $_SESSION['ses_userId'] .
-//	    " AND gma_quotation.id = " . $_GET['quotationId'] ;
-//	    $order_rs  = mysql_query($order_sql);
-//		$order_row_count = mysql_fetch_assoc($order_rs);
-//		$order_row_count = $order_row_count['orderCnt'];
-//		if ($order_row_count == 0) {
-//			$smsg = "Invalid Request";
-//            return header("Location: quotations.php?msg=$smsg");
-//            exit;
-//		}
-//	}
-//} else if( strtolower(trim($_SESSION['ses_userType']))=='super_admin'){
-//	if (isset($_GET['quotationId']) && $_GET['quotationId'] > 0) {
-//		
-//	   $order_sql = "SELECT count(id) AS orderCnt FROM gma_order, gma_logins ".
-//	   " WHERE gma_quotation.userId = gma_logins.userId " .
-//	   " AND gma_logins.companyId = " . $_SESSION['ses_companyId'] .
-//	   " AND gma_quotation.id = " . $_GET['quotationId'] ; 
-//	    $order_rs  = mysql_query($order_sql);
-//		$order_row_count = mysql_fetch_assoc($order_rs);
-//		$order_row_count = $order_row_count['orderCnt'];
-//		if ($order_row_count == 0) {
-//			$smsg = "Invalid Request";
-//            return header("Location: quotations.php?msg=$smsg");
-//            exit;
-//		}
-//	}
-//	
-//	
-//}
-
-
 $action    = (isset($_REQUEST['action']) && $_REQUEST['action']!='') ? $_REQUEST['action'] : 'list';
 $perPage   = ($_SESSION['perpageval']!='') ? $_SESSION['perpageval'] : 50;
 $pageNum   = ($_REQUEST['page']!='') ? $_REQUEST['page'] : 1;
@@ -165,27 +130,25 @@ switch ($action)
         $total = 0;
         if($quotationId>0)
         {
-            $order_sql = "SELECT * FROM gma_quotation WHERE id='$quotationId'";
+            $order_sql = "SELECT * FROM gma_quotation, gma_logins WHERE gma_logins.userId=gma_quotation.userId AND gma_logins.companyId='$ses_companyId' AND id='$quotationId'";
+            if($ses_loginType=='user')
+                $order_sql .= " AND gma_logins.userId='$ses_userId'";
             $order_rs  = mysql_query($order_sql);
+            if(mysql_num_rows($order_rs)==0) {
+                $smsg = "Invalid Request";
+                return header("Location: invoices.php?msg=$smsg");
+                exit;
+            }
             $order_row = mysql_fetch_assoc($order_rs);
             $userId    = $order_row['userId'];
             $total     = $order_row['invoice_amount'];
             
-            $order_details     = array();
+            $orderDetails      = array();
             $order_detail_sql  = "SELECT * FROM gma_quotation_details WHERE quotationId='$quotationId'";
             $order_detail_rs   = mysql_query($order_detail_sql);
             while($order_detail_row = mysql_fetch_assoc($order_detail_rs))
             {
-                $service_id = ($order_detail_row['service_id']>0) ? $order_detail_row['service_id'] : 0;
-                
-                if($service_id>0)
-                    $order_details[$order_detail_row['group_id']][$service_id] = $order_detail_row;
-                else
-                    $order_details[$order_detail_row['group_id']][] = $order_detail_row;
-            }
-            foreach ($order_details as $group_id=>$orders)
-            {
-                $allGroups[$group_id]['orders'] = $orders;
+                 $orderDetails[] = $order_detail_row;
             }
         }
         
@@ -327,9 +290,10 @@ switch ($action)
         $offset  = ($pageNum - 1) * $perPage;
         $orderBy = ($_REQUEST['orderby']!='') ? 'ORDER BY '.$_REQUEST['orderby'].' '.$_REQUEST['order'] : 'ORDER BY invoiceId DESC ';
         
-        $order_sql   = ($srchtxt!='') ? "(userName LIKE '$srchtxt%' OR invoiceId LIKE '$srchtxt%')" : '1';
-        $order_sql  .= ($ses_loginType=='user') ? " AND gma_quotation.userId='$ses_userId'" : '';
-        $order_sql  .= " AND companyId='$ses_companyId'";
+        $order_sql   = ($userId!='') ? "gma_quotation.userId='$userId' AND " : '';
+        $order_sql  .= ($srchtxt!='') ? "(userName LIKE '$srchtxt%' OR invoiceId LIKE '$srchtxt%') AND " : '';
+        $order_sql  .= ($ses_loginType=='user') ? "gma_quotation.userId='$ses_userId' AND " : '';
+        $order_sql  .= "companyId='$ses_companyId'";
         $order_sql   = "SELECT gma_quotation.*,businessName,DATE_ADD(orderDate, INTERVAL 7 HOUR) AS orderDate FROM gma_quotation LEFT JOIN gma_logins ON gma_quotation.userId=gma_logins.userId  LEFT JOIN gma_user_details ON gma_quotation.userId=gma_user_details.userId WHERE $order_sql GROUP BY invoiceId $orderBy";
         // echo $order_sql; exit;
         $order_rs    = mysql_query($order_sql);
@@ -348,10 +312,11 @@ switch ($action)
         
         if($ses_loginType!='user') {
             $links = '<a href="quotations.php?action=add" title="Create New Quotation">Create New Quotation</a>&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
-            $add_url    = 'quotations.php?action=add';
+            $add_url    = 'quotations.php?action=add&userId='.$userId;
             $del_url    = 'javascript:void(0);';
             $del_click  = 'deleteAll();';
             $search_box = true;
+            $user_search = true;
         }
         break;
 }
@@ -368,15 +333,15 @@ if($action=='add' || $action=='edit') {
     <table width="100%" class="list" cellpadding="0" cellspacing="0">
         <tr>
             <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
-            <th width="15%"><span>Invoice Id.</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoiceId&order=DESC" class="desc"></a></th>
-            <th width="15%"><span>Order Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderDate&order=DESC" class="desc"></a></th>
+            <th width="10%">Invoice Id.<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoiceId&order=DESC" class="desc"></a></th>
+            <th width="12%">Order Date<a href="?<?=$queryString?>&orderby=orderDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderDate&order=DESC" class="desc"></a></th>
             <? if($ses_loginType!='user') { ?>
-                <th><span>Client</span>&nbsp;<a href="?<?=$queryString?>&orderby=businessName&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=businessName&order=DESC" class="desc"></a></th>
+                <th>Client<a href="?<?=$queryString?>&orderby=businessName&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=businessName&order=DESC" class="desc"></a></th>
             <? } ?>
-            <th width="10%"><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC" class="desc"></a></th>
-            <th width="10%"><span>Status</span>&nbsp;<a href="?<?=$queryString?>&orderby=orderStatus&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderStatus&order=DESC" class="desc"></a></th>
-            <th width="10%"><span>Sent</span>&nbsp;</th>
-            <th width="28%">Action</th>
+            <th width="10%">Total<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC" class="desc"></a></th>
+            <th width="9%">Status<a href="?<?=$queryString?>&orderby=orderStatus&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderStatus&order=DESC" class="desc"></a></th>
+            <th width="9%">Sent<a href="?<?=$queryString?>&orderby=sendDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sendDate&order=DESC" class="desc"></a></th>
+            <th width="27%">Action</th>
         </tr>  
         <?php
         $j=0;
@@ -391,7 +356,7 @@ if($action=='add' || $action=='edit') {
             ?>
             <tr class="<?=$class?>">
                 <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
-                <td><?=$invoiceId?></td>
+                <td><?=$quotationId?></td>
                 <td><?=dateFormat($order_row['orderDate'], 'N')?></td>
                 <? if($ses_loginType!='user') { ?> <td><?=$order_row['businessName']?></td> <? } ?>
                 <td><?=formatMoney($order_row['invoice_amount'], true)?></td>

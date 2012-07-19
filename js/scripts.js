@@ -352,3 +352,9 @@ function checkOrderAmount() {
     
     return false;
 }
+
+function changeTheme(theme_id) {
+    $.post("ajax_check.php", { theme_id: theme_id, task: 'changeTheme' }, function(data) {
+        $('#style_link').attr('href', 'style.php?time=11111')
+    });;    
+}

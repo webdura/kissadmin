@@ -71,12 +71,6 @@ if(isset($_POST['theme_id']) && $_POST['theme_id']>0)
     return header("Location: themes.php?msg=updated");
 }
 
-$theme_rows = array();
-$theme_sql = "SELECT * FROM gma_theme WHERE 1 ORDER BY name ASC";
-$theme_rs  = mysql_query($theme_sql);
-while ($theme_row = mysql_fetch_assoc($theme_rs)) {
-	   $theme_rows[$theme_row['id']] = $theme_row;
-}
 
 $page_title = 'Theme';
 include('sub_header.php');

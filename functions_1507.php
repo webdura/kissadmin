@@ -524,7 +524,7 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
             <td>Balance Forward</td>
             <td align='right'></td>
             <td align='right'></td>
-            <td align='right'>R ".formatMoney($balance_forward, true)."</td>
+            <td align='right'>".formatMoney($balance_forward, true)."</td>
         </tr>";
     }
     $balance = $balance_forward;
@@ -550,9 +550,9 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
             $result .= "<tr class='$class'>
                 <td>$date</td>
                 <td>$desc</td>
-                <td align='right'>".(($type=='payment') ? 'R '.formatMoney($amount, true) : '')."</td>
-                <td align='right'>".(($type!='payment') ? 'R '.formatMoney($amount, true) : '')."</td>
-                <td align='right'>R ".formatMoney($balance, true)."</td>
+                <td align='right'>".(($type=='payment') ? formatMoney($amount, true) : '')."</td>
+                <td align='right'>".(($type!='payment') ? formatMoney($amount, true) : '')."</td>
+                <td align='right'>".formatMoney($balance, true)."</td>
             </tr>";
         }
     }
@@ -565,7 +565,7 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
         
         $result .= "<tr class='$class' style='height:30px;'>
             <td colspan='4' align='right'><b>Current Balance&nbsp;:&nbsp;</b></td>
-            <td align='right'><b>R ".formatMoney($balance_due, true)."</b></td>
+            <td align='right'><b>".formatMoney($balance_due, true)."</b></td>
         </tr>";
     } else { 
         $result .= "<tr><td class='message' colspan='10'>No Records Found</td></tr>";
@@ -630,7 +630,7 @@ function invoiceDetails_old($orderId, $flag=0)
             if($discount_flag!=0)
                 $details .= "<td bgcolor=white class='color4'><div align=center >".$discount."%</div></td>";
                 
-            $details .= "<td bgcolor=white class='color4'><div align=right>R " .formatMoney($amount,true)."</div></td>
+            $details .= "<td bgcolor=white class='color4'><div align=right>" .formatMoney($amount,true)."</div></td>
             </tr>";
         }
     }
@@ -649,7 +649,7 @@ function invoiceDetails_old($orderId, $flag=0)
     
     $result .= "<tr>
                     <td colspan='".($discount_flag!=0 ? 5 : 4)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
-                    <td class='color1'><div align='right' class='style9'>R ".formatMoney($order_row['invoice_amount'], true)."</div></td>
+                    <td class='color1'><div align='right' class='style9'>".formatMoney($order_row['invoice_amount'], true)."</div></td>
                 </tr>";
     
     $order_row['date']           = date("j F Y", strtotime($order_row['orderDate']));
@@ -708,7 +708,7 @@ function invoiceDetails($orderId, $flag=0)
             if($discount_flag!=0)
                 $details .= "<td bgcolor=white class='color4'><div align=center >".$discount."%</div></td>";
                 
-            $details .= "<td bgcolor=white class='color4'><div align=right>R " .formatMoney($amount,true)."</div></td>
+            $details .= "<td bgcolor=white class='color4'><div align=right>" .formatMoney($amount,true)."</div></td>
             </tr>";
         }
     }
@@ -727,7 +727,7 @@ function invoiceDetails($orderId, $flag=0)
     
     $result .= "<tr>
                     <td colspan='".($discount_flag!=0 ? 5 : 4)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
-                    <td class='color1'><div align='right' class='style9'>R ".formatMoney($order_row['invoice_amount'], true)."</div></td>
+                    <td class='color1'><div align='right' class='style9'>".formatMoney($order_row['invoice_amount'], true)."</div></td>
                 </tr>";
         
     $order_details['invoiceId']    = $order_row['invoiceId'];    
@@ -792,7 +792,7 @@ function quotationDetails_old($orderId, $flag=0)
             if($discount_flag!=0)
                 $details .= "<td bgcolor=white class='color4'><div align=center >".$discount."%</div></td>";
                 
-            $details .= "<td bgcolor=white class='color4'><div align=right>R " .formatMoney($amount,true)."</div></td>
+            $details .= "<td bgcolor=white class='color4'><div align=right>" .formatMoney($amount,true)."</div></td>
             </tr>";
         }
     }
@@ -811,7 +811,7 @@ function quotationDetails_old($orderId, $flag=0)
     
     $result .= "<tr>
                     <td colspan='".($discount_flag!=0 ? 5 : 4)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
-                    <td class='color1'><div align='right' class='style9'>R ".formatMoney($order_row['invoice_amount'], true)."</div></td>
+                    <td class='color1'><div align='right' class='style9'>".formatMoney($order_row['invoice_amount'], true)."</div></td>
                 </tr>";
     
     $order_row['date']           = date("j F Y", strtotime($order_row['orderDate']));
@@ -870,7 +870,7 @@ function quotationDetails($quotationId, $flag=0)
             if($discount_flag!=0)
                 $details .= "<td bgcolor=white class='color4'><div align=center >".$discount."%</div></td>";
                 
-            $details .= "<td bgcolor=white class='color4'><div align=right>R " .formatMoney($amount,true)."</div></td>
+            $details .= "<td bgcolor=white class='color4'><div align=right>" .formatMoney($amount,true)."</div></td>
             </tr>";
         }
     }
@@ -889,7 +889,7 @@ function quotationDetails($quotationId, $flag=0)
     
     $result .= "<tr>
                     <td colspan='".($discount_flag!=0 ? 5 : 4)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
-                    <td class='color1'><div align='right' class='style9'>R ".formatMoney($quotation_row['invoice_amount'], true)."</div></td>
+                    <td class='color1'><div align='right' class='style9'>".formatMoney($quotation_row['invoice_amount'], true)."</div></td>
                 </tr>";
         
     $quotation_details['invoiceId']    = $quotation_row['invoiceId'];    

@@ -92,9 +92,9 @@ include('sub_header.php');
                 
                 echo '<tr>
                     <td class="'.$class.'"><strong>'.$text.':</strong></td>
-                    <td class="'.$class.'" style="padding-left:15px;">R '.str_replace(".00","",formatMoney($creditTotal,true)).'</td>									
-                    <td class="'.$class.'">R '.str_replace(".00","",formatMoney($otherTotal,true)).'</td>
-                    <td class="'.$class.'">R '.str_replace(".00","",formatMoney($totalCount,true)).'</td>
+                    <td class="'.$class.'" style="padding-left:15px;">'.formatMoney($creditTotal,true).'</td>									
+                    <td class="'.$class.'">'.formatMoney($otherTotal,true).'</td>
+                    <td class="'.$class.'">'.formatMoney($totalCount,true).'</td>
                 </tr>';
                 $i++;
             }						
@@ -102,7 +102,7 @@ include('sub_header.php');
             <tr><td colspan="4">&nbsp;</td></tr>
             <tr>
                 <td width="28%"><strong>Average:</td>           
-                <td class="even" style="padding-left:15px;">R <?php $creditsTotal1 = $creditsTotal/13; echo formatMoney($creditsTotal1,true); ?></td>
+                <td class="even" style="padding-left:15px;"><?php $creditsTotal1 = $creditsTotal/13; echo formatMoney($creditsTotal1,true); ?></td>
                 <td>R <?php $othersTotal1 = $othersTotal/13; echo formatMoney($othersTotal1,true); ?></td>
                 <td>R <?php $OverAlltotal1 = $OverAlltotal/13; echo formatMoney($OverAlltotal1,true); ?></td>
             </tr>
@@ -123,7 +123,7 @@ include('sub_header.php');
                     $sendsize = ($sendSizeResAry['sendsize']=='')?0:$sendSizeResAry['sendsize'];
                     echo '<tr>
                         <td class="'.$class.'"><strong>'.$text.':</strong></td>
-                        <td class="'.$class.'" style="padding-left:15px;">'.str_replace(".00","",formatMoney($sendsize,true)).'</td>	
+                        <td class="'.$class.'" style="padding-left:15px;">'.formatMoney($sendsize,true).'</td>	
                     </tr>';
                     $i++;
                 }						
@@ -131,7 +131,7 @@ include('sub_header.php');
                 <tr><td>&nbsp;</td></tr>
                 <tr>
                     <td width="45%"><strong>Average:</strong></td>
-                    <td style="padding-left:15px;"><?php $val1 = $val/13; echo str_replace(".00","",formatMoney($val1,true));?></td>
+                    <td style="padding-left:15px;"><?php $val1 = $val/13; echo formatMoney($val1,true);?></td>
                 </tr>
                 <tr><td>&nbsp;</td></tr>
             </table>

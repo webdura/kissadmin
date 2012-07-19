@@ -63,13 +63,6 @@ if(isset($_POST['userName']))
     exit;
 }
 
-$theme_rows = array();
-$theme_sql = "SELECT * FROM gma_theme WHERE 1 ORDER BY name ASC";
-$theme_rs  = mysql_query($theme_sql);
-while ($theme_row = mysql_fetch_assoc($theme_rs)) {
-	   $theme_rows[$theme_row['id']] = $theme_row;
-}
-
 $page_title = "Business Details";
 include_once('sub_header.php');
 ?>

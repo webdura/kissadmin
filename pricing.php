@@ -22,7 +22,7 @@ while ($service_row = mysql_fetch_assoc($service_rs)) {
 	   }
 	   echo '<tr class="'.(($row_flag++)%2==1 ? '' : 'altrow').'">
               <td width="300">'.$service_row['service_name'].'</td>
-              <td>R '.formatMoney($service_row['amount'],true).'</td>
+              <td>'.formatMoney($service_row['amount'],true).'</td>
           </tr>';
 }
 if($group_id!=0) echo '</table>';

@@ -378,7 +378,7 @@ if($action=='list') { ?>
             <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
             <td><?=$payment_row['businessName']?></td>
             <td><?=$payment_row['date']?></td>
-            <td>R <?=formatMoney($total, true)?></td>
+            <td><?=formatMoney($total, true)?></td>
             <?php if($ses_loginType!='user') { ?>
                 <td class="buttons"><a href="payments.php?action=edit&payment_id=<?=$paymentId?>&userId=<?=$userId?>&page=<?=$pageNum?>" class="btn_style">Edit</a>&nbsp;<a href="payments.php?action=delete&payment_id=<?=$paymentId?>&userId=<?=$userId?>&page=<?=$pageNum?>" onclick="return window.confirm('Are you sure to delete this ?');" class="btn_style">Delete</a></td>
             <?php } ?>

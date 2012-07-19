@@ -219,7 +219,7 @@ if($action=='list') { ?>
                 <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
                 <td><?=$service_row['group_name']?></td>
                 <td><?=$service_row['service_name']?></td>
-                <td>R <?=formatMoney($service_row['amount'], true)?></td>
+                <td><?=formatMoney($service_row['amount'], true)?></td>
                 <td><input type="text" value="<?=$service_row['order']?>" onkeyup="changeOder('<?=$auto_id?>', 'serviceorder', this.value)" size="5" style="text-align:center;"></td>
                 <td><?=($service_row['status']==1 ? 'Active' : 'Inactive')?></td>
                 <td><a href="services.php?action=edit&service_id=<?=$auto_id?>" class="btn_style">Edit</a>&nbsp;<a href="services.php?action=delete&service_id=<?=$auto_id?>" onclick="return window.confirm('Are you sure to delete this ?');" class="btn_style">Delete</a></td>

@@ -68,7 +68,7 @@ if($action=='save' || $action=='view' || $action=='email')
     
     $array_values['statement']      = $payment_details['result'];
     $array_values['statement_date'] = date('d/m/Y');
-    $array_values['amount_due']     = 'R '.formatMoney($balance_due, true);
+    $array_values['amount_due']     = formatMoney($balance_due, true);
     
     $result = emailSend('statement', $array_values, null, 1);
         
@@ -136,14 +136,14 @@ $payment_details = myAccount($userId, $date_range, $startdate, $enddate);
 $details = $payment_details['result'];
 $title   = $payment_details['title'];
 
-echo $user_sql  = "SELECT * FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND gma_user_details.userId='$userId' GROUP BY userName ORDER BY businessName ASC"; 
+$user_sql  = "SELECT * FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND gma_user_details.userId='$userId' GROUP BY userName ORDER BY businessName ASC"; 
 $user_rs   = mysql_query($user_sql);
 $user_row  = mysql_fetch_assoc($user_rs);
 $userName     = $user_row['firstName'].' '.$user_row['lastName'];
 $userName     = $user_row['userName'];
 $businessName = $user_row['businessName'];
 
-echo $user_sql  = "SELECT * FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND gma_logins.companyId='$ses_companyId' GROUP BY userName ORDER BY businessName ASC"; 
+$user_sql  = "SELECT * FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND gma_logins.companyId='$ses_companyId' GROUP BY userName ORDER BY businessName ASC"; 
 $user_rs   = mysql_query($user_sql);
 
 $page_title   = 'Account Activity';

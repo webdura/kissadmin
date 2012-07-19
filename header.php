@@ -257,7 +257,7 @@ $row_flag = 1;
 <head>
     <title>KissAdmin</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link href="style.php" rel="stylesheet" type="text/css" />
+    <link id="style_link" href="style.php" rel="stylesheet" type="text/css" />
     <script src="js/jquery-1.4.4.min.js" type="text/JavaScript"></script>
     <script src="js/jquery.validate.js" type="text/JavaScript"></script>
     <script src="js/animatedcollapse.js" type="text/JavaScript"></script>
@@ -309,6 +309,17 @@ $row_flag = 1;
         <ul>
             <? foreach ($main_menu as $key=>$menu) { ?>
                 <li><a href="<?=$menu['filename']?>" class="<?=$menu['class']?>"></a></li>
+            <? } ?>
+            <? if($ses_userType!='user') { ?>
+                <li class="theme_sel">
+                    Theme : 
+                    <select class="selectbox" name="user_theme_id" id="user_theme_id" style="width:150px" onchange="changeTheme(this.value)">
+                        <option value="0">Company Theme</option>
+                        <? foreach ($theme_rows as $theme_id=>$theme_row) { ?>
+                            <option value="<?=$theme_id?>" <?=($user_theme_id==$theme_id ? 'selected' : '')?>><?=$theme_row['name']?></option>
+                        <? } ?>
+                    </select>
+                </li>
             <? } ?>
         </ul> 
     </div>
