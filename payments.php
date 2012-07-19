@@ -15,20 +15,24 @@ $perPage    = ($_SESSION['perpageval']!='') ? $_SESSION['perpageval'] : 50;
 $pageNum    = ($_REQUEST['page']!='') ? $_REQUEST['page'] : 1;
 $pending_amount = 0;
 
-if(isset($_REQUEST['userId']) && $_REQUEST['userId']>0){
+if(isset($_REQUEST['userId']) ){
 	if($ses_loginType!='user')
-		$userId = $_REQUEST['userId'];
+		$userId = GetSQLValueString($_REQUEST['userId'], 'int') ;
 	else 
 		$userId = $ses_userId;
-	
-	$_SESSION['clientId'] = $userId;
 } else {
 	if(isset($_SESSION['clientId']) && $_SESSION['clientId']>0)
 		$userId = $_SESSION['clientId'];
-	else 
-		$userId = $ses_userId;
+	else{ 
+		if($ses_loginType!='user')
+			$userId = 0; 
+		else 
+			$userId = $ses_userId;
+	}
 	
 }
+	
+	$_SESSION['clientId'] = $userId;
 
 $payment_sql = "SELECT * FROM gma_payments,gma_logins,gma_user_details WHERE gma_logins.userId=gma_user_details.userId AND gma_logins.userId=gma_payments.userId AND gma_logins.companyId='$ses_companyId'";
 switch ($action)
@@ -43,7 +47,7 @@ switch ($action)
             unset($_POST['orderId']);
             unset($_POST['payment_id']);
             unset($_POST['pending_amount']);
-            
+            print_r($orderIds);
             $values = '';
             foreach ($_POST AS $name=>$value)
             {
@@ -53,22 +57,46 @@ switch ($action)
             $values .= ",created=NOW()";
             if($values!='')
             {
-                $sql = "INSERT INTO gma_payments SET $values";
+                $sql = "INSERT INTO gma_payments SET $values"; 
                 mysql_query($sql);
                 $payment_id = mysql_insert_id();
             
+                $paidAmount = $_POST['amount'];
                 if($payment_id>0) {
                     foreach ($orderIds as $orderId) {
                         
+                    	if($paidAmount <= 0)
+                    		break;
+                    	                   	
                         $order_sql = "SELECT * FROM gma_order WHERE id='$orderId'";
                         $order_rs  = mysql_query($order_sql);
                         $order_row = mysql_fetch_assoc($order_rs);
-                        $amount    = $order_row['invoice_amount'];
                         
-                        $sql = "INSERT INTO gma_payment_order SET orderId='$orderId', paymentId='$payment_id', amount='$amount'";
-                        mysql_query($sql);
-                        $sql = "UPDATE gma_order SET orderStatus='1' WHERE id='$orderId'";
-                        mysql_query($sql);    
+		            	$paid_sql = "SELECT orderId, SUM(amount) AS paidAmount FROM gma_payment_order ".
+		            				" WHERE orderId= " . $order_row['id'] .
+		            				" GROUP BY orderId";
+			            $paid_rs  = mysql_query($paid_sql);
+			            if(mysql_num_rows($paid_rs)>0) {
+		                	$paid_row = mysql_fetch_assoc($paid_rs);
+		                	$paidAmt = $paid_row['paidAmount'];
+			            }
+		                else
+		                	$paidAmt = 0;
+                        
+                        $amount    = $order_row['invoice_amount'] - $paidAmt;
+                        
+                        if ($amount <= $paidAmount ) {
+	                        $sql = "INSERT INTO gma_payment_order SET orderId='$orderId', paymentId='$payment_id', amount='$amount'";
+	                        mysql_query($sql);
+	                        $sql = "UPDATE gma_order SET orderStatus='1' WHERE id='$orderId'";
+	                        mysql_query($sql);   
+	                        $paidAmount = $paidAmount - $amount;
+                        } 
+                        else {
+	                        $sql = "INSERT INTO gma_payment_order SET orderId='$orderId', paymentId='$payment_id', amount='$paidAmount'";
+	                        mysql_query($sql);                        	
+	                        $paidAmount = $paidAmount - $amount;
+                        }
                     }
                 }
                 
@@ -122,16 +150,40 @@ switch ($action)
                 $sql = "DELETE FROM gma_payment_order WHERE paymentId='$payment_id'";
                 mysql_query($sql);
                 
-                foreach ($orderIds as $orderId) {                    
-                    $order_sql = "SELECT * FROM gma_order WHERE id='$orderId'";
-                    $order_rs  = mysql_query($order_sql);
-                    $order_row = mysql_fetch_assoc($order_rs);
-                    $amount    = $order_row['invoice_amount'];
-                    
-                    $sql = "INSERT INTO gma_payment_order SET orderId='$orderId', paymentId='$payment_id', amount='$amount'";
-                    mysql_query($sql);
-                    $sql = "UPDATE gma_order SET orderStatus='1' WHERE id='$orderId'";
-                    mysql_query($sql);    
+                $paidAmount = $_POST['amount'];
+                foreach ($orderIds as $orderId) { 
+                    	if($paidAmount <= 0)
+                    		break;
+                    	                   	
+                        $order_sql = "SELECT * FROM gma_order WHERE id='$orderId'";
+                        $order_rs  = mysql_query($order_sql);
+                        $order_row = mysql_fetch_assoc($order_rs);
+                        
+		            	$paid_sql = "SELECT orderId, SUM(amount) AS paidAmount FROM gma_payment_order ".
+		            				" WHERE orderId= " . $order_row['id'] .
+		            				" GROUP BY orderId";
+			            $paid_rs  = mysql_query($paid_sql);
+			            if(mysql_num_rows($paid_rs)>0) {
+		                	$paid_row = mysql_fetch_assoc($paid_rs);
+		                	$paidAmt = $paid_row['paidAmount'];
+			            }
+		                else
+		                	$paidAmt = 0;
+                        
+                        $amount    = $order_row['invoice_amount'] - $paidAmt;
+                	                    
+                        if ($amount <= $paidAmount ) {
+	                        $sql = "INSERT INTO gma_payment_order SET orderId='$orderId', paymentId='$payment_id', amount='$amount'";
+	                        mysql_query($sql);
+	                        $sql = "UPDATE gma_order SET orderStatus='1' WHERE id='$orderId'";
+	                        mysql_query($sql);   
+	                        $paidAmount = $paidAmount - $amount;
+                        } 
+                        else {
+	                        $sql = "INSERT INTO gma_payment_order SET orderId='$orderId', paymentId='$payment_id', amount='$paidAmount'";
+	                        mysql_query($sql);
+	                        $paidAmount = $paidAmount - $amount;                        	
+                        }
                 }
                         
                 header("Location: payments.php?msg=updated");
@@ -296,6 +348,7 @@ switch ($action)
 $page_title = 'Payments';
 
 include('sub_header.php');
+
 if($action=='list') { ?>
 
 <form method="POST" id="listForm" name='listForm'>
@@ -307,7 +360,7 @@ if($action=='list') { ?>
         <!--<th>Description</th>-->
         <th width="20%"><span>Date</span>&nbsp;<a href="?<?=$queryString?>&orderby=date&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=date&order=DESC" class="desc"></a></th>
         <th width="20%"><span>Total</span>&nbsp;<a href="?<?=$queryString?>&orderby=amount&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=amount&order=DESC" class="desc"></a></th>
-        <?php if($ses_userType!='user') { ?>
+        <?php if($ses_loginType!='user') { ?>
             <th width="10%">Delete</th>
         <? } ?>           		
     </tr>  
@@ -326,7 +379,7 @@ if($action=='list') { ?>
             <td><?=$payment_row['businessName']?></td>
             <td><?=$payment_row['date']?></td>
             <td>R <?=formatMoney($total, true)?></td>
-            <?php if($ses_userType!='user') { ?>
+            <?php if($ses_loginType!='user') { ?>
                 <td class="buttons"><a href="payments.php?action=edit&payment_id=<?=$paymentId?>&userId=<?=$userId?>&page=<?=$pageNum?>" class="btn_style">Edit</a>&nbsp;<a href="payments.php?action=delete&payment_id=<?=$paymentId?>&userId=<?=$userId?>&page=<?=$pageNum?>" onclick="return window.confirm('Are you sure to delete this ?');" class="btn_style">Delete</a></td>
             <?php } ?>
         </tr>

@@ -42,30 +42,26 @@ include_once('sub_header.php');
 ?>
 
 <form method="POST" id="accountForm" name='accountForm'>
-<table width="100%" class="list" cellpadding="0" cellspacing="0">
+<table class="list" cellpadding="0" cellspacing="0" align="center">
     <tr>
         <th>Terms Details</th>
-        <th>Grade 1</th>
-        <th>Grade 2</th>
-        <th>Grade 3</th>
+        <th>Days</th>
+        <th>Discount</th>
     </tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Payment due in (days)</td>
         <td width="20%"><input type="text" name="paymentDue[1]" class="required textbox number" value="<?=$account_array['paymentDue'][1]?>" style="width:100px"></td>
         <td width="20%"><input type="text" name="paymentDue[2]" class="required textbox number" value="<?=$account_array['paymentDue'][2]?>" style="width:100px"></td>
-        <td width="20%"><input type="text" name="paymentDue[3]" class="required textbox number" value="<?=$account_array['paymentDue'][3]?>" style="width:100px"></td>
     </tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Overdue notice in (days)</td>
         <td><input type="text" name="overdueNotice[1]" class="required textbox number" value="<?=$account_array['overdueNotice'][1]?>" style="width:100px"></td>
         <td><input type="text" name="overdueNotice[2]" class="required textbox number" value="<?=$account_array['overdueNotice'][2]?>" style="width:100px"></td>
-        <td><input type="text" name="overdueNotice[3]" class="required textbox number" value="<?=$account_array['overdueNotice'][3]?>" style="width:100px"></td>
     </tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Suspension warning in (days)</td>
         <td><input type="text" name="suspensionWarning[1]" class="required textbox number" value="<?=$account_array['suspensionWarning'][1]?>" style="width:100px"></td>
         <td><input type="text" name="suspensionWarning[2]" class="required textbox number" value="<?=$account_array['suspensionWarning'][2]?>" style="width:100px"></td>
-        <td><input type="text" name="suspensionWarning[3]" class="required textbox number" value="<?=$account_array['suspensionWarning'][3]?>" style="width:100px"></td>
     </tr>
 </table>
 <div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>

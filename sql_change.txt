@@ -37,3 +37,8 @@ ALTER TABLE  `gma_order` CHANGE  `invoice_amount`  `invoice_amount` DECIMAL( 10,
 ALTER TABLE  `gma_admin_details` ADD  `theme_id` INT NOT NULL;
 ALTER TABLE  `gma_company` ADD  `companyDiscount` FLOAT NOT NULL AFTER  `companyAccountNo`;
 ALTER TABLE  `gma_user_details` ADD  `discount_type` INT( 1 ) NOT NULL DEFAULT  '0';
+
+
+--18July
+ALTER TABLE  `gma_payment_order` CHANGE  `amount`  `amount` DECIMAL( 10, 2 ) NOT NULL
+ALTER TABLE  `gma_payments` CHANGE  `amount`  `amount` DOUBLE( 10, 2 ) NOT NULL

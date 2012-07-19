@@ -12,17 +12,24 @@ $date_range  = (isset($_REQUEST['date'])) ? $_REQUEST['date'] : '3months';
 $startdate   = (isset($_REQUEST['startdate'])) ? $_REQUEST['startdate'] : '';
 $enddate     = (isset($_REQUEST['enddate'])) ? $_REQUEST['enddate'] : '';
 
-if(isset($_REQUEST['userId']) && $_REQUEST['userId']>=0){
-    if($ses_loginType!='user')
-        $userId = $_REQUEST['userId'];
-    else 
-        $userId = $ses_userId;
-    
-    $_SESSION['clientId'] = $userId;
+if(isset($_REQUEST['userId']) ){
+	if($ses_loginType!='user')
+		$userId = GetSQLValueString($_REQUEST['userId'], 'int') ;
+	else 
+		$userId = $ses_userId;
 } else {
-    $_SESSION['clientId'] = $ses_userId;
+	if(isset($_SESSION['clientId']) && $_SESSION['clientId']>0)
+		$userId = $_SESSION['clientId'];
+	else{ 
+		if($ses_loginType!='user')
+			$userId = 0; 
+		else 
+			$userId = $ses_userId;
+	}
+	
 }
-$userId = $_SESSION['clientId'];
+	
+$_SESSION['clientId'] = $userId;
 $userId = userCheck($userId);
 
 if($date_range!='thismonth' && $date_range!='lastmonth' && $date_range!='all' && $date_range!='3months' && $date_range!='daterange')
@@ -129,14 +136,14 @@ $payment_details = myAccount($userId, $date_range, $startdate, $enddate);
 $details = $payment_details['result'];
 $title   = $payment_details['title'];
 
-$user_sql  = "SELECT * FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND gma_user_details.userId='$userId' GROUP BY userName ORDER BY businessName ASC"; 
+echo $user_sql  = "SELECT * FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND gma_user_details.userId='$userId' GROUP BY userName ORDER BY businessName ASC"; 
 $user_rs   = mysql_query($user_sql);
 $user_row  = mysql_fetch_assoc($user_rs);
 $userName     = $user_row['firstName'].' '.$user_row['lastName'];
 $userName     = $user_row['userName'];
 $businessName = $user_row['businessName'];
 
-$user_sql  = "SELECT * FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND gma_logins.companyId='$ses_companyId' GROUP BY userName ORDER BY businessName ASC"; 
+echo $user_sql  = "SELECT * FROM gma_user_details,gma_logins WHERE gma_user_details.userId=gma_logins.userId AND gma_logins.companyId='$ses_companyId' GROUP BY userName ORDER BY businessName ASC"; 
 $user_rs   = mysql_query($user_sql);
 
 $page_title   = 'Account Activity';

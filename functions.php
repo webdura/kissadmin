@@ -435,15 +435,18 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
     $order_amount = $order_row['amount'];
     
     $balance_forward = $balance_due = $order_amount - $payment_amount;
-    
-    $payment_sql  = $order_sql = "userID='$userId'";
+    if($userId > 0)
+    	$payment_sql  = $order_sql = "userID='$userId'"; 
+    else 
+     	$payment_sql  = $order_sql = "1"; 
+   
     if($flag==1)
     {
         $payment_sql .= " AND (date>='$date1' AND date<='$date2')";
         $order_sql   .= " AND (orderDate>='$date1' AND orderDate<='$date2')";
     }
     
-    $payment_sql = "SELECT *,DATE_FORMAT(date,'%Y%m%d') AS date_new,DATE_FORMAT(date,'%d/%m/%Y') AS date FROM gma_payments WHERE $payment_sql ORDER BY date ASC";
+   echo $payment_sql = "SELECT *,DATE_FORMAT(date,'%Y%m%d') AS date_new,DATE_FORMAT(date,'%d/%m/%Y') AS date FROM gma_payments WHERE $payment_sql ORDER BY date ASC";
     $payment_rs  = mysql_query($payment_sql);
     while ($payment_row = mysql_fetch_assoc($payment_rs))
     {

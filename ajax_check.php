@@ -146,12 +146,35 @@ switch ($task)
         
         if($user_id>0) {
             $order_sql = "SELECT * FROM gma_order WHERE userId=$user_id AND (orderStatus!=1 OR id IN (SELECT orderId FROM gma_payment_order WHERE paymentId='$payment_id'))";
-            //echo $order_sql.' == ';
+
+            			//echo $order_sql.' == ';
             $order_rs  = mysql_query($order_sql);
             if(mysql_num_rows($order_rs)>0) {
                 while ($order_row = mysql_fetch_assoc($order_rs)) {
-                    $selected = ($order_row['orderStatus']==1) ? 'checked' : '';
-                    $orders  .= "<div align='left'><input type='checkbox' id='orderId' name='orderId[]' value='{$order_row['id']}' {$selected}>#{$order_row['invoiceId']} - R ".formatMoney($order_row['invoice_amount'], true)."</div>";;
+
+            	$paid_sql = "SELECT orderId, SUM(amount) AS paidAmount FROM gma_payment_order WHERE orderId= " . $order_row['id'] .
+            				" GROUP BY orderId";
+	            $paid_rs  = mysql_query($paid_sql);
+	            if(mysql_num_rows($paid_rs)>0) {
+                	$paid_row = mysql_fetch_assoc($paid_rs);
+                	$paidAmt = $paid_row['paidAmount'];
+	            }
+                else
+                	$paidAmt = 0;
+                	
+                	
+                	if($payment_id > 0) {
+                	
+	                    $selected = ($order_row['orderStatus']==1 || $paidAmt > 0) ? 'checked' : '';
+	                    $paid = ($paidAmt > 0) ?('[Paid - '. $paidAmt .']') : '';
+	                    $orders  .= "<div align='left'><input type='checkbox' id='orderId' name='orderId[]' value='{$order_row['id']}' {$selected}>#{$order_row['invoiceId']} - ".formatMoney($order_row['invoice_amount'], true). " " . $paid ."</div>";
+                	}
+                	else {
+	                    $selected = '';
+//	                    $paid = ($order_row['amount'] > 0) ?('[Paid - '. $order_row['amount'] .']') : '';
+	                    $orders  .= "<div align='left'><input type='checkbox' id='orderId' name='orderId[]' value='{$order_row['id']}' {$selected}>#{$order_row['invoiceId']} - ".formatMoney($order_row['invoice_amount'] - $paidAmt, true). "</div>";
+                		
+                	}
                 }
             } else  {
                 $orders = 'No Orders Found';
@@ -159,12 +182,13 @@ switch ($task)
         } else {
             $orders = 'Please select any client';
         }
-        
+//         $results['totalsql'] = $order_sql;
+       
         $order_sql = "SELECT SUM(amount) AS amount FROM gma_payments WHERE userId=$user_id AND paymentId!='$payment_id'";
         $order_rs  = mysql_query($order_sql);
         $order_row = mysql_fetch_assoc($order_rs);
         $pending_amount += $order_row['amount'];
-        // echo "$order_sql == $pending_amount<br>";
+        //$results['totalsql'] = $order_sql;
         
         $order_sql = "SELECT SUM(invoice_amount) AS invoice_amount FROM gma_order WHERE userId=$user_id AND orderStatus=1";
         $order_rs  = mysql_query($order_sql);
@@ -172,26 +196,49 @@ switch ($task)
         $pending_amount -= $order_row['invoice_amount'];
         // echo "$order_sql == $pending_amount<br>";
         
-        $results = array('orders'=>$orders, 'pending_amount'=>$pending_amount, 'pending_amount_div'=>'R '.formatMoney($pending_amount, true));
+       $results = array('orders'=>$orders, 'pending_amount'=>$pending_amount, 'pending_amount_div'=>'R '.formatMoney($pending_amount, true));
         echo json_encode($results);
         break;
         
     case 'checkOrderAmount':
         $user_id     = (isset($_REQUEST['user_id']) && $_REQUEST['user_id']>0) ? $_REQUEST['user_id'] : 0;
+        $payment_id     = (isset($_REQUEST['payment_id']) && $_REQUEST['payment_id']>0) ? $_REQUEST['payment_id'] : 0;
         $orderId     = (isset($_REQUEST['orderId']) && $_REQUEST['orderId']!='') ? $_REQUEST['orderId'] : 0;
         $amount      = (isset($_REQUEST['amount']) && $_REQUEST['amount']>0) ? $_REQUEST['amount'] : 0;
         $orderAmount = 0;
+
+        if ($payment_id > 0) {
+	        $pay_sql = "SELECT * FROM gma_payments WHERE paymentId = $payment_id";
+	        $pay_rs  = mysql_query($pay_sql);
+	        if(mysql_num_rows($pay_rs)>0) {
+	            $pay_row = mysql_fetch_assoc($pay_rs);
+	            $thisPaymentAmt = $pay_row['amount'];
+	        }       	        	
+        }
         
         $order_sql = "SELECT * FROM gma_order WHERE id IN ($orderId)";
         $order_rs  = mysql_query($order_sql);
         if(mysql_num_rows($order_rs)>0) {
             while ($order_row = mysql_fetch_assoc($order_rs)) {
-                $orderAmount += $order_row['invoice_amount'];
+
+            	$paid_sql = "SELECT orderId, SUM(amount) AS paidAmount FROM gma_payment_order ".
+            				" WHERE orderId= " . $order_row['id'] .
+            				" GROUP BY orderId";
+	            $paid_rs  = mysql_query($paid_sql);
+	            if(mysql_num_rows($paid_rs)>0) {
+                	$paid_row = mysql_fetch_assoc($paid_rs);
+                	$paidAmt = $paid_row['paidAmount'];
+	            }
+                else
+                	$paidAmt = 0;           	
+            	
+                $orderAmount += ($order_row['invoice_amount'] - $paidAmt);
             }
         }
+        $orderAmount = $orderAmount + $thisPaymentAmt;
         $result = array('result'=>'success'); //, 'message'=>$order_sql.' == '.$orderAmount.' == '.$amount);
-        if($orderAmount>$amount) {
-            $result = array('result'=>'error', 'message'=>'Payment And Invoice amount mismatch !');// == '.$order_sql.' == '.$orderAmount.' == '.$amount);
+        if($amount>$orderAmount) {
+            $result = array('result'=>'error', 'message'=>'Payment And Invoice amount mismatch !'); // =='.$pay_sql.' == '.$thisPaymentAmt.' == '.$orderAmount.' == '.$amount);
         }
         echo json_encode($result);
         break;

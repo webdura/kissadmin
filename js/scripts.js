@@ -315,6 +315,7 @@ function userOrders(user_id) {
     
     var payment_id = $('#payment_id').val(); 
     $.post("ajax_check.php", { user_id: user_id, payment_id: payment_id, task: 'userOrders' }, function(data) {
+//    	alert(data.totalsql);
         $('#order_div').html(data.orders);
         $('#pending_amount').val(data.pending_amount);
         
@@ -328,20 +329,23 @@ function userOrders(user_id) {
 function checkOrderAmount() {
     var orderId = 0;
     var user_id = $('#userId').val();
+    var payment_id = $('#payment_id').val();
     var amount  = $('#amount').val();
     jQuery.each($('input[id=orderId]'), function() {
         if(this.checked)
             orderId = orderId + ',' + this.value;
     });
     
-    amount = amount + $('#pending_amount').val();
-    
-    $.post("ajax_check.php", { user_id: user_id, orderId: orderId, amount: amount, task: 'checkOrderAmount' }, function(data) {
-        // alert(data.result)
+ //   amount = eval(amount) + eval($('#pending_amount').val());
+//	alert(amount);
+    $.post("ajax_check.php", { user_id: user_id, payment_id: payment_id, orderId: orderId, amount: amount, task: 'checkOrderAmount' }, function(data) {
+//         alert(data);
         if(data.result=='error') {
             alert(data.message);
             return false;
         } else {
+//        	alert(data.result);
+//        	alert(data.message);
             document.userForm.submit();
         }
     }, 'json');
