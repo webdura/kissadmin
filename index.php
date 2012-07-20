@@ -80,7 +80,7 @@ if(isset($_REQUEST['logoff']))
         $_SESSION['ses_userId'] = $_SESSION['adm_userId'];
         unset($_SESSION['adm_userId']);
     }
-    
+     session_destroy();
     header("Location: index.php");
     exit;
 }

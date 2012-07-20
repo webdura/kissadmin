@@ -843,7 +843,7 @@ function paymentStatus($status) {
     if($status==0) 
         return 'Pending';
     else if($status==1) 
-        return 'Paid';
+        return 'PAID';
     else if($status==2) 
         return 'Partial';    
 }

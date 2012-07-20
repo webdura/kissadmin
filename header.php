@@ -257,8 +257,13 @@ $row_flag = 1;
 <head>
     <title>KissAdmin</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<<<<<<< HEAD
     <link id="style_link" href="style.php" rel="stylesheet" type="text/css" />
     <script src="js/jquery-1.4.4.min.js" type="text/JavaScript"></script>
+=======
+    <link href="style.php" rel="stylesheet" type="text/css" />
+    <script src="js/jquery-1.7.2.min.js" type="text/JavaScript"></script>
+>>>>>>> Send Invoices with Bulk upload
     <script src="js/jquery.validate.js" type="text/JavaScript"></script>
     <script src="js/animatedcollapse.js" type="text/JavaScript"></script>
     <script src="js/thickbox-compressed.js" type="text/JavaScript"></script>

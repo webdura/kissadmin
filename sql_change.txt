@@ -42,3 +42,29 @@ ALTER TABLE  `gma_user_details` ADD  `discount_type` INT( 1 ) NOT NULL DEFAULT  
 --18July
 ALTER TABLE  `gma_payment_order` CHANGE  `amount`  `amount` DECIMAL( 10, 2 ) NOT NULL;
 ALTER TABLE  `gma_payments` CHANGE  `amount`  `amount` DOUBLE( 10, 2 ) NOT NULL;
+
+
+--20July
+
+
+CREATE TABLE IF NOT EXISTS `gma_send_invoices` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `companyId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `invoicePath` varchar(50) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+
+
+CREATE TABLE IF NOT EXISTS `gma_send_invoice_details` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sendInvoiceId` int(11) NOT NULL,
+  `firstName` varchar(100) NOT NULL,
+  `lastName` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `fileName` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;

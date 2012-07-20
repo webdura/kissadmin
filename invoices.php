@@ -281,6 +281,26 @@ if($action=='add' || $action=='edit') {
             $orderId   = $auto_id = $order_row['id'];
             $userId    = $order_row['userId'];
             $class     = ((($j++)%2)==1) ? 'altrow' : '';
+
+            if($order_row['orderStatus'] == 0) {
+	        	$paid_sql = "SELECT orderId, SUM(amount) AS paidAmount FROM gma_payment_order ".
+	        				" WHERE orderId= " . $order_row['id'] .
+	        				" GROUP BY orderId";
+	            $paid_rs  = mysql_query($paid_sql);
+	            if(mysql_num_rows($paid_rs)>0) {
+	            	$paid_row = mysql_fetch_assoc($paid_rs);
+	            	$paidAmt = $paid_row['paidAmount'];
+	            	$status = 'Paid ' . formatMoney($paidAmt);
+	            }
+	            else
+	            	$status = paymentStatus($order_row['orderStatus']);
+            }
+            else {
+            	
+            	$status = paymentStatus($order_row['orderStatus']);
+            }
+            
+            
             ?>
             <tr class="<?=$class?>">
                 <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
@@ -288,7 +308,7 @@ if($action=='add' || $action=='edit') {
                 <td><?=dateFormat($order_row['orderDate'], 'N')?></td>
                 <? if($ses_loginType!='user') { ?> <td><?=$order_row['businessName']?></td> <? } ?>
                 <td><?=formatMoney($order_row['invoice_amount'], true)?></td>
-                <td><?=paymentStatus($order_row['orderStatus'])?></td>
+                <td><?=$status?></td>
                 <td><?=dateFormat($order_row['sendDate'], 'Y') ?></td>
                 <td>
                     <a href="invoices.php?action=view&orderId=<?=$orderId?>&popup" class="btn_style thickbox">View</a>
