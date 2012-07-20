@@ -210,28 +210,6 @@ function selectClientDiscountToAll(group_id, newId)
 
 }
 
-function changeTheme(theme_id)
-{
-    $.post("ajax_check.php", { theme_id: theme_id, task: 'changeTheme' }, function(data) {
-     
-        $('#head_bg').css("background-color", data.head_bg);
-        $('#head_color').css("background-color", data.head_color);
-        $('#site_logo_div').css("background-color", data.head_bg);
-//        $('#color1').css("background-color", data.color1);
-//        $('#color2').css("background-color", data.color2);
-//        $('#color3').css("background-color", data.color3);
-//        $('#color4').css("background-color", data.color4);
-        
-        $('#head_bg').val(data.head_bg);
-        $('#head_color').val(data.head_color);
-//        $('#color1').val(data.color1);
-//        $('#color2').val(data.color2);
-//        $('#color3').val(data.color3);
-//        $('#color4').val(data.color4);
-        
-    }, 'json');
-}
-
 function checkUncheck(checkbox)
 {
     var checked = true;
