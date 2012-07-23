@@ -1,56 +1,94 @@
 <?php
-$action      = (isset($_REQUEST['action']) && $_REQUEST['action']!='') ? $_REQUEST['action'] : 'list';
-$account_btn = 'selected';
+$settings = false;
+include("header.php");  
 include("config.php");
-if($action=='save' || $action=='view' || $action=='email')
-    include("functions.php");
-else
-    include("header.php");  
-    
-$page_title = 'Send Invoices';
+
+
+$email_template = 'send_custom_invoices';
+$email_sql   = "SELECT * FROM gma_emails WHERE companyId=0 AND template=".GetSQLValueString($email_template, 'text');
+
+		$title     = 'Edit Message';
+        $template  = GetSQLValueString($template, 'text');
+        
+        if(isset($_POST['subject']) && $_POST['subject']!='')
+        {
+        	if(isset($_SESSION['sendInvoiceId']) && $_SESSION['sendInvoiceId'] > 0 ){
+	            $subject = GetSQLValueString(trim($_POST['subject']), 'text');
+	            $content = GetSQLValueString(trim($_POST['content'], 'text'));
+	            
+	            $email_query = "UPDATE gma_send_invoices SET `subject`=$subject,`content`=$content " .
+	            	" WHERE id=" . $_SESSION['sendInvoiceId'];
+	            mysql_query($email_query);
+	            
+	            $notSend = invoiceEmailSend($_SESSION['sendInvoiceId']);
+	            
+	            if(trim($notSend) != '') {
+	            	echo '<div class="norecords"> Invoice was not sent to the following emails <br></div>';
+	            	echo $notSend;	
+	            	}
+	            else {
+	            	echo " Invoice was successfully sent <br>";
+	            }
+	            
+	           include('footer.php');
+	           exit;
+        	}
+        }
+        
+        
+        $email_sql  .= " $orderBy";
+        $email_rs    = mysql_query($email_sql);
+        $email_count = mysql_num_rows($email_rs);
+		$email_row = mysql_fetch_assoc($email_rs);        
+        
+
+
+
+$page_title = 'Messages';
+
 include('sub_header.php');
 ?>
 
-<form method="POST" id="userForm" name='userForm'>
-
+<form method="POST" id="emailForm" name='emailForm' enctype="multipart/form-data">
 <table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
+    <tr><th colspan="3"><?=$title?>&nbsp;<span class="backlink"><a href="emails.php">Back</a></span></td></tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td width="30%">Subject</td>
-        <td><input type="text" name="service_name" id="service_name" class="fleft textbox required" value="<?=@$service_row['service_name']?>" /></td>  
+        <td width="20%">Subject</td>
+        <td><input type="text" name="subject" id="subject" class="fleft textbox required" value="<?=@$email_row['subject']?>" /></td>  
     </tr> 
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td width="30%">Service Description</td>
-        <td><textarea name="description" rows="5" cols="30"><?=@$service_row['description']?></textarea>
-       </td>  
+        <td>Content</td>
+        <td><textarea name="content" id="content" class="fleft textarea"><?=@($email_row['content'])?></textarea></td>  
     </tr> 
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td width="30%">Group</td>
-        <td>
-            <select name="group_id" id="group_id" class="fleft textbox required">
-                <option value="">Select any group</option>
-                <? foreach ($group_rows as $group) {
-                    $selected = ($group['id']==$service_row['group_id']) ? 'selected' : '';
-                    
-                    echo "<option value='".$group['id']."' $selected>".$group['name']."</option>";
-                }
-                ?>
-            </select>
-        </td>  
+        <td>Replaceable variables</td>
+        <td><?=$email_row['variables']?></td>  
     </tr> 
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Amount</td>
-        <td><input type="text" name="amount" id="amount" class="fleft textbox required number" value="<?=$service_row['amount']?>"/></td>  
-    </tr> 
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Order</td>
-        <td><input type="text" name="order" id="order" class="fleft textbox required number" value="<?=$service_row['order']?>"/></td>  
-    </tr> 
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>Active</td>
-        <td><input type="checkbox" name="status" id="status" value="1" <?=(isset($service_row['status']) && $service_row['status']==1) ? 'checked' : ''?> /></td>
-    </tr>
 </table>
-<div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
-</form>
 
-<?php include("footer.php");  ?>
+<div class="addedit_btn"><input type="submit" name="upload" id="upload" value="Submit" class="btn_style" /></div>
+</form>
+<script type="text/javascript" src="js/ckeditor/ckeditor.js"></script> 
+<script type="text/javascript">
+CKEDITOR.replace('content', { });
+
+$(document).ready(function() {
+    jQuery("#emailForm").validate({
+        rules: {
+            upload: {
+                accept: "html|htm|txt"
+            }
+        },
+        messages: {
+            upload: {
+                accept: jQuery.format("Only html OR txt file types allowed")
+            }
+        }
+    });
+});
+</script>
+
+<?
+
+include('footer.php');
+?>

@@ -6,7 +6,7 @@ form { padding:0px; margin:0px; }
 .clear { clear:both; }
 .fleft { float:left; }
 .fright { float:right; }
-.fcenter { float:left; margin-left:20px; }
+.fcenter { text-align:center !important; }
 a { text-decoration:none; outline-style:none; }
 table, tr, td, th { font-weight:normal; }
 .cursor { cursor:pointer; }

@@ -60,7 +60,7 @@ else
         <!-- The table listing the files available for upload/download -->
         <table role="presentation" class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
 		<br>
-        <div > <a href="send_invoices.php?action=step2" >Proceed to Next Step</a> </div>
+        <div > <a href="get_invoice_message.php" >Proceed to Next Step</a> </div>
 
     </form>
 <!-- The template to display files available for upload -->
