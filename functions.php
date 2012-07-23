@@ -190,79 +190,6 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
     }
 }
 
-function invoiceEmailSend($sendInvoiceId) {
-    global $ses_companyId, $SITE_URL, $company_row, $invoice_logo_mail;
-    
-    $notSend = '';
-    
-    $email_sql = "SELECT companyName, fullName, invoicePath, subject, message, email " .
-    			   " FROM gma_send_invoices, gma_company, gma_admin_details, gma_logins " .
-    			   " WHERE gma_send_invoices.companyId = gma_company.companyId AND ".
-    			   " gma_send_invoices.userId = gma_admin_details.userId AND " .
-    			   " gma_send_invoices.companyId = gma_logins.companyId AND " .
-    			   " gma_send_invoices.userId = gma_logins.userId AND " .
-    			   " gma_send_invoices.id = ". $sendInvoiceId;
-    			   
-    $email_rs  = mysql_query($email_sql);
-    $email_row = mysql_fetch_assoc($email_rs);
-    $email_from = $email_row['email'];
-	$path = $email_row['invoicePath'];
-    
-    if(!isset($array_values['companyname'])) {
-        $array_values['invoice_logo']          = $company_row['companyName'];
-        $array_values['companyname']           = $company_row['companyName'];
-        
-    }
-    
-    $email_users_sql = "SELECT * " .
-    			   " FROM gma_send_invoice_details " .
-    			   " WHERE sendInvoiceId = ". $sendInvoiceId;
-    			   
-   		$email_users_rs  = mysql_query($email_users_sql);
-/*        $today  = date('d-m-Y H:i:s');
-        $myFile = "mail_log1.txt";
-        $fp = fopen($myFile, 'a') or die("can't open file");
-*/
-        include("includes/htmlMimeMail.inc.php");
-        $mailToSend  = new htmlMimeMail();        
-        
-    while($email_users_row = mysql_fetch_assoc($email_users_rs)){
-    	$array_values['firstname'] = $email_users_row['firstName'];
-    	$array_values['lastname'] = $email_users_row['lastName'];
-//    	print_r($array_values);
-		foreach ($array_values as $key => $value) {
-			$email_subject = str_replace("[$key]", $value, $email_users_row['subject']);
-			$email_content = str_replace("[$key]", $value, $email_users_row['content']);
-		}
-    	$email_to = $email_users_row['email'];
-        
-        $mailToSend->setSubject($email_subject);
-        $mailToSend->setFrom($email_from);
-        $mailToSend->setBcc('seacrows@gmail.com');
-        $mailToSend->setHtml($email_content);
-        
-        $invoiceFile = dirname($_SERVER['SCRIPT_FILENAME']).'/file_upload/invoices/'.$path.'/'.$email_users_row['fileName'];
-        if(file_exists($invoiceFile)){
-            $attachment = $mailToSend->getFile($invoiceFile);
-            $mailToSend->addAttachment($attachment, $array_values['filename']);
-	        $email_to = explode(',', $email_to);
-	        //$mailToSend->send($email_to);
-       }
-        else {
-        	$notSend .= $array_values['firstname'] ." ". $array_values['lastname'] .", ".  $email_to ."<br>";
-//	       fwrite($fp, $stringData);
-        	
-        }
-                
-        
-	}
-//        fclose($fp);
-        return $notSend; 
-    
-
-} 
-
-
 function formatMoney($number, $fractional=false) { 
     $number = "R " . sprintf("%01.2f", $number); 
     return $number; 
@@ -929,4 +856,77 @@ function userCheck($userId) {
    
    return (mysql_num_rows($login_rs)==0) ? 0 : $userId;
 }
+
+
+function invoiceEmailSend($sendInvoiceId) {
+    global $ses_companyId, $SITE_URL, $company_row, $invoice_logo_mail;
+    
+    $notSend = '';
+    
+    $email_sql = "SELECT companyName, fullName, invoicePath, subject, message, email " .
+    			   " FROM gma_send_invoices, gma_company, gma_admin_details, gma_logins " .
+    			   " WHERE gma_send_invoices.companyId = gma_company.companyId AND ".
+    			   " gma_send_invoices.userId = gma_admin_details.userId AND " .
+    			   " gma_send_invoices.companyId = gma_logins.companyId AND " .
+    			   " gma_send_invoices.userId = gma_logins.userId AND " .
+    			   " gma_send_invoices.id = ". $sendInvoiceId;
+    			   
+    $email_rs  = mysql_query($email_sql);
+    $email_row = mysql_fetch_assoc($email_rs);
+    $email_from = $email_row['email'];
+	$path = $email_row['invoicePath'];
+    
+    if(!isset($array_values['companyname'])) {
+        $array_values['invoice_logo']          = $company_row['companyName'];
+        $array_values['companyname']           = $company_row['companyName'];
+        
+    }
+    
+    $email_users_sql = "SELECT * " .
+    			   " FROM gma_send_invoice_details " .
+    			   " WHERE sendInvoiceId = ". $sendInvoiceId;
+    			   
+   		$email_users_rs  = mysql_query($email_users_sql);
+/*        $today  = date('d-m-Y H:i:s');
+        $myFile = "mail_log1.txt";
+        $fp = fopen($myFile, 'a') or die("can't open file");
+*/
+        include("includes/htmlMimeMail.inc.php");
+        $mailToSend  = new htmlMimeMail();        
+        
+    while($email_users_row = mysql_fetch_assoc($email_users_rs)){
+    	$array_values['firstname'] = $email_users_row['firstName'];
+    	$array_values['lastname'] = $email_users_row['lastName'];
+//    	print_r($array_values);
+		foreach ($array_values as $key => $value) {
+			$email_subject = str_replace("[$key]", $value, $email_users_row['subject']);
+			$email_content = str_replace("[$key]", $value, $email_users_row['content']);
+		}
+    	$email_to = $email_users_row['email'];
+        
+        $mailToSend->setSubject($email_subject);
+        $mailToSend->setFrom($email_from);
+        $mailToSend->setBcc('seacrows@gmail.com');
+        $mailToSend->setHtml($email_content);
+        
+        $invoiceFile = dirname($_SERVER['SCRIPT_FILENAME']).'/file_upload/invoices/'.$path.'/'.$email_users_row['fileName'];
+        if(file_exists($invoiceFile)){
+            $attachment = $mailToSend->getFile($invoiceFile);
+            $mailToSend->addAttachment($attachment, $array_values['filename']);
+	        $email_to = explode(',', $email_to);
+	        //$mailToSend->send($email_to);
+       }
+        else {
+        	$notSend .= $array_values['firstname'] ." ". $array_values['lastname'] .", ".  $email_to ."<br>";
+//	       fwrite($fp, $stringData);
+        	
+        }
+                
+        
+	}
+//        fclose($fp);
+        return $notSend; 
+    
+
+} 
 ?>

@@ -120,10 +120,10 @@ include('sub_header.php');
         <td>Header background color</td>
         <td><input type="text" name="head_bg" id="head_bg" class="required textbox color" value="<?=$theme_head_bg?>" readonly onchange="$('#site_logo_div').css('background-color', '#'+this.value);"></td>
     </tr>-->
-    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+    <!--<tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Header link color</td>
         <td><input type="text" name="head_color" id="head_color" class="required textbox color" value="<?=$theme_head_color?>" readonly></td>
-    </tr>
+    </tr>-->
 </table>
 <div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Apply" class="btn_style" /></div>
 </form>

@@ -96,10 +96,10 @@ if($ses_loginType=='admin')
         $allModules[] = $module_row;
     }
 
-    $company_permission_sql = "SELECT * FROM gma_admins_permission WHERE companyId='$ses_companyId'";        
-    $company_permission_rs  = mysql_query($company_permission_sql);
-    if(mysql_num_rows($company_permission_rs)==0)
-    {    
+//    $company_permission_sql = "SELECT * FROM gma_admins_permission WHERE companyId='$ses_companyId'";        
+//    $company_permission_rs  = mysql_query($company_permission_sql);
+//    if(mysql_num_rows($company_permission_rs)==0)
+//    {    
         $permission_sql = "SELECT * FROM gma_admins_permission WHERE companyId='0'";
         $permission_rs  = mysql_query($permission_sql);
         while ($permission_row = mysql_fetch_assoc($permission_rs))
@@ -115,13 +115,13 @@ if($ses_loginType=='admin')
                 mysql_query($sql);
             }
         }
-    }
+//    }
 }
 
 $filename = basename($_SERVER['SCRIPT_NAME']);
-$pages    = $top_menu = $main_menu = $module_ids = array();
+$pages    = $settings_menu = $top_menu = $main_menu = $module_ids = array();
 $module_ids[] = 0;
-$top_menu_active = true;
+$settings_menu_active = false;
 if(isset($_SESSION['ses_userId']) && $_SESSION['ses_userId']>0) {
     $admins_id  = 5;
     $admins_sql = "SELECT * FROM gma_admins WHERE type='$ses_userType'";
@@ -133,15 +133,17 @@ if(isset($_SESSION['ses_userId']) && $_SESSION['ses_userId']>0) {
     
     $module_sql = "SELECT * FROM gma_admins_permission AS AP, gma_company_module AS CM, gma_modules AS MO WHERE AP.companyId=CM.companyId AND AP.module_id=CM.module_id AND AP.module_id=MO.id AND AP.admins_id=$admins_id AND CM.companyId=$ses_companyId AND CM.status=1";
     
-    $module_top_sql = "$module_sql AND menu=1 ORDER BY `order` ASC";
-    $module_top_rs  = mysql_query($module_top_sql);
-    while ($module_top_row = mysql_fetch_assoc($module_top_rs)) {
-        if($module_top_row['filename']==$filename)
-            $top_menu_active = true;
+    $module_settings_sql = "$module_sql AND menu=1 ORDER BY `order` ASC";
+    $module_settings_rs  = mysql_query($module_settings_sql);
+    while ($module_settings_row = mysql_fetch_assoc($module_settings_rs)) {
+        if($module_settings_row['filename']==$filename) {
+            $module_settings_row['class'] = 'selected';
+            $settings_menu_active = true;
+        }
             
-    	   $top_menu[]   = $module_top_row;
-    	   $pages[]      = $module_top_row['filename'];
-    	   $module_ids[] = $module_top_row['id'];
+    	   $settings_menu[] = $module_settings_row;
+    	   $pages[]         = $module_settings_row['filename'];
+    	   $module_ids[]    = $module_settings_row['id'];
     }
     
     $module_main_sql = "$module_sql AND menu=2 ORDER BY `order` ASC";
@@ -154,6 +156,18 @@ if(isset($_SESSION['ses_userId']) && $_SESSION['ses_userId']>0) {
     	   $pages[]      = $module_main_row['filename'];
     	   $module_ids[] = $module_main_row['id'];
     }
+    
+    $module_top_sql = "$module_sql AND menu=3 ORDER BY `order` ASC";
+    $module_top_rs  = mysql_query($module_top_sql);
+    while ($module_top_row = mysql_fetch_assoc($module_top_rs)) {
+        if($module_top_row['filename']==$filename)
+            $module_top_row['class'] = 'selected';
+            
+    	   $top_menu[]   = $module_top_row;
+    	   $pages[]      = $module_top_row['filename'];
+    	   $module_ids[] = $module_top_row['id'];
+    }
+//    echo '<pre>'; print_r($top_menu); exit;
     
     $company_sql = "SELECT * FROM gma_company, gma_logins, gma_admin_details WHERE gma_admin_details.userId=gma_logins.userId AND gma_company.companyId=gma_logins.companyId AND gma_company.ownerId=gma_logins.userId AND gma_company.companyId=".GetSQLValueString($ses_companyId, 'text');
     $company_rs  = mysql_query($company_sql);
@@ -248,6 +262,7 @@ $queryString = $queryString[0];
 	//	$_SESSION['displayName'] = $_SESSION['displayName'];
 
 	
+$menu_types = array(1=>'Settings Menu', 2=>'Main Menu', 3=>'Top Menu');
 	
 //echo '<pre>'; print_r($main_menu); print_r($top_menu); exit;
 $row_flag = 1;
@@ -258,9 +273,7 @@ $row_flag = 1;
     <title>KissAdmin</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link id="style_link" href="style.php" rel="stylesheet" type="text/css" />
-
     <script src="js/jquery-1.7.2.min.js" type="text/JavaScript"></script>
-
     <script src="js/jquery.validate.js" type="text/JavaScript"></script>
     <script src="js/animatedcollapse.js" type="text/JavaScript"></script>
     <script src="js/thickbox-compressed.js" type="text/JavaScript"></script>
@@ -291,16 +304,21 @@ $row_flag = 1;
             <div class="right_links">
                 <div class="login">
                     Logged in as "<?=$_SESSION['displayName']?>"&nbsp;&nbsp;&nbsp;|&nbsp;
-                    <? if(count($top_menu)>0) { ?>
+                    <? if(count($settings_menu)>0) { ?>
                         <a href="javascript:void(0);" onclick="settingsTab();">Settings</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                    <? } ?>
+                    <? if(count($top_menu)>0) { ?>
+                        <? foreach ($top_menu as $key=>$menu) { ?>
+                            <a href="<?=$menu['filename']?>" title="<?=$menu['name']?>" class="<?=$menu['class']?>"><?=$menu['name']?></a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                        <? } ?>
                     <? } ?>
                     <a href="index.php?logoff=signout">Logout</a>
                 </div>
-                <? if(count($top_menu)>0) { ?>
-                    <div class="submenu">
-                    <? foreach ($top_menu as $key=>$menu) { ?>
+                <? if(count($settings_menu)>0) { ?>
+                    <div class="submenu" id="settings" <?=($settings_menu_active ? "style='display:block'" : '')?>>
+                    <? foreach ($settings_menu as $key=>$menu) { ?>
                         <? if($key!=0) { ?> &nbsp;|&nbsp; <? } ?>
-                        <a href="<?=$menu['filename']?>" title="<?=$menu['name']?>"><?=$menu['name']?></a>
+                        <a href="<?=$menu['filename']?>" title="<?=$menu['name']?>" class="<?=$menu['class']?>"><?=$menu['name']?></a>
                     <? } ?>
                     </div>
                 <? } ?>
@@ -308,9 +326,15 @@ $row_flag = 1;
         </div>
     </div>
     <div id="top_buttons">
-        <ul>
+        <ul id="menu">
             <? foreach ($main_menu as $key=>$menu) { ?>
-                <li><a href="<?=$menu['filename']?>" class="<?=$menu['class']?>"></a></li>
+                <li><a href="<?=$menu['filename']?>" class="<?=$menu['class']?>"></a>
+                    <? if(strstr($menu['class'], 'invoices_btn') || strstr($menu['class'], 'quotation_btn') || strstr($menu['class'], 'clients_btn') || strstr($menu['class'], 'payment_btn')) { ?>
+                        <ul>
+                            <li><a href="<?=$menu['filename']?>?action=add">Create New <?=str_replace(' Module', '', $menu['name'])?></a></li>
+                        </ul>
+                    <? } ?>
+                </li>
             <? } ?>
             <? if($ses_userType!='user') { ?>
                 <li class="theme_sel">

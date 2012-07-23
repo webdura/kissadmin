@@ -40,9 +40,10 @@ while ($account_row = mysql_fetch_assoc($account_rs)) {
 $page_title = "Terms Details";
 include_once('sub_header.php');
 ?>
-
+<div align="center">
+<div style="width:60%;">
 <form method="POST" id="accountForm" name='accountForm'>
-<table class="list" cellpadding="0" cellspacing="0" align="center">
+<table class="list" cellpadding="0" cellspacing="0" width="100%">
     <tr>
         <th>Terms Details</th>
         <th>Days</th>
@@ -64,13 +65,15 @@ include_once('sub_header.php');
         <td><input type="text" name="suspensionWarning[2]" class="required textbox number" value="<?=$account_array['suspensionWarning'][2]?>" style="width:100px"></td>
     </tr>
 </table>
-<div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
+<div class="addedit_btn fright"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
+</form>
+</div>
+</div>
 
 <script>
 $(document).ready(function() {
     jQuery("#accountForm").validate();
 });
 </script>
-</form>
 
 <?php include("footer.php");  ?>

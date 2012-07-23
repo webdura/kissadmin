@@ -313,7 +313,7 @@ if($action=='list') { ?>
         
         <? $menu = 0; foreach ($allModules as $module) { ?>
             <? if($menu!=$module['menu']) { if($menu!=0) { echo '<div class="clear">&nbsp;</div>'; } $menu = $module['menu']; ?>
-                <div class="clear"><b><?=($menu==1 ? 'Settings Menu' : 'Main Menu')?></b></div>
+                <div class="clear"><b><?=$menu_types[$menu]?></b></div>
             <? } ?>
             <span class="fleft" style="width:30%"><input type="checkbox" name="module[<?=$module['id']?>]" id="module_<?=$module['id']?>" class="textbox number" style="width:20px;" value="<?=$module['id']?>" <?=((in_array($module['id'], $module_ids) || ($action=='add' && $module['default']==1)) ? 'checked' : '')?> /><?=$module['name']?></span>
         <? } ?>
