@@ -164,10 +164,6 @@ $queryString = explode("&orderby=",$actualQueryString);
 $queryString = $queryString[0];
 ?>
 
-<script type="text/javascript" src="js/date.js"></script>
-<script type="text/javascript" src="js/jquery.datePicker.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/datePicker.css">
-
 <div class="sub_subhead" ><?=$title?></div>
                 
 <? if($ses_loginType!='user') { ?>
@@ -205,8 +201,8 @@ $queryString = $queryString[0];
 
 <script>
 $(document).ready(function() {
-    $('#startdate').datePicker({startDate: start_date, dateFormat: date_format});
-    $('#enddate').datePicker({startDate: start_date, dateFormat: date_format});
+    $('#startdate').datepicker({dateFormat: date_format, showOtherMonths: true, selectOtherMonths: true});
+    $('#enddate').datepicker({dateFormat: date_format, showOtherMonths: true, selectOtherMonths: true});
 });
 function mailStatement(url)
 {

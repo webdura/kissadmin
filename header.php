@@ -279,10 +279,14 @@ $row_flag = 1;
     <script src="js/thickbox-compressed.js" type="text/JavaScript"></script>
     <script src="js/scripts.js" type="text/JavaScript"></script>
     <link rel="stylesheet" href="css/thickbox.css" type="text/css" media="screen" />
+    
+    <link rel="stylesheet" href="js/ui/themes/smoothness/ui.all.css" type="text/css" media="screen" />
+    <script src="js/ui/ui.datepicker.js" type="text/JavaScript"></script>
+    
     <script src="js/jquery.alerts.js" type="text/JavaScript"></script>
     <link rel="stylesheet" href="css/jquery.alerts.css" type="text/css" media="screen" />
     <script>
-        var date_format = 'dd/mm/yyyy';
+        var date_format = 'dd/mm/yy';
         var start_date  = '01/01/1940';
         
         animatedcollapse.addDiv('successmsg', 'fade=1');

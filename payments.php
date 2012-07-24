@@ -393,10 +393,6 @@ if($action=='list') { ?>
     
 <? } else if($action=='edit' || $action=='add') { ?>
 
-<script type="text/javascript" src="js/date.js"></script>
-<script type="text/javascript" src="js/jquery.datePicker.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/datePicker.css">
-
 <div class="newinvoice">
 <form method="POST" id="userForm" name='userForm' onsubmit="return checkOrderAmount();">
 <input type="hidden" name="payment_id" id="payment_id" value="<?=$payment_id?>">
@@ -453,16 +449,12 @@ if($action=='list') { ?>
 $(document).ready(function() {
     userOrders($('#userId').val());
     jQuery("#userForm").validate();
-    $('#date').datePicker({startDate: start_date, dateFormat: date_format});
+    $('#date').datepicker({dateFormat: date_format, showOtherMonths: true, selectOtherMonths: true});
 });
 </script>
 
 <?
 } else if($action=='import') { ?>
-
-<script type="text/javascript" src="js/date.js"></script>
-<script type="text/javascript" src="js/jquery.datePicker.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/datePicker.css">
 
 <div class="newinvoice">
 <? if($import==0) { ?>
@@ -520,7 +512,7 @@ while ($row = fgetcsv($fp)) {
             <td><input type="text" name="date[<?=$i?>]" id="date_<?=$i?>" class="textbox required" value="<?=$date?>" readonly /></td>  
             <td><input type="text" name="amount[<?=$i?>]" id="amount_<?=$i?>" class="textbox number required" value="<?=$amount?>" /></td>  
         </tr> 
-        <script> $('#date_<?=$i?>').datePicker({startDate: start_date, dateFormat: date_format}); </script>
+        <script> $('#date_<?=$i?>').datepicker({dateFormat: date_format, showOtherMonths: true, selectOtherMonths: true}); </script>
         <?
         $i++; 
     }

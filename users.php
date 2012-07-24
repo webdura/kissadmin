@@ -387,10 +387,6 @@ if($action=='list') { ?>
     
 <? } else if($action=='edit' || $action=='add') { ?>
 
-<script type="text/javascript" src="js/date.js"></script>
-<script type="text/javascript" src="js/jquery.datePicker.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/datePicker.css">
-
 <form name="userForm" id="userForm" method="post" action="">
 <input type="hidden" name="userType" value="normal">
     <table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
@@ -551,7 +547,8 @@ if($action=='list') { ?>
 
 <script>
 $(document).ready(function() {
-    $('#joinDate').datePicker({startDate: start_date, dateFormat: date_format});
+    $('#joinDate').datepicker({dateFormat: date_format, showOtherMonths: true, selectOtherMonths: true});
+    //$('#joinDate').datePicker({startDate: start_date, dateFormat: date_format});
     
     var discount_type = $('#discount_type').attr('checked');
     if(discount_type) {
