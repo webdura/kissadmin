@@ -61,7 +61,7 @@ function settingsTab()
     if($('#settings').css('display')=='block')
         $('#settings').css('display', 'none')
     else
-        $('#settings').css('display', '')
+        $('#settings').css('display', 'block')
 }
 
 function changeOder(id, task, order)
@@ -335,4 +335,23 @@ function changeTheme(theme_id) {
     $.post("ajax_check.php", { theme_id: theme_id, task: 'changeTheme' }, function(data) {
         $('#style_link').attr('href', 'style.php?time=11111')
     });;    
+}
+
+
+
+function sameBilling() {
+    //var same = $('#delivery_same').attr('checked');
+    var same = $("input[name='delivery_same']:checked").val();
+    if(same==1) {
+        $('#delivery_address').val($('#billing_address').val());
+        $('#delivery_city').val($('#billing_city').val());
+        $('#delivery_province').val($('#billing_province').val());
+        $('#delivery_zip').val($('#billing_zip').val());
+        
+        $('.delivery').attr('readonly', 'readonly')
+        $('.delivery').css('background', '#F4F4F4')
+    } else {
+        $('.delivery').removeAttr('readonly')
+        $('.delivery').css('background', '#FFF')
+    }
 }

@@ -155,5 +155,8 @@ $page_title = "Login";
     </tr>
 </table>
 </form>
+<script>
+$('#username').focus();
+</script>
 
 <?php include("footer.php"); ?>

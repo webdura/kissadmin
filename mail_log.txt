@@ -1,0 +1,17 @@
+klmlkmlk@dfgd.dfg, admin@gnetmail.co.za, 23-07-2012 18:31:31, New client welcome email
+Hi klmlkm kmklmlkm,<br />
+<br />
+An account has been created for you with the following details,<br />
+<br />
+Client Name : kmlkl<br />
+Company Name : Gnet Mail 1<br />
+Username : sdfsdf<br />
+Password : kmnklkl<br />
+Email Address : klmlkmlk@dfgd.dfg<br />
+<br />
+Please click <a href='http://localhost/gnetmail/admin/index.php'>Click here</a> to login. Or copy paste the below URL in browser http://localhost/gnetmail/admin/index.php<br />
+<br />
+-----<br />
+Administrator<br />
+Gnet Mail 1
+
