@@ -6,7 +6,8 @@ if(isset($_REQUEST['popup']))
 else 
     include("header.php");
 ?>
- <script src="js/jquery.datePicker.js" type="text/JavaScript"></script>    
+<script src="js/jquery-ui-1.8.21.custom.min.js" type="text/JavaScript"></script>    
+<!--<script src="js/jquery.ui.datepicker.min.js" type="text/JavaScript"></script>-->    
 <input type="checkbox" name="repeat" value="1"> Repeat Invoice 
 
 <div>
@@ -21,7 +22,7 @@ else
 
 <script>
 $(document).ready(function() {
-    $('#startdate').datePicker();
+    $('#startdate').datepicker();
 });
 
 </script>
