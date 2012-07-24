@@ -50,8 +50,15 @@ function paymentExport() {
 function validateInvoice()	{
     var selclient = document.getElementById("userId");
     if(selclient.value=='')	{
-        alert("Select the Client");
+        alert("Please select a Client");
         return false;
+    }
+
+    if( document.getElementById("repeat").checked==true)	{
+	    if( document.getElementById("startdate").value=='')	{
+	        alert("Please select a Start Date");
+	        return false;
+	    }
     }
     return true;
 }

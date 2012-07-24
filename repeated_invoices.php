@@ -42,105 +42,38 @@ switch ($action)
 
         if((isset($_REQUEST['sendMail']) || isset($_REQUEST['save'])))
         {
-        	
         	if(isset($_REQUEST['repeat']) && $_REQUEST['repeat']==1){
         		
-        		if (saveRepeatedInvoice($orderId, $_POST)) {
-        		
-					return header("Location: invoices.php?msg=$smsg");
+        		if (saveRepeatedInvoice($orderId, $_POST)) {       		
+		            $smsg = "Invoice saved successfully";        			
+        			     		
+					return header("Location: repeated_invoices.php?msg=$smsg");
 	            	exit;
         		}
  
         	}
+        	else {
+        		if (saveRepeatedInvoice($orderId, $_POST)) {  
+        			
+		            $sql  = "UPDATE gma_order_repeat SET orderStatus=1 WHERE id='$orderId'"; 
+		            mysql_query($sql);
+		            $smsg = "Invoice saved successfully";        			
+        			     		
+					return header("Location: repeated_invoices.php?msg=$smsg");
+	            	exit;
+        		}
+        		
+        	}
         	
         	
-            $invoice_sql = "SELECT companyInvoiceNo FROM gma_company WHERE companyId='$ses_companyId'";
-            $invoice_rs  = mysql_query($invoice_sql);
-            $invoice_row = mysql_fetch_assoc($invoice_rs);
-            $invoice_id  = $invoice_row['companyInvoiceNo'];
-            
-            $orderDate    = date('Y-m-d H:i:s');
-            $userId       = $_REQUEST['userId'];
-            $order_number = $_REQUEST['order_number'];
-            $invoiceId    = 0;
-            if($orderId>0)
-            {
-                $order_sql = "SELECT * FROM gma_order WHERE id='$orderId'";
-                $order_rs  = mysql_query($order_sql);
-                if(mysql_num_rows($order_rs)>0)
-                {
-                    $order_row = mysql_fetch_array($order_rs);
-                    $invoiceId = $order_row['invoiceId'];
-                }
-                else 
-                    $orderId = 0;
-            }
-            if($invoiceId==0)
-            {
-                $invoice_id = $invoice_id + 1;
-                $invoiceId  = $invoice_id;
-            }
-            
-            mysql_query("DELETE FROM gma_order_details WHERE orderId='$orderId' AND orderId>0");    
-            if($orderId==0)
-            {
-                $order_sql = "INSERT INTO gma_order SET userId='$userId',invoiceId='$invoiceId',order_number='$order_number',orderDate='$orderDate'";
-                mysql_query($order_sql);
-                $orderId = mysql_insert_id();
-            }
-            
-            $invoice_amount = $total = 0;
-            foreach ($_REQUEST['service_id'] as $key=>$service_group_id)
-            {
-                if($service_group_id!='' && $service_group_id!='0')
-                {
-                    $request     = explode('_', $service_group_id);
-                    $service_id  = $request[0];
-                    $group_id    = $request[1];
-                    
-                    $serviceName = ($service_id>0) ? $allServices[$service_id]['service_name'] : $_REQUEST['service_name'][$key];
-                    $service_id  = ($service_id>0) ? $service_id : 0;
-                    $cost        = $_REQUEST['cost'][$key];
-                    $quantity    = $_REQUEST['quantity'][$key];
-                    $discount    = $_REQUEST['discount'][$key];
-                    $amount      = $_REQUEST['amount'][$key];
-                    
-                    
-                    $order_sql = "INSERT INTO gma_order_details SET orderId='$orderId',group_id='$group_id',service_id='$service_id',serviceName='$serviceName',cost='$cost',quantity='$quantity',discount='$discount',amount='$amount'";
-                    mysql_query($order_sql);
-                    
-                    $invoice_amount = $invoice_amount + $amount;
-                }
-            }
-            $order_sql = "UPDATE gma_order SET userId='$userId',order_number='$order_number',orderDate='$orderDate',invoice_amount='$invoice_amount' WHERE id='$orderId'";
-            $order_sql = "UPDATE gma_order SET userId='$userId',order_number='$order_number',invoice_amount='$invoice_amount' WHERE id='$orderId'";
-            mysql_query($order_sql);
-            
-            $smsg = ($orderId>0) ? "updated" : "added";
-            $sql  = "UPDATE gma_company SET companyInvoiceNo='$invoice_id' WHERE companyId='$ses_companyId'";
-            mysql_query($sql);
-        
-            $smsg = "Invoice successfully added !";    
-            if(isset($_REQUEST['sendMail']))
-            {	
-                $details = invoiceDetails($orderId);
-                $result  = emailSend('invoice', $details);
-                if($result){
-                    $smsg = "Invoice added and mail sent successfully";  
-       	            $sql  = "UPDATE gma_order SET sendDate=NOW()WHERE id='$orderId'";
-       	            mysql_query($sql);
-                 }              
-            }
-            return header("Location: invoices.php?msg=$smsg");
-            exit;
         }
         
         $total = 0;
         if($orderId>0)
         { 
-            $order_sql = "SELECT * FROM gma_order, gma_logins WHERE gma_logins.userId=gma_order.userId AND gma_logins.companyId='$ses_companyId' AND id='$orderId'";
+             $order_sql = "SELECT * FROM gma_order_repeat, gma_logins WHERE gma_logins.userId=gma_order_repeat.userId AND gma_logins.companyId='$ses_companyId' AND id='$orderId'";
             if($ses_loginType=='user')
-                $order_sql .= " AND gma_logins.userId='$ses_userId'";
+                $order_sql .= " AND gma_logins.userId='$ses_userId'"; 
             $order_rs  = mysql_query($order_sql);
             if(mysql_num_rows($order_rs)==0) {
                 $smsg = "Invalid Request";
@@ -152,8 +85,18 @@ switch ($action)
             $total     = $order_row['invoice_amount'];
             $orderNo  	= $order_row['order_number'];
             
+            $startdate = dateFormat($order_row['startDate']);
+            $how_often = $order_row['how_often'];
+            $how_many = ($order_row['how_many']=='1001')?'Forever':$order_row['how_many'];
+            $chked = '';
+            $display =" display:none;";
+            if($order_row['orderStatus']==0){
+            	$chked = 'checked="checked"';
+            	$display ="";
+            }
+            
             $orderDetails      = array();
-            $order_detail_sql  = "SELECT * FROM gma_order_details WHERE orderId='$orderId'";
+            $order_detail_sql  = "SELECT * FROM gma_order_repeat_details WHERE orderRepeatId='$orderId'";
             $order_detail_rs   = mysql_query($order_detail_sql);
             while($order_detail_row = mysql_fetch_assoc($order_detail_rs))
             {
@@ -231,11 +174,11 @@ switch ($action)
         $offset  = ($pageNum - 1) * $perPage;
         $orderBy = ($_REQUEST['orderby']!='') ? 'ORDER BY '.$_REQUEST['orderby'].' '.$_REQUEST['order'] : 'ORDER BY invoiceId DESC ';
         
-        $order_sql   = ($userId!='') ? "gma_order.userId='$userId' AND " : '';
+        $order_sql   = ($userId!='') ? "gma_order_repeat.userId='$userId' AND " : '';
         $order_sql  .= ($srchtxt!='') ? "(userName LIKE '$srchtxt%' OR invoiceId LIKE '$srchtxt%') AND " : '';
-        $order_sql  .= ($ses_loginType=='user') ? "gma_order.userId='$ses_userId' AND " : '';
+        $order_sql  .= ($ses_loginType=='user') ? "gma_order_repeat.userId='$ses_userId' AND " : '';
         $order_sql  .= "companyId='$ses_companyId'";
-        $order_sql   = "SELECT gma_order.*,businessName,DATE_ADD(orderDate, INTERVAL 7 HOUR) AS orderDate FROM gma_order LEFT JOIN gma_logins ON gma_order.userId=gma_logins.userId  LEFT JOIN gma_user_details ON gma_order.userId=gma_user_details.userId WHERE $order_sql GROUP BY invoiceId $orderBy";
+        $order_sql   = "SELECT gma_order_repeat.*,businessName,DATE_ADD(orderDate, INTERVAL 7 HOUR) AS orderDate FROM gma_order_repeat LEFT JOIN gma_logins ON gma_order_repeat.userId=gma_logins.userId  LEFT JOIN gma_user_details ON gma_order_repeat.userId=gma_user_details.userId WHERE $order_sql $orderBy";
         $order_rs    = mysql_query($order_sql);
         $order_count = mysql_num_rows($order_rs);
         
@@ -265,26 +208,25 @@ $invoice = true;
 $page_title = ($action=='add' || $action=='edit') ? ($action=='add' ? 'New Invoice' : 'Edit Invoice') : 'Invoices';
 include('sub_header.php');
 if($action=='add' || $action=='edit') {
-	$showRepeat = false;
-	if($action=='add')
 		$showRepeat = true;
 	
-		$display =" display:none;";
 	    include_once('invoice_form.php');
 } else { ?>
     <form method="POST" id="listForm" name='listForm'>
     <input type="hidden" name="action" value="deleteall">    
     <table width="100%" class="list" cellpadding="0" cellspacing="0">
         <tr>
-            <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th>
-            <th width="10%">Invoice Id.<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoiceId&order=DESC" class="desc"></a></th>
+  <!--          <th width="2%"><input type="checkbox" name="selectall" id="selectall" onclick="checkUncheck(this);"></th> 
+            <th width="10%">Invoice Id.<a href="?<?=$queryString?>&orderby=invoiceId&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoiceId&order=DESC" class="desc"></a></th>-->
             <th width="12%">Order Date<a href="?<?=$queryString?>&orderby=orderDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderDate&order=DESC" class="desc"></a></th>
             <? if($ses_loginType!='user') { ?>
                 <th>Client<a href="?<?=$queryString?>&orderby=businessName&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=businessName&order=DESC" class="desc"></a></th>
             <? } ?>
             <th width="10%">Total<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC" class="desc"></a></th>
-            <th width="9%">Status<a href="?<?=$queryString?>&orderby=orderStatus&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderStatus&order=DESC" class="desc"></a></th>
-            <th width="10%">Sent Date<a href="?<?=$queryString?>&orderby=sendDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sendDate&order=DESC" class="desc"></a></th>
+         <!--   <th width="9%">Status<a href="?<?=$queryString?>&orderby=orderStatus&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderStatus&order=DESC" class="desc"></a></th> -->
+            <th width="10%">How Often<a href="?<?=$queryString?>&orderby=sendDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sendDate&order=DESC" class="desc"></a></th>
+            <th width="10%">Invoices Sent<a href="?<?=$queryString?>&orderby=sendDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sendDate&order=DESC" class="desc"></a></th>
+            <th width="10%">Last Sent Date<a href="?<?=$queryString?>&orderby=sendDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sendDate&order=DESC" class="desc"></a></th>
             <th width="27%">Action</th>
         </tr>  
         <?php
@@ -319,17 +261,19 @@ if($action=='add' || $action=='edit') {
             
             ?>
             <tr class="<?=$class?>">
-                <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>
-                <td><?=$invoiceId?></td>
+            <!--    <td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td> 
+                <td><?=$invoiceId?></td> -->
                 <td><?=dateFormat($order_row['orderDate'], 'N')?></td>
                 <? if($ses_loginType!='user') { ?> <td><?=$order_row['businessName']?></td> <? } ?>
                 <td><?=formatMoney($order_row['invoice_amount'], true)?></td>
-                <td><?=$status?></td>
+              <!--  <td><?=$status?></td> -->
+                <td><?=getHowOften($order_row['how_often'])?></td> 
+                <td><?=$order_row['sentTotal']?></td> 
                 <td><?=dateFormat($order_row['sendDate'], 'Y') ?></td>
                 <td>
                     <a href="invoices.php?action=view&orderId=<?=$orderId?>&popup" class="btn_style thickbox">View</a>
                     <? if($ses_loginType!='user') { ?>
-                        &nbsp;<a href="invoices.php?action=edit&orderId=<?=$orderId?>" class="btn_style">Edit</a>
+                        &nbsp;<a href="repeated_invoices.php?action=edit&orderId=<?=$orderId?>" class="btn_style">Edit</a>
                         <!--&nbsp;<a href="invoices.php?action=delete&orderId=<?=$orderId?>" class="btn_style">Delete</a>-->
                     <? } ?>
                     &nbsp;<a href="invoices.php?action=resendMail&orderId=<?=$orderId?>" title="Send invoice to my email" class="btn_style">Send</a>

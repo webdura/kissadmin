@@ -929,4 +929,94 @@ function invoiceEmailSend($sendInvoiceId) {
     
 
 } 
+
+function saveRepeatedInvoice($orderId, $data){
+
+    if($orderId>0)
+    {
+        $order_sql = "SELECT * FROM gma_order WHERE id='$orderId'";
+        $order_rs  = mysql_query($order_sql);
+        if(mysql_num_rows($order_rs)>0)
+        {
+            $order_row = mysql_fetch_array($order_rs);
+            $invoiceId = $order_row['invoiceId'];
+        }
+        else 
+            $orderId = 0;
+    }
+
+    $orderDate    = date('Y-m-d H:i:s');
+    $userId       = $data['userId'];
+    $order_number = $data['order_number'];
+
+    mysql_query("DELETE FROM gma_order_repeat_details WHERE orderRepeatId='$orderId'");    
+    if($orderId==0)
+    {
+        $order_sql = "INSERT INTO gma_order_repeat SET userId='$userId',order_number='$order_number',orderDate='$orderDate'";
+        mysql_query($order_sql);
+        $orderId = mysql_insert_id();
+    }
+    
+    $invoice_amount = $total = 0;
+    foreach ($data['service_id'] as $key=>$service_group_id)
+    {
+        if($service_group_id!='' && $service_group_id!='0')
+        {
+            $request     = explode('_', $service_group_id);
+            $service_id  = $request[0];
+            $group_id    = $request[1];
+            
+            $serviceName = ($service_id>0) ? $allServices[$service_id]['service_name'] : $_REQUEST['service_name'][$key];
+            $service_id  = ($service_id>0) ? $service_id : 0;
+            $cost        = $data['cost'][$key];
+            $quantity    = $data['quantity'][$key];
+            $discount    = $data['discount'][$key];
+            $amount      = $data['amount'][$key];
+            
+            
+            $order_sql = "INSERT INTO gma_order_repeat_details SET orderRepeatId='$orderId',group_id='$group_id',service_id='$service_id',serviceName='$serviceName',cost='$cost',quantity='$quantity',discount='$discount',amount='$amount'";
+            mysql_query($order_sql);
+            
+            $invoice_amount = $invoice_amount + $amount;
+        }
+    }
+    
+    if(trim(strtolower($data['how_many']))=='forever'){
+    	$howmany = '1001';
+    }else 
+     	$howmany = $data['how_many'];   
+
+    if(isset($_REQUEST['sendMail']))	
+     	$send_mail = 'Y';
+     else 
+     	$send_mail = 'N';
+
+    $order_sql = "UPDATE gma_order_repeat SET userId='$userId',order_number='$order_number', " .
+    			" invoice_amount='$invoice_amount', startDate = '" . convertToMysqlDate($data['startdate']) ."'," .
+    			" how_often = " . $data['how_often'] .", how_many = " . $howmany . "," .
+    			" sendMail = '" . $send_mail ."' WHERE id='$orderId'";
+    mysql_query($order_sql); 
+    
+   return true;
+	
+}
+
+function getHowOften($key=0) {
+	
+	$howOften = array("1"=>"Weekly", 
+		"2"=>"Twice a month",
+		"3"=>"Monthly",
+		"4"=>"2 Months",
+		"5"=>"3 Months",
+		"6"=>"6 Months",
+		"7"=>"Yearly",
+		"8"=>"2 Years"
+	);
+	
+	if ($key > 0)
+		return $howOften[$key];
+	else	
+		return $howOften;
+	
+}
 ?>

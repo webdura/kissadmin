@@ -310,6 +310,10 @@ $row_flag = 1;
                     <? if(strstr($menu['class'], 'invoices_btn') || strstr($menu['class'], 'quotation_btn') || strstr($menu['class'], 'clients_btn') || strstr($menu['class'], 'payment_btn')) { ?>
                         <ul>
                             <li><a href="<?=$menu['filename']?>?action=add">Create New <?=str_replace(' Module', '', $menu['name'])?></a></li>
+                            <? if(strstr($menu['class'], 'invoices_btn')) { ?>
+                            <li><a href="repeated_invoices.php">View Repeat Invoices</a></li>
+                    <? } ?>
+                            
                         </ul>
                     <? } ?>
                 </li>

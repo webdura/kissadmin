@@ -53,6 +53,14 @@ $list_org = generateTableRow(array());
     <div class="fright"><b>Order Number&nbsp;:&nbsp;</b><input type="text" name="order_number" value="<?=$orderNo; ?>" class="textbox" maxlength="48" style="width:150px"></div>
     <? } ?>
 </td></tr>
+<?php 
+	if($showRepeat) {
+		echo '<tr><td>';
+		include_once('repeat_invoice_form.php');
+		echo '</td></tr>';
+	}
+?>
+
 <tr><td colspan="2">
     <table width="100%" class="list" id="invTable" cellpadding="0" cellspacing="0">
         <tr>
