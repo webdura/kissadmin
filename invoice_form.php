@@ -88,7 +88,10 @@ $list_org = generateTableRow(array());
 </td></tr>
 <tr>
     <td><input type="button" onclick="addRow()" value="Add Line"></td>
-    <td height="40" class="total"><span style="padding-right: 40px;">INVOICE TOTAL</span><input type="text" style="text-align:right;height:20px" class="invoicetextbox_green" name="total" id="total" value="<?= sprintf("%01.2f", $total);?>" size="10" readonly /></td>
+    <td height="40" class="total" align="right" style="padding-right: 23px;">
+    	<span style="padding-right: 40px;">INVOICE TOTAL</span>
+    	<input type="text" style="text-align:right;height:20px" class="invoicetextbox_green" name="total" id="total" value="<?= sprintf("%01.2f", $total);?>" size="10" readonly />
+    </td>
 </tr>
 </table>
 <div class="addedit_btn fright"><input type="submit" name="save" id="save" value="Save as Draft" class="btn_style" />&nbsp;&nbsp;<input type="submit" name="sendMail" id="sendMail" value="Send by Mail" class="btn_style" /></div>

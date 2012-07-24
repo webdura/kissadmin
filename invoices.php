@@ -254,6 +254,7 @@ $invoice = true;
 $page_title = ($action=='add' || $action=='edit') ? ($action=='add' ? 'New Invoice' : 'Edit Invoice') : 'Invoices';
 include('sub_header.php');
 if($action=='add' || $action=='edit') {
+	echo "Repeated";
 	    include_once('invoice_form.php');
 } else { ?>
     <form method="POST" id="listForm" name='listForm'>
