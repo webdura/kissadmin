@@ -1,5 +1,7 @@
+-- 24July
+
 ALTER TABLE  `gma_company` ADD  `companyInvoiceNo` INT NOT NULL DEFAULT  '1000' AFTER  `companyDiscount` , ADD  `companyQuotationNo` INT NOT NULL DEFAULT  '1000' AFTER  `companyInvoiceNo` , ADD  `companyCreditNo` INT NOT NULL DEFAULT  '1000' AFTER  `companyQuotationNo`;
 
-----------------------------------------------------------------------------------
-24July
-ALTER TABLE `gma_order_repeat`  ADD `startDate` DATETIME NOT NULL AFTER `sendDate`,  ADD `how_often` TINYINT NOT NULL AFTER `startDate`,  ADD `how_many` SMALLINT NOT NULL DEFAULT '1001' AFTER `how_often`,  ADD `sentTotal` TINYINT NOT NULL DEFAULT '0' AFTER `how_many`
+ALTER TABLE  `gma_services` ADD  `description` VARCHAR( 250 ) NOT NULL AFTER  `service_name`;
+
+ALTER TABLE `gma_order_repeat`  ADD `startDate` DATETIME NOT NULL AFTER `sendDate`,  ADD `how_often` TINYINT NOT NULL AFTER `startDate`,  ADD `how_many` SMALLINT NOT NULL DEFAULT '1001' AFTER `how_often`,  ADD `sentTotal` TINYINT NOT NULL DEFAULT '0' AFTER `how_many`;

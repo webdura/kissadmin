@@ -160,6 +160,9 @@ table, tr, td, th { font-weight:normal; }
 .list .desc { 
     margin-left:3px;
 }
+.list a { 
+    color:blue;
+}
 .addedit td { border-width:0px !important; }
 .addedit td:last-child { border-width:1px !important; }
 

@@ -465,6 +465,10 @@ $(document).ready(function() {
         <td width="20%">File (csv files only) <a rel="tooltip" style="padding-top:9px;"><img src="images/icn_help.png"></a></td>
         <td><input type="file" name="file" id="file" class="required"></td>  
     </tr> 
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td></td>
+        <td><a href="images/payments.csv" target="_blank">Click here</a> for sample CSV file.</td>  
+    </tr>
 </table>
 <div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
 </form>

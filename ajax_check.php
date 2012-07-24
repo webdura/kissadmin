@@ -92,7 +92,7 @@ switch ($task)
         $service_id = GetSQLValueString($request[0], 'int');
         $group_id   = GetSQLValueString($request[1], 'int');
          
-        $group_sql = "SELECT *,service_name AS description FROM gma_services WHERE id='".$service_id."' AND group_id='".$group_id."'";
+        $group_sql = "SELECT * FROM gma_services WHERE id='".$service_id."' AND group_id='".$group_id."'";
         $group_rs  = mysql_query($group_sql);
         if(mysql_num_rows($group_rs)>0) {
             $group_row = mysql_fetch_assoc($group_rs);

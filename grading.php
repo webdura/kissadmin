@@ -35,38 +35,31 @@ $page_title = "Grading Messages";
 include_once('sub_header.php');
 ?>
 
-<div class="client_display" style="padding-top:10px">
 <form method="POST" id="gradeForm" name='gradeForm'>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#e2e2e2">
-<tr><td style="padding:10px;"><strong>Grading Messages</td></tr>
-<tr><td>
-
-    <table width="100%" border="0" cellspacing="2" cellpadding="5">
-        <tr>
-            <td width="20%" valign="top">Grading 1</td>
-            <td><textarea name="grade_1" id="grade_1" class="required textarea"><?=$grade_row['grade_1']?></textarea></td>
-        </tr>
-        <tr>
-            <td valign="top">Grading 2</td>
-            <td><textarea name="grade_2" id="grade_2" class="required textarea"><?=$grade_row['grade_2']?></textarea></td>
-        </tr>
-        <tr>
-            <td valign="top">Grading 3</td>
-            <td><textarea name="grade_3" id="grade_3" class="required textarea"><?=$grade_row['grade_3']?></textarea></td>
-        </tr>
-    </table>
-    
-</td></tr>
-<tr><td style="padding:10px;padding-left:280px;"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="search_bt" /></td></tr>
+<table width="100%" border="0" cellspacing="2" cellpadding="5" class="list addedit">
+    <tr>
+        <th colspan="2"><?=$page_title?></th>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td width="20%" valign="top">Grading 1</td>
+        <td><textarea name="grade_1" id="grade_1" class="required textarea"><?=$grade_row['grade_1']?></textarea></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td valign="top">Grading 2</td>
+        <td><textarea name="grade_2" id="grade_2" class="required textarea"><?=$grade_row['grade_2']?></textarea></td>
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td valign="top">Grading 3</td>
+        <td><textarea name="grade_3" id="grade_3" class="required textarea"><?=$grade_row['grade_3']?></textarea></td>
+    </tr>
 </table>
+<div class="addedit_btn fleft"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
+</form>
 
 <script>
 $(document).ready(function() {
     jQuery("#gradeForm").validate();
 });
 </script>
-</form>
-
-</div>
 
 <?php include("footer.php");  ?>

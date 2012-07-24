@@ -20,7 +20,7 @@ function generateTableRow($ordersDetail) {
 
     $result = "<tr class='~~class~~'>
                     <td>$service_box</td>
-                    <td id='creditquantity_div'><div id='description_~~test~~'>{$ordersDetail['serviceName']}</div></td>
+                    <td><div id='description_~~test~~'>{$ordersDetail['description']}</div></td>
                     <td class='row2' id='creditquantity_div'><input type='text' size='10' style='text-align:right;' class='invoicetextboxtxt_green' name='cost[~~test~~]' id='cost_~~test~~' readonly value='{$ordersDetail['cost']}'></td>
                     <td class='row2' id='creditquantity_div' ><input type='text' size='10' style='text-align:right;' class='invoicetextboxtxt_green' name='quantity[~~test~~]' id='quantity_~~test~~' onChange='changeTotal(~~test~~)' value='{$ordersDetail['quantity']}'></td>
                     <td class='row2' id='creditquantity_div' ><input type='text' size='10' style='text-align:right;' class='{$discount_style}' name='discount[~~test~~]' id='discount_~~test~~' onChange='changeTotal(~~test~~)' value='{$ordersDetail['discount']}' /></td>
@@ -55,9 +55,9 @@ $list_org = generateTableRow(array());
 </td></tr>
 <?php 
 	if($showRepeat) {
-		echo '<tr><td>';
-		include_once('repeat_invoice_form.php');
-		echo '</td></tr>';
+//		echo '<tr><td>';
+//		include_once('repeat_invoice_form.php');
+//		echo '</td></tr>';
 	}
 ?>
 

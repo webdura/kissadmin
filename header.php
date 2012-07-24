@@ -96,7 +96,7 @@ if($ses_loginType=='admin')
 $filename = basename($_SERVER['SCRIPT_NAME']);
 $pages    = $settings_menu = $top_menu = $main_menu = $module_ids = array();
 $module_ids[] = 0;
-$settings_menu_active = false;
+$settings_menu_active = true;
 if(isset($_SESSION['ses_userId']) && $_SESSION['ses_userId']>0) {
     $admins_id  = 5;
     $admins_sql = "SELECT * FROM gma_admins WHERE type='$ses_userType'";
@@ -159,8 +159,13 @@ while($module_row = mysql_fetch_assoc($module_rs))
     $systemModules[] = $module_row['filename'];
 }
 if(in_array($filename, $systemModules)) {
-    if(!in_array($filename, $pages)) {
-        return header("Location: index.php");
+    if(!in_array($filename, $pages)) {        
+        $module_sql = "SELECT * FROM gma_admins_permission AS AP, gma_company_module AS CM, gma_modules AS MO WHERE AP.companyId=CM.companyId AND AP.module_id=CM.module_id AND AP.module_id=MO.id AND AP.admins_id=$admins_id AND CM.companyId=$ses_companyId AND CM.status=1 ORDER BY `menu` DESC, `order` ASC";
+        $module_rs  = mysql_query($module_sql);
+        $module_row = mysql_fetch_assoc($module_rs);
+        $filename   = $module_row['filename'];
+        
+        return header("Location: $filename");
         exit;
     }
 }

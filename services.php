@@ -118,6 +118,7 @@ switch ($action)
                 $group_id     = GetSQLValueString($_POST['group_id'][$key], 'int');
                 $group_name   = GetSQLValueString($_POST['group_name'][$key], 'text');
                 $service_name = GetSQLValueString($_POST['service_name'][$key], 'text');
+                $description  = GetSQLValueString($_POST['description'][$key], 'text');
                 $amount       = GetSQLValueString($_POST['amount'][$key], 'text');
                 
                 if($group_id==0)
@@ -145,7 +146,7 @@ switch ($action)
                     $row = mysql_fetch_assoc($rs);
                     $order = $row['order_new'] + 1;
                     
-                    $values  = "group_id=$group_id,service_name=$service_name,amount=$amount,`order`='$order'";     
+                    $values  = "group_id=$group_id,service_name=$service_name,description=$description,amount=$amount,`order`='$order'";     
                     
                     $sql = "INSERT INTO gma_services SET $values";
                     mysql_query($sql);
@@ -245,8 +246,8 @@ if($action=='list') { ?>
     </tr> 
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td width="30%">Service Description</td>
-        <td><textarea name="description" rows="5" cols="30"><?=@$service_row['description']?></textarea>
-       </td>  
+        <td><input type="text" name="description" id="description" class="fleft textbox" value="<?=@$service_row['description']?>" /></td> 
+        <!--<td><textarea name="description" rows="5" cols="30"><?=@$service_row['description']?></textarea></td>  -->
     </tr> 
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td width="30%">Group</td>
@@ -361,6 +362,7 @@ $(document).ready(function() {
             <th width="10%"><b>Add</b></th>
             <th width="30%"><b>Group</b></th>
             <th width="30%"><b>Service</b></th>
+            <th width="30%"><b>Description</b></th>
             <th width="30%"><b>Amount</b></th>
         </tr>
         <?
@@ -370,7 +372,8 @@ $(document).ready(function() {
         while ($row = fgetcsv($fp)) {
             $group        = $row[0];
             $service_name = $row[1]; 
-            $amount       = $row[2]; 
+            $description  = $row[2]; 
+            $amount       = $row[3]; 
             
             $group_details  = '';
             $group_exist    = 0;
@@ -395,6 +398,7 @@ $(document).ready(function() {
                     <td><input type="checkbox" name="add[<?=$i?>]" id="add_<?=$i?>" value="<?=$i?>" checked /></td>  
                     <td><?=$group_details?><input type="hidden" name="group_name[<?=$i?>]" id="group_name_<?=$i?>" class="textbox required" value="<?=$group?>" /></td>  
                     <td><input type="text" name="service_name[<?=$i?>]" id="service_name_<?=$i?>" class="textbox required" value="<?=$service_name?>" /></td>  
+                    <td><input type="text" name="description[<?=$i?>]" id="description_<?=$i?>" class="textbox" value="<?=$description?>" /></td>  
                     <td><input type="text" name="amount[<?=$i?>]" id="amount_<?=$i?>" class="textbox number required" value="<?=$amount?>" /></td>  
                 </tr> 
                 <?

@@ -72,7 +72,7 @@ if(isset($_POST['theme_id']) && $_POST['theme_id']>0)
 }
 
 
-$page_title = 'Theme';
+$page_title = 'Company Theme';
 include('sub_header.php');
 ?>
 
@@ -83,7 +83,7 @@ include('sub_header.php');
 <table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
     <tr><th colspan="3">Theme Details</th></tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td width="20%">Select Theme&nbsp;:&nbsp;</td>
+        <td width="20%">Theme&nbsp;:&nbsp;</td>
         <td>
             <select class="inputbox_green" style="width:300px;" name="theme_id" id="theme_id">
                 <? foreach ($theme_rows as $theme_id=>$theme_row) { ?>

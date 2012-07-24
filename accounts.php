@@ -47,7 +47,7 @@ include_once('sub_header.php');
     <tr>
         <th>Terms Details</th>
         <th>Days</th>
-        <th>Discount</th>
+        <th>% Discount</th>
     </tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Payment due in (days)</td>

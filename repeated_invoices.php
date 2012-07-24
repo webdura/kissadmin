@@ -45,7 +45,7 @@ switch ($action)
         	if(isset($_REQUEST['repeat']) && $_REQUEST['repeat']==1){
         		
         		if (saveRepeatedInvoice($orderId, $_POST)) {       		
-		            $smsg = "Invoice saved successfully";        			
+		            $smsg = "Repeat Invoice saved successfully";        			
         			     		
 					return header("Location: repeated_invoices.php?msg=$smsg");
 	            	exit;
@@ -57,7 +57,7 @@ switch ($action)
         			
 		            $sql  = "UPDATE gma_order_repeat SET orderStatus=1 WHERE id='$orderId'"; 
 		            mysql_query($sql);
-		            $smsg = "Invoice saved successfully";        			
+		            $smsg = "Repeat Invoice saved successfully";        			
         			     		
 					return header("Location: repeated_invoices.php?msg=$smsg");
 	            	exit;
@@ -161,7 +161,7 @@ switch ($action)
         if($result)  {                  
             $sql  = "UPDATE gma_order SET sendDate=NOW()WHERE id='$orderId'";
             mysql_query($sql);
-            $smsg = "Invoice mail send successfully";
+            $smsg = "Repeat Invoice mail send successfully";
         }
                     
         return header("Location: invoices.php?msg=$smsg");
@@ -194,7 +194,7 @@ switch ($action)
         }
         
         if($ses_loginType!='user') {
-            $links = '<a href="invoices.php?action=add" title="Create New Invoice">Create New Invoice</a>&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+            $links = '<a href="invoices.php?action=add" title="Create New Repeat Invoice">Create New Repeat Invoice</a>&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
             $add_url    = 'invoices.php?action=add&userId='.$userId;
 //            $del_url    = 'javascript:void(0);';
 //            $del_click  = 'deleteAll();';
@@ -205,7 +205,7 @@ switch ($action)
 }
 $invoice = true;
 
-$page_title = ($action=='add' || $action=='edit') ? ($action=='add' ? 'New Invoice' : 'Edit Invoice') : 'Invoices';
+$page_title = ($action=='add' || $action=='edit') ? ($action=='add' ? 'New Repeat Invoice' : 'Edit Repeat Invoice') : 'Repeat Invoices';
 include('sub_header.php');
 if($action=='add' || $action=='edit') {
 		$showRepeat = true;
