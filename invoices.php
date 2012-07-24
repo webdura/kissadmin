@@ -42,17 +42,16 @@ switch ($action)
     	
         if((isset($_REQUEST['sendMail']) || isset($_REQUEST['save'])))
         {
-            // echo '<pre>'; print_r($_REQUEST); exit;
-            $invoice_sql = "SELECT invoiceno FROM gm_last_invoice";
+            $invoice_sql = "SELECT companyInvoiceNo FROM gma_company WHERE companyId='$ses_companyId'";
             $invoice_rs  = mysql_query($invoice_sql);
             $invoice_row = mysql_fetch_assoc($invoice_rs);
-            $invoice_id  = $invoice_row['invoiceno'];
+            $invoice_id  = $invoice_row['companyInvoiceNo'];
             
             $orderDate    = date('Y-m-d H:i:s');
             $userId       = $_REQUEST['userId'];
             $order_number = $_REQUEST['order_number'];
-            $invoiceId = 0;
-            if($_REQUEST['editInvoice']!='')
+            $invoiceId    = 0;
+            if($orderId>0)
             {
                 $order_sql = "SELECT * FROM gma_order WHERE id='$orderId'";
                 $order_rs  = mysql_query($order_sql);
@@ -106,10 +105,10 @@ switch ($action)
             mysql_query($order_sql);
             
             $smsg = ($orderId>0) ? "updated" : "added";
-            $sql  = "UPDATE gm_last_invoice SET invoiceno='$invoice_id'";
+            $sql  = "UPDATE gma_company SET companyInvoiceNo='$invoice_id' WHERE companyId='$ses_companyId'";
             mysql_query($sql);
         
-            $smsg = "Quotation added successfully";    
+            $smsg = "Invoice successfully added !";    
             if(isset($_REQUEST['sendMail']))
             {	
                 $details = invoiceDetails($orderId);
@@ -242,8 +241,8 @@ switch ($action)
         if($ses_loginType!='user') {
             $links = '<a href="invoices.php?action=add" title="Create New Invoice">Create New Invoice</a>&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
             $add_url    = 'invoices.php?action=add&userId='.$userId;
-            $del_url    = 'javascript:void(0);';
-            $del_click  = 'deleteAll();';
+//            $del_url    = 'javascript:void(0);';
+//            $del_click  = 'deleteAll();';
             $search_box = true;
             $user_search = true;
         }
@@ -269,7 +268,7 @@ if($action=='add' || $action=='edit') {
             <? } ?>
             <th width="10%">Total<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC" class="desc"></a></th>
             <th width="9%">Status<a href="?<?=$queryString?>&orderby=orderStatus&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderStatus&order=DESC" class="desc"></a></th>
-            <th width="9%">Sent<a href="?<?=$queryString?>&orderby=sendDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sendDate&order=DESC" class="desc"></a></th>
+            <th width="10%">Sent Date<a href="?<?=$queryString?>&orderby=sendDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sendDate&order=DESC" class="desc"></a></th>
             <th width="27%">Action</th>
         </tr>  
         <?php
@@ -315,7 +314,7 @@ if($action=='add' || $action=='edit') {
                     <a href="invoices.php?action=view&orderId=<?=$orderId?>&popup" class="btn_style thickbox">View</a>
                     <? if($ses_loginType!='user') { ?>
                         &nbsp;<a href="invoices.php?action=edit&orderId=<?=$orderId?>" class="btn_style">Edit</a>
-                        &nbsp;<a href="invoices.php?action=delete&orderId=<?=$orderId?>" class="btn_style">Delete</a>
+                        <!--&nbsp;<a href="invoices.php?action=delete&orderId=<?=$orderId?>" class="btn_style">Delete</a>-->
                     <? } ?>
                     &nbsp;<a href="invoices.php?action=resendMail&orderId=<?=$orderId?>" title="Send invoice to my email" class="btn_style">Send</a>
                 </td>

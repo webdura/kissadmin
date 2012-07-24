@@ -5,26 +5,6 @@ if(!isset($_SESSION['ses_userId']) || $_SESSION['ses_userId']=='') {
     exit;
 }
 
-//$email_sql = "SELECT * FROM gma_emails WHERE companyId='0'";
-//$email_rs  = mysql_query($email_sql);
-//while ($email_row = mysql_fetch_assoc($email_rs)) {
-//	   $template  = $email_row['template'];
-//	   $variables = ($email_row['variables']);	   
-//	   $variables = explode("\r\n", $variables);
-//	   
-//	   $values = '';
-//	   foreach ($variables as $variable) {
-//	       if($values!='') $values .= "\r\n";
-//	       
-//	       $value = explode('=>', $variable);
-//	       $values .= $value[1].' => '.$value[0];
-//	   }
-//	   
-//	   $email_sql = "UPDATE gma_emails SET variables='$values' WHERE template='$template' AND companyId='0'";
-//	   echo $email_sql.';<br>';
-//}
-//exit;
-
 if($ses_loginType=='admin')
 {
     $account_sql = "SELECT * FROM gma_accounts WHERE companyId='0'";
@@ -95,27 +75,22 @@ if($ses_loginType=='admin')
     {
         $allModules[] = $module_row;
     }
-
-//    $company_permission_sql = "SELECT * FROM gma_admins_permission WHERE companyId='$ses_companyId'";        
-//    $company_permission_rs  = mysql_query($company_permission_sql);
-//    if(mysql_num_rows($company_permission_rs)==0)
-//    {    
-        $permission_sql = "SELECT * FROM gma_admins_permission WHERE companyId='0'";
-        $permission_rs  = mysql_query($permission_sql);
-        while ($permission_row = mysql_fetch_assoc($permission_rs))
+    
+    $permission_sql = "SELECT * FROM gma_admins_permission WHERE companyId='0'";
+    $permission_rs  = mysql_query($permission_sql);
+    while ($permission_row = mysql_fetch_assoc($permission_rs))
+    {
+        $admins_id = GetSQLValueString($permission_row['admins_id'], 'int');
+        $module_id = GetSQLValueString($permission_row['module_id'], 'int');
+        
+        $company_permission_sql = "SELECT * FROM gma_admins_permission WHERE companyId='$ses_companyId' AND admins_id='$admins_id' AND module_id='$module_id'";
+        $company_permission_rs  = mysql_query($company_permission_sql);
+        if(mysql_num_rows($company_permission_rs)==0)
         {
-            $admins_id = GetSQLValueString($permission_row['admins_id'], 'int');
-            $module_id = GetSQLValueString($permission_row['module_id'], 'int');
-            
-            $company_permission_sql = "SELECT * FROM gma_admins_permission WHERE companyId='$ses_companyId' AND admins_id='$admins_id' AND module_id='$module_id'";
-            $company_permission_rs  = mysql_query($company_permission_sql);
-            if(mysql_num_rows($company_permission_rs)==0)
-            {
-                $sql = "INSERT INTO gma_admins_permission SET companyId='$ses_companyId', admins_id='$admins_id', module_id='$module_id';";
-                mysql_query($sql);
-            }
+            $sql = "INSERT INTO gma_admins_permission SET companyId='$ses_companyId', admins_id='$admins_id', module_id='$module_id';";
+            mysql_query($sql);
         }
-//    }
+    }
 }
 
 $filename = basename($_SERVER['SCRIPT_NAME']);
@@ -263,8 +238,7 @@ $queryString = $queryString[0];
 
 	
 $menu_types = array(1=>'Settings Menu', 2=>'Main Menu', 3=>'Top Menu');
-	
-//echo '<pre>'; print_r($main_menu); print_r($top_menu); exit;
+
 $row_flag = 1;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

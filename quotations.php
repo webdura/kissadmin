@@ -45,17 +45,16 @@ switch ($action)
         
         if((isset($_REQUEST['sendMail']) || isset($_REQUEST['save'])))
         {
-            // echo '<pre>'; print_r($_REQUEST); exit;
-            $invoice_sql = "SELECT invoiceno FROM gm_last_invoice";
+            $invoice_sql = "SELECT companyQuotationNo FROM gma_company WHERE companyId='$ses_companyId'";
             $invoice_rs  = mysql_query($invoice_sql);
             $invoice_row = mysql_fetch_assoc($invoice_rs);
-            $invoice_id  = $invoice_row['invoiceno'];
+            $invoice_id  = $invoice_row['companyQuotationNo'];
             
             $orderDate    = date('Y-m-d H:i:s');
             $userId       = $_REQUEST['userId'];
             $order_number = $_REQUEST['order_number'];
             $invoiceId = 0;
-            if($_REQUEST['editQuotation']!='')
+            if($quotationId>0)
             {
                 $order_sql = "SELECT * FROM gma_quotation WHERE id='$quotationId'";
                 $order_rs  = mysql_query($order_sql);
@@ -108,7 +107,7 @@ switch ($action)
             mysql_query($order_sql);
             
             $smsg = ($quotationId>0) ? "updated" : "added";
-            $sql  = "UPDATE gm_last_invoice SET invoiceno='$invoice_id'";
+            $sql  = "UPDATE gma_company SET companyQuotationNo='$invoice_id' WHERE companyId='$ses_companyId'";
             mysql_query($sql);
             
             $smsg = "Quotation added successfully";
@@ -166,6 +165,11 @@ switch ($action)
         break;
         
     case 'convert':
+        $invoice_sql = "SELECT companyInvoiceNo FROM gma_company WHERE companyId='$ses_companyId'";
+        $invoice_rs  = mysql_query($invoice_sql);
+        $invoice_row = mysql_fetch_assoc($invoice_rs);
+        $invoiceId   = $invoice_row['companyInvoiceNo'] + 1;
+        
         $quotation_id  = $quotationId;
         $order_no      = (isset($_GET['order_no']) && $_GET['order_no']!='') ? $_GET['order_no'] : '';
         $quotation_sql = "SELECT * FROM gma_quotation WHERE id='$quotation_id'";
@@ -175,16 +179,15 @@ switch ($action)
             unset($quotation_row['id']);
             unset($quotation_row['orderDate']);
             unset($quotation_row['order_number']);
+            unset($quotation_row['invoiceId']);
             
             $order_sql = "";
             foreach ($quotation_row as $key=>$value) {
-                //$order_sql .= ($order_sql!='') ? ', ' : '';
                 $order_sql .= "`$key`=".GetSQLValueString($value, 'text').","; 
             }
-            $order_sql .= "`order_number`=".GetSQLValueString($order_no, 'text').", `orderDate`='".date('Y-m-d H:i:s')."'";
+            $order_sql .= "`invoiceId`=".GetSQLValueString($invoiceId, 'text').",`order_number`=".GetSQLValueString($order_no, 'text').",`orderDate`='".date('Y-m-d H:i:s')."'";
             
             $order_sql = "INSERT INTO gma_order SET $order_sql";
-            //echo $order_sql;exit;
             mysql_query($order_sql);
             $orderId = mysql_insert_id();
             
@@ -208,6 +211,9 @@ switch ($action)
             mysql_query($sql);
             
             $sql = "DELETE FROM gma_quotation WHERE id='$quotation_id'";
+            mysql_query($sql);
+            
+            $sql = "UPDATE gma_company SET companyInvoiceNo='$invoiceId' WHERE companyId='$ses_companyId'";
             mysql_query($sql);
             
             return header("Location: quotations.php?msg=Quotation successfully converted to order");

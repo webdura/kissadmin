@@ -112,5 +112,8 @@ function addRow(){
         
     $('#invTable').append(tableRow);
     count = eval(count) + 1;
-} 
+}
+<? if($action='add') { ?>
+    selectClientDiscount()
+<? } ?>
 </script>
