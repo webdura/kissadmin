@@ -55,9 +55,9 @@ $list_org = generateTableRow(array());
 </td></tr>
 <?php 
 	if($showRepeat) {
-//		echo '<tr><td>';
-//		include_once('repeat_invoice_form.php');
-//		echo '</td></tr>';
+		echo '<tr><td>';
+		include_once('repeat_invoice_form.php');
+		echo '</td></tr>';
 	}
 ?>
 

@@ -34,7 +34,7 @@
 		How Many
 	</div>
 	<div style="width:80px; float:left; padding-left:12px;">
-	    <input type="text" name="invoices_sent" id="invoices_sent" value="0" maxlength="2" readonly>
+	    <input type="text" name="invoices_sent" id="invoices_sent" value="<?=$sentTotal; ?>" maxlength="2" readonly>
 		Invoices Sent
 	</div>
 

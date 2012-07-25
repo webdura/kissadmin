@@ -88,6 +88,7 @@ switch ($action)
             $startdate = dateFormat($order_row['startDate']);
             $how_often = $order_row['how_often'];
             $how_many = ($order_row['how_many']=='1001')?'Forever':$order_row['how_many'];
+            $sentTotal = $order_row['sentTotal'];
             $chked = '';
             $display =" display:none;";
             if($order_row['orderStatus']==0){
@@ -224,9 +225,9 @@ if($action=='add' || $action=='edit') {
             <? } ?>
             <th width="10%">Total<a href="?<?=$queryString?>&orderby=invoice_amount&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoice_amount&order=DESC" class="desc"></a></th>
          <!--   <th width="9%">Status<a href="?<?=$queryString?>&orderby=orderStatus&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=orderStatus&order=DESC" class="desc"></a></th> -->
-            <th width="10%">How Often<a href="?<?=$queryString?>&orderby=sendDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sendDate&order=DESC" class="desc"></a></th>
-            <th width="10%">Invoices Sent<a href="?<?=$queryString?>&orderby=sendDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sendDate&order=DESC" class="desc"></a></th>
-            <th width="10%">Last Sent Date<a href="?<?=$queryString?>&orderby=sendDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sendDate&order=DESC" class="desc"></a></th>
+            <th width="10%">How Often<a href="?<?=$queryString?>&orderby=how_often&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=how_often&order=DESC" class="desc"></a></th>
+            <th width="10%">Invoices Sent<a href="?<?=$queryString?>&orderby=sentTotal&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=sentTotal&order=DESC" class="desc"></a></th>
+            <th width="10%">Last Generated Date<a href="?<?=$queryString?>&orderby=invoiceSentDate&order=ASC" class="asc"></a><a href="?<?=$queryString?>&orderby=invoiceSentDate&order=DESC" class="desc"></a></th>
             <th width="27%">Action</th>
         </tr>  
         <?php
@@ -269,7 +270,7 @@ if($action=='add' || $action=='edit') {
               <!--  <td><?=$status?></td> -->
                 <td><?=getHowOften($order_row['how_often'])?></td> 
                 <td><?=$order_row['sentTotal']?></td> 
-                <td><?=dateFormat($order_row['sendDate'], 'Y') ?></td>
+                <td><?=dateFormat($order_row['invoiceSentDate'], 'Y') ?></td>
                 <td>
                     <a href="invoices.php?action=view&orderId=<?=$orderId?>&popup" class="btn_style thickbox">View</a>
                     <? if($ses_loginType!='user') { ?>
