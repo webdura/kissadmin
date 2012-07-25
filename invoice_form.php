@@ -101,6 +101,13 @@ $list_org = generateTableRow(array());
     	<input type="text" style="text-align:right;height:20px" class="invoicetextbox_green" name="total" id="total" value="<?= sprintf("%01.2f", $total);?>" size="10" readonly />
     </td>
 </tr>
+<tr>
+    <td colspan="2"align="right" valign="top" style="padding-right: 23px;">
+   
+    	<span style="padding-right: 40px;">Comments</span>
+    	<textarea name="comments" rows="6" cols="50"><?=$comments; ?></textarea>
+    </td>
+</tr>
 </table>
 <div class="addedit_btn fright"><input type="submit" name="save" id="save" value="Save as Draft" class="btn_style" />&nbsp;&nbsp;<input type="submit" name="sendMail" id="sendMail" value="Send by Mail" class="btn_style" /></div>
 

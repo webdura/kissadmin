@@ -107,66 +107,22 @@ switch ($action)
         }
         break;
         
-    case 'view':
-        $details = invoiceDetails($orderId);
-        $details = emailSend('invoice', $details, null, 1);
-        echo "<div align='center'>$details</div>";
-        exit;
-        break;
-        
     case 'delete':
-        $order_sql = "SELECT * FROM gma_order,gma_logins WHERE gma_logins.userId=gma_order.userId AND gma_logins.companyId='$ses_companyId' AND id='$orderId'";
+        $order_sql = "SELECT * FROM gma_order_repeat,gma_logins WHERE gma_logins.userId=gma_order_repeat.userId AND gma_logins.companyId='$ses_companyId' AND id='$orderId'";
         $order_rs  = mysql_query($order_sql);
         if(mysql_num_rows($order_rs)!=1)
         {
-            header("Location: invoices.php?i");
+            header("Location: repeated_invoices.php?i");
             exit;
         }
         
-        $sql = "DELETE FROM gma_order_details WHERE orderId IN (SELECT id FROM gma_order WHERE id='$orderId')";
+        $sql = "DELETE FROM gma_order_repeat_details WHERE orderId IN (SELECT id FROM gma_order_repeat WHERE id='$orderId')";
         mysql_query($sql);
         
-        $sql = "DELETE FROM gma_order WHERE id='$orderId'";
+        $sql = "DELETE FROM gma_order_repeat WHERE id='$orderId'";
         mysql_query($sql);
         
-        header("Location: invoices.php?d");        
-        break;
-        
-    case 'deleteall':
-        $orderId    = implode(',', $_REQUEST['delete']);
-        $order_sql = "SELECT * FROM gma_order,gma_logins WHERE gma_logins.userId=gma_order.userId AND gma_logins.companyId='$ses_companyId' AND id IN ($orderId)";
-        $orderId   = 0;
-        $order_rs   = mysql_query($order_sql);
-        while($order_row = mysql_fetch_assoc($order_rs))
-        {
-            $orderId .= ','.$order_row['id'];
-        }
-        if($orderId=='0')
-        {
-            header("Location: invoices.php?i");
-            exit;
-        }
-        
-        $sql = "DELETE FROM gma_order_details WHERE orderId IN (SELECT id FROM gma_order WHERE id IN ($orderId))";
-        mysql_query($sql);
-        
-        $sql = "DELETE FROM gma_order WHERE id IN ($orderId)";
-        mysql_query($sql);
-        
-        header("Location: invoices.php?d");        
-        break;
-        
-    case 'resendMail':
-        $details = invoiceDetails($orderId);        
-        $result  = emailSend('invoice', $details);
-        if($result)  {                  
-            $sql  = "UPDATE gma_order SET sendDate=NOW()WHERE id='$orderId'";
-            mysql_query($sql);
-            $smsg = "Repeat Invoice mail send successfully";
-        }
-                    
-        return header("Location: invoices.php?msg=$smsg");
-        exit;
+        header("Location: repeated_invoices.php?d");        
         break;
         
     default:
@@ -195,7 +151,7 @@ switch ($action)
         }
         
         if($ses_loginType!='user') {
-            $links = '<a href="invoices.php?action=add" title="Create New Repeat Invoice">Create New Repeat Invoice</a>&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
+       //     $links = '<a href="invoices.php?action=add" title="Create New Repeat Invoice">Create New Repeat Invoice</a>&nbsp;<a href="javascript:void(0);" onclick="deleteAll();" title="Delete">Delete</a>';
             $add_url    = 'invoices.php?action=add&userId='.$userId;
 //            $del_url    = 'javascript:void(0);';
 //            $del_click  = 'deleteAll();';
@@ -272,12 +228,12 @@ if($action=='add' || $action=='edit') {
                 <td><?=$order_row['sentTotal']?></td> 
                 <td><?=dateFormat($order_row['invoiceSentDate'], 'Y') ?></td>
                 <td>
-                    <a href="invoices.php?action=view&orderId=<?=$orderId?>&popup" class="btn_style thickbox">View</a>
+                    <!-- <a href="invoices.php?action=view&orderId=<?=$orderId?>&popup" class="btn_style thickbox">View</a>-->
                     <? if($ses_loginType!='user') { ?>
                         &nbsp;<a href="repeated_invoices.php?action=edit&orderId=<?=$orderId?>" class="btn_style">Edit</a>
-                        <!--&nbsp;<a href="invoices.php?action=delete&orderId=<?=$orderId?>" class="btn_style">Delete</a>-->
+                        &nbsp;<a href="javascript: void(0);" onClick="javascript:confirmDelete(<?=$orderId?>);" class="btn_style">Delete</a>
                     <? } ?>
-                    &nbsp;<a href="invoices.php?action=resendMail&orderId=<?=$orderId?>" title="Send invoice to my email" class="btn_style">Send</a>
+                   <!-- &nbsp;<a href="invoices.php?action=resendMail&orderId=<?=$orderId?>" title="Send invoice to my email" class="btn_style">Send</a>-->
                 </td>
             </tr>
             <?php
@@ -291,3 +247,13 @@ if($action=='add' || $action=='edit') {
 }
 include("footer.php");
 ?>
+<script>
+
+function confirmDelete(orderId) {
+		jConfirm('Checking this box will result in automatic emailing of this invoice until unchecked', 'Confirmation Dialog', function(r) {
+	    	if(r===true)
+ 		  		window.location.href="repeated_invoices.php?action=delete&orderId="+orderId;
+    });
+}	
+
+</script>

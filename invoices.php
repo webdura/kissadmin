@@ -62,6 +62,8 @@ switch ($action)
             $orderDate    = date('Y-m-d H:i:s');
             $userId       = $_REQUEST['userId'];
             $order_number = $_REQUEST['order_number'];
+            $comments = GetSQLValueString($_REQUEST['comments'], 'text');
+            
             $invoiceId    = 0;
             if($orderId>0)
             {
@@ -84,7 +86,8 @@ switch ($action)
             mysql_query("DELETE FROM gma_order_details WHERE orderId='$orderId' AND orderId>0");    
             if($orderId==0)
             {
-                $order_sql = "INSERT INTO gma_order SET userId='$userId',invoiceId='$invoiceId',order_number='$order_number',orderDate='$orderDate'";
+                $order_sql = "INSERT INTO gma_order SET userId='$userId',invoiceId='$invoiceId',order_number='$order_number', " .
+                			" orderDate='$orderDate', comments=$comments";
                 mysql_query($order_sql);
                 $orderId = mysql_insert_id();
             }
@@ -112,9 +115,9 @@ switch ($action)
                     $invoice_amount = $invoice_amount + $amount;
                 }
             }
-            $order_sql = "UPDATE gma_order SET userId='$userId',order_number='$order_number',orderDate='$orderDate',invoice_amount='$invoice_amount' WHERE id='$orderId'";
-            $order_sql = "UPDATE gma_order SET userId='$userId',order_number='$order_number',invoice_amount='$invoice_amount' WHERE id='$orderId'";
-            mysql_query($order_sql);
+           $order_sql = "UPDATE gma_order SET userId='$userId',order_number='$order_number',invoice_amount='$invoice_amount', " .
+            			"  comments=$comments WHERE id='$orderId'";
+            mysql_query($order_sql); 
             
             $smsg = ($orderId>0) ? "updated" : "added";
             $sql  = "UPDATE gma_company SET companyInvoiceNo='$invoice_id' WHERE companyId='$ses_companyId'";
@@ -151,6 +154,7 @@ switch ($action)
             $userId    = $order_row['userId'];
             $total     = $order_row['invoice_amount'];
             $orderNo  	= $order_row['order_number'];
+            $comments = $order_row['comments']; 
             
             $orderDetails      = array();
             $order_detail_sql  = "SELECT * FROM gma_order_details WHERE orderId='$orderId'";

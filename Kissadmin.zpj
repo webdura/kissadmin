@@ -12,10 +12,31 @@
 	<project_entity ID="project_roots">
 		<vfile name="D:\wamp\www\kissadmin"/>
 	</project_entity>
+	<project_entity ID="javaBridge" JRE_Name="1.5.0_06"/>
 	<project_entity ID="bookmarks">
 		<bookmark fileName="D:\wamp\www\kissadmin\functions.php" lineNumber="997" description="mysql_query($order_sql);"/>
 	</project_entity>
-	<project_entity ID="javaBridge" JRE_Name="1.5.0_06"/>
+	<project_entity ID="editor_component" selectedEditor="3">
+		<openEditors>
+			<editor fileName="D:\wamp\www\kissadmin\header.php" caretPosition="14536" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\invoices.php" caretPosition="6695" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\get_invoice_message.php" caretPosition="1090" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\invoice_form.php" caretPosition="842" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\functions.php" caretPosition="4489" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\bulk_upload_invoices.php" caretPosition="3193" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\file_upload\index.php" caretPosition="797" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\footer.php" caretPosition="74" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\myaccount.php" caretPosition="968" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\repeat_invoice_form.php" caretPosition="2072" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\js\scripts.js" caretPosition="2781" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\repeated_invoices.php" caretPosition="11812" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\cron_job.php" caretPosition="1358" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\cron_repeated_invoices.php" caretPosition="1042" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\quotations.php" caretPosition="3103" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\css\jquery.alerts.css" caretPosition="241" clone="false" encoding="default"/>
+			<editor fileName="D:\wamp\www\kissadmin\payments.php" caretPosition="8120" clone="false" encoding="default"/>
+		</openEditors>
+	</project_entity>
 	<project_entity ID="Subversion">
 		<svnCmdArguments>
 			<SubversionCommand commandType="update"/>
@@ -27,22 +48,6 @@
 			<SubversionCommand commandType="revert"/>
 			<SubversionCommand commandType="resolve"/>
 		</svnCmdArguments>
-	</project_entity>
-	<project_entity ID="editor_component" selectedEditor="3">
-		<openEditors>
-			<editor fileName="D:\wamp\www\kissadmin\header.php" caretPosition="14536" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\invoices.php" caretPosition="11484" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\get_invoice_message.php" caretPosition="1090" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\invoice_form.php" caretPosition="2251" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\functions.php" caretPosition="40452" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\bulk_upload_invoices.php" caretPosition="3193" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\file_upload\index.php" caretPosition="797" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\footer.php" caretPosition="74" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\myaccount.php" caretPosition="968" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\repeat_invoice_form.php" caretPosition="247" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\js\scripts.js" caretPosition="2781" clone="false" encoding="default"/>
-			<editor fileName="D:\wamp\www\kissadmin\repeated_invoices.php" caretPosition="3307" clone="false" encoding="default"/>
-		</openEditors>
 	</project_entity>
 	<project_entity ID="CVS">
 		<lastArguments>

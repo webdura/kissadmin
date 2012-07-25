@@ -53,6 +53,8 @@ switch ($action)
             $orderDate    = date('Y-m-d H:i:s');
             $userId       = $_REQUEST['userId'];
             $order_number = $_REQUEST['order_number'];
+            $comments = GetSQLValueString($_REQUEST['comments'], 'text');
+            
             $invoiceId = 0;
             if($quotationId>0)
             {
@@ -75,7 +77,8 @@ switch ($action)
             mysql_query("DELETE FROM gma_quotation_details WHERE quotationId='$quotationId' AND quotationId>0");    
             if($quotationId==0)
             {
-                $order_sql = "INSERT INTO gma_quotation SET userId='$userId',invoiceId='$invoiceId',order_number='$order_number',orderDate='$orderDate'";
+                $order_sql = "INSERT INTO gma_quotation SET userId='$userId',invoiceId='$invoiceId',order_number='$order_number', " .
+                			" orderDate='$orderDate', comments=$comments";
                 mysql_query($order_sql);
                 $quotationId = mysql_insert_id();
             }
@@ -102,8 +105,8 @@ switch ($action)
                     $invoice_amount = $invoice_amount + $amount;
                 }
             }
-            $order_sql = "UPDATE gma_quotation SET userId='$userId',order_number='$order_number',orderDate='$orderDate',invoice_amount='$invoice_amount' WHERE id='$quotationId'";
-            $order_sql = "UPDATE gma_quotation SET userId='$userId',order_number='$order_number',invoice_amount='$invoice_amount' WHERE id='$quotationId'";
+            $order_sql = "UPDATE gma_quotation SET userId='$userId',order_number='$order_number',invoice_amount='$invoice_amount' " .
+            			" comments=$comments WHERE id='$quotationId'";
             mysql_query($order_sql);
             
             $smsg = ($quotationId>0) ? "updated" : "added";
@@ -141,6 +144,7 @@ switch ($action)
             $order_row = mysql_fetch_assoc($order_rs);
             $userId    = $order_row['userId'];
             $total     = $order_row['invoice_amount'];
+            $comments = $order_row['comments']; 
             
             $orderDetails      = array();
             $order_detail_sql  = "SELECT * FROM gma_quotation_details WHERE quotationId='$quotationId'";

@@ -5,7 +5,7 @@ $howOften = getHowOften();
 
 foreach ($howOften as $key=>$value) {
 	$sql = "SELECT * FROM gma_order_repeat WHERE how_often = " . $key ." AND invoiceSentDate =  '0000-00-00 00:00:00' " .
-			" AND startDate <= NOW( ) ";
+			" AND startDate <= NOW( ) AND orderStatus = 0";
 	
 	$repeat_rs  = mysql_query($sql);
 	while ($repeat_row = mysql_fetch_assoc($repeat_rs)) {
@@ -51,7 +51,7 @@ foreach ($howOften as $key=>$value) {
 	}
 	
 	$sql = "SELECT * FROM gma_order_repeat WHERE how_often = " . $key ." AND invoiceSentDate !=  '0000-00-00 00:00:00' " .
-			" AND DATE_ADD( DATE(  `invoiceSentDate` ) , INTERVAL " . $interval ." )  <= CURDATE( ) ";
+			" AND DATE_ADD( DATE(  `invoiceSentDate` ) , INTERVAL " . $interval ." )  <= CURDATE( )  AND orderStatus = 0";
 	
 	$repeat_rs  = mysql_query($sql);
 	while ($repeat_row = mysql_fetch_assoc($repeat_rs)) {

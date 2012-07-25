@@ -36,3 +36,6 @@ CREATE TABLE IF NOT EXISTS `gma_order_repeat_details` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
  
 
+ALTER TABLE  `gma_order` ADD  `comments` TEXT NOT NULL AFTER  `sendDate`
+
+ALTER TABLE  `gma_quotation` ADD  `comments` TEXT NOT NULL AFTER  `invoice_amount`
