@@ -91,7 +91,7 @@ if(isset($_POST['userName']))
         
         if($ses_userType=='gnet_admin' || $ses_userType=='super_admin')
         {
-            $sql = "UPDATE gma_company SET companyName=".GetSQLValueString($_POST['companyName'], 'text').",companyVatNo=".GetSQLValueString($_POST['companyVatNo'], 'text').",companyAccountEmail=".GetSQLValueString($_POST['companyAccountEmail'], 'text').",companyAccountTel=".GetSQLValueString($_POST['companyAccountTel'], 'text').",companyAccountFax=".GetSQLValueString($_POST['companyAccountFax'], 'text').",companyAccountContact=".GetSQLValueString($_POST['companyAccountContact'], 'text').",companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text').",companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text').",companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text').",companyAccountName=".GetSQLValueString($_POST['companyAccountName'], 'text').",companyAccountType=".GetSQLValueString($_POST['companyAccountType'], 'text').",companyAccountNo=".GetSQLValueString($_POST['companyAccountNo'], 'text').",companyDiscount=".GetSQLValueString($_POST['companyDiscount'], 'text')." WHERE companyId='$ses_companyId'";
+            $sql = "UPDATE gma_company SET companyName=".GetSQLValueString($_POST['companyName'], 'text').",companyVatNo=".GetSQLValueString($_POST['companyVatNo'], 'text').",companyAccountEmail=".GetSQLValueString($_POST['companyAccountEmail'], 'text').",companyAccountTel=".GetSQLValueString($_POST['companyAccountTel'], 'text').",companyAccountFax=".GetSQLValueString($_POST['companyAccountFax'], 'text').",companyAccountContact=".GetSQLValueString($_POST['companyAccountContact'], 'text').",companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text').",companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text').",companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text').",companyAccountName=".GetSQLValueString($_POST['companyAccountName'], 'text').",companyAccountType=".GetSQLValueString($_POST['companyAccountType'], 'text').",companyAccountNo=".GetSQLValueString($_POST['companyAccountNo'], 'text')." WHERE companyId='$ses_companyId'";
             mysql_query($sql);
         }
     }
@@ -372,10 +372,10 @@ include_once('sub_header.php');
                 <td>Account Contact</td>
                 <td><input type="text" name="companyAccountContact" id="companyAccountContact" class="textbox" value="<?=$company_row['companyAccountContact']?>" /></td>  
             </tr>
-            <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+            <!--<tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
                 <td>Overall Discount</td>
                 <td><input type="text" name="companyDiscount" id="companyDiscount" class="textbox number" value="<?=$company_row['companyDiscount']?>" /></td>  
-            </tr>
+            </tr>-->
         </table>
         <? $row_flag = 1; ?>
         <table width="100%" class="list addedit" cellpadding="0" cellspacing="0" style="margin-top:10px;">

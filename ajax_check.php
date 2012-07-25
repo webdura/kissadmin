@@ -72,15 +72,14 @@ switch ($task)
         $user_sql = "SELECT * FROM gma_user_details,gma_logins,gma_company WHERE gma_user_details.userId=gma_logins.userId AND gma_logins.companyId=gma_company.companyId AND gma_logins.userId='$userId'";
         $user_rs  = mysql_query($user_sql);
         $user_row = mysql_fetch_assoc($user_rs);
-        $discount_type   = $user_row['discount_type'];
-        $companyDiscount = $user_row['companyDiscount'];
+        $discount_type  = $user_row['discount_type'];
+        $discount_value = $user_row['discount_value'];
         
         $discount_sql  = "SELECT * FROM gma_groups LEFT JOIN gma_user_discount ON group_id=id AND userId='$userId' WHERE gma_groups.companyId='$ses_companyId'";
-        //echo "$user_sql == $discount_sql";
         $discount_rs   = mysql_query($discount_sql);
         while($discount_row = mysql_fetch_assoc($discount_rs))
         {
-            $user_discount[] = $discount_row['id'].'~~~'.($discount_type==1 ? $companyDiscount : $discount_row['discount'])*1;
+            $user_discount[] = $discount_row['id'].'~~~'.($discount_type==1 ? $discount_value : $discount_row['discount'])*1;
         }
         
         echo implode('~!~', $user_discount);

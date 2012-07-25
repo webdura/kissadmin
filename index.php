@@ -9,15 +9,27 @@ if(isset($_REQUEST['logoff']))
     
     if(isset($_SESSION['usr_userId']) && $_SESSION['usr_userId']>0)
     {
-        $_SESSION['ses_userId'] = $_SESSION['usr_userId'];
+        $userId = $_SESSION['usr_userId'];
         unset($_SESSION['usr_userId']);
     }
     else if(isset($_SESSION['adm_userId']) && $_SESSION['adm_userId']>0)
     {
-        $_SESSION['ses_userId'] = $_SESSION['adm_userId'];
+        $userId = $_SESSION['adm_userId'];
         unset($_SESSION['adm_userId']);
     }
-     session_destroy();
+    
+    $user_sql = "SELECT * FROM `gma_logins` WHERE `userId`='$userId'";
+    $user_rs  = mysql_query($user_sql);    
+    if(mysql_num_rows($user_rs)==1)
+    {
+        $user_row = mysql_fetch_assoc($user_rs);
+        
+        $_SESSION['ses_userId']    = $ses_userId    = $user_row['userId'];
+        $_SESSION['ses_companyId'] = $ses_companyId = $user_row['companyId'];
+        $_SESSION['ses_userType']  = $ses_userType  = $user_row['userType'];
+        $_SESSION['ses_loginType'] = $ses_loginType = ($ses_loginType=='normal' || $ses_loginType=='trial' || $ses_loginType=='client') ? 'user' : 'admin';
+    }
+    
     header("Location: index.php");
     exit;
 }
@@ -33,10 +45,13 @@ else if(isset($_SESSION['ses_userId']) && $_SESSION['ses_userId']>0)
         $admins_id  = $admins_row['id'];
     }
     
-    $module_sql = "SELECT * FROM gma_admins_permission AS AP, gma_company_module AS CM, gma_modules AS MO WHERE AP.companyId=CM.companyId AND AP.module_id=CM.module_id AND AP.module_id=MO.id AND AP.admins_id=$admins_id AND CM.companyId=$ses_companyId AND CM.status=1 ORDER BY `menu` DESC, `order` ASC";
+    $filename = 'dashboard.php';
+    $module_sql = "SELECT * FROM gma_admins_permission AS AP, gma_company_module AS CM, gma_modules AS MO WHERE AP.companyId=CM.companyId AND AP.module_id=CM.module_id AND AP.module_id=MO.id AND AP.admins_id=$admins_id AND CM.companyId=$ses_companyId AND CM.status=1 AND filename!='#' ORDER BY `menu` DESC, `order` ASC";
     $module_rs  = mysql_query($module_sql);
-    $module_row = mysql_fetch_assoc($module_rs);
-    $filename   = $module_row['filename'];
+    if(mysql_num_rows($module_rs)>0) { 
+        $module_row = mysql_fetch_assoc($module_rs);
+        $filename   = $module_row['filename'];
+    }
     
     return header("Location: $filename");
     exit;
@@ -99,7 +114,7 @@ $page_title = "Login";
             <div class="right_links">
                 <? if(isset($_SESSION['ses_userId']) && $_SESSION['ses_userId']>0) { ?>
                 <div class="login">
-                    Logged in as "<?=$_SESSION['displayName']?>"&nbsp;&nbsp;&nbsp;|&nbsp;
+                    Logged in as "<?=$displayName?>"&nbsp;&nbsp;&nbsp;|&nbsp;
                     <? if(count($top_menu)>0) { ?>
                         <a href="javascript:void(0);" onclick="settingsTab();">Settings</a>&nbsp;&nbsp;|&nbsp;&nbsp;
                     <? } ?>

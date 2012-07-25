@@ -1,41 +1,18 @@
-;-- 24July
+-- 24July
 
 ALTER TABLE  `gma_company` ADD  `companyInvoiceNo` INT NOT NULL DEFAULT  '1000' AFTER  `companyDiscount` , ADD  `companyQuotationNo` INT NOT NULL DEFAULT  '1000' AFTER  `companyInvoiceNo` , ADD  `companyCreditNo` INT NOT NULL DEFAULT  '1000' AFTER  `companyQuotationNo`;
 
 ALTER TABLE  `gma_services` ADD  `description` VARCHAR( 250 ) NOT NULL AFTER  `service_name`;
 
-CREATE TABLE IF NOT EXISTS `gma_order_repeat` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
-  `invoiceId` int(11) NOT NULL,
-  `order_number` varchar(50) NOT NULL,
-  `invoice_amount` decimal(10,2) NOT NULL,
-  `orderDate` datetime NOT NULL,
-  `sendDate` datetime NOT NULL,
-  `startDate` datetime NOT NULL,
-  `how_often` tinyint(4) NOT NULL,
-  `how_many` smallint(6) NOT NULL DEFAULT '1001',
-  `sentTotal` tinyint(4) NOT NULL DEFAULT '0',
-  `invoiceSentDate` datetime NOT NULL,
-  `sendMail` char(1) NOT NULL DEFAULT 'N',
-  `orderStatus` int(1) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+ALTER TABLE `gma_order_repeat`  ADD `startDate` DATETIME NOT NULL AFTER `sendDate`,  ADD `how_often` TINYINT NOT NULL AFTER `startDate`,  ADD `how_many` SMALLINT NOT NULL DEFAULT '1001' AFTER `how_often`,  ADD `sentTotal` TINYINT NOT NULL DEFAULT '0' AFTER `how_many`;
 
-CREATE TABLE IF NOT EXISTS `gma_order_repeat_details` (
-  `orderRepeatId` bigint(20) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  `service_id` int(11) NOT NULL,
-  `serviceName` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `cost` decimal(10,2) NOT NULL,
-  `quantity` int(11) NOT NULL DEFAULT '1',
-  `amount` decimal(10,2) NOT NULL,
-  `discount` tinyint(4) NOT NULL,
-  `exportStatus` enum('false','true') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  KEY `orderId` (`orderRepeatId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
- 
+ALTER TABLE  `gma_company` DROP  `companyDiscount`;
+ALTER TABLE  `gma_user_details` ADD  `discount_value` FLOAT NOT NULL;
 
-ALTER TABLE  `gma_order` ADD  `comments` TEXT NOT NULL AFTER  `sendDate`
+CREATE TABLE IF NOT EXISTS `gma_order_repeat` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `userId` int(11) NOT NULL, `invoiceId` int(11) NOT NULL, `order_number` varchar(50) NOT NULL, `invoice_amount` decimal(10,2) NOT NULL, `orderDate` datetime NOT NULL, `sendDate` datetime NOT NULL, `startDate` datetime NOT NULL, `how_often` tinyint(4) NOT NULL, `how_many` smallint(6) NOT NULL DEFAULT '1001', `sentTotal` tinyint(4) NOT NULL DEFAULT '0', `invoiceSentDate` datetime NOT NULL, `sendMail` char(1) NOT NULL DEFAULT 'N', `orderStatus` int(1) NOT NULL, PRIMARY KEY (`id`));
 
-ALTER TABLE  `gma_quotation` ADD  `comments` TEXT NOT NULL AFTER  `invoice_amount`
+CREATE TABLE IF NOT EXISTS `gma_order_repeat_details` ( `orderRepeatId` bigint(20) NOT NULL, `group_id` int(11) NOT NULL, `service_id` int(11) NOT NULL, `serviceName` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, `cost` decimal(10,2) NOT NULL, `quantity` int(11) NOT NULL DEFAULT '1', `amount` decimal(10,2) NOT NULL, `discount` tinyint(4) NOT NULL, `exportStatus` enum('false','true') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, KEY `orderId` (`orderRepeatId`) );
+
+ALTER TABLE  `gma_order` ADD  `comments` TEXT NOT NULL AFTER  `sendDate`;
+
+ALTER TABLE  `gma_quotation` ADD  `comments` TEXT NOT NULL AFTER  `invoice_amount`;

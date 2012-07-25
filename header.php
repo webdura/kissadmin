@@ -214,34 +214,19 @@ $actualQueryString = $_SERVER["QUERY_STRING"];
 $queryString = explode("&orderby=", $actualQueryString); 
 $queryString = $queryString[0];
 
-	if( strtolower(trim($_SESSION['ses_userType']))=='client'){
-		$name_sql =" SELECT firstName " .
-				" FROM gma_user_details, gma_logins " .
-				" WHERE gma_logins.userId = gma_user_details.userId " .
-				" AND gma_logins.userId= " . $_SESSION['ses_userId'] .
-				" AND gma_logins.companyId='" . $_SESSION['ses_companyId'] ."'";   
-	
-	
-		$name_rs     = mysql_query($name_sql);
-		$name = mysql_fetch_assoc($name_rs);
-		$_SESSION['displayName'] = $name['firstName'];
-	}
-	else { //if( strtolower(trim($_SESSION['ses_userType']))=='super_admin'){
-		$name_sql =" SELECT companyName " .
-				" FROM gma_company, gma_logins " .
-				" WHERE gma_logins.companyId = gma_company.companyId " .
-				" AND gma_logins.userId= " . $_SESSION['ses_userId'] .
-				" AND gma_logins.companyId='" . $_SESSION['ses_companyId'] ."'";   
-	
-	
-		$name_rs     = mysql_query($name_sql);
-		$name = mysql_fetch_assoc($name_rs);
-		$_SESSION['displayName'] = $name['companyName'];
-	}
-	//else 
-	//	$_SESSION['displayName'] = $_SESSION['displayName'];
+$displayName = $company_row['companyName'];
+if($ses_loginType=='user') {
+    $logged_user_sql = "SELECT * FROM gma_user_details WHERE userID='$ses_userId'";
+    $logged_user_rs  = mysql_query($logged_user_sql);
+    $logged_user_row = mysql_fetch_assoc($logged_user_rs);
+    $displayName     = $logged_user_row['businessName'];
+}
+//$table_name  = ($ses_loginType=='user') ? 'gma_user_details' : 'gma_admin_details';
+//$logged_user_sql = "SELECT * FROM $table_name WHERE userID='$ses_userId'";
+//$logged_user_rs  = mysql_query($logged_user_sql);
+//$logged_user_row = mysql_fetch_assoc($logged_user_rs);
+//$displayName    .= '/'.(($ses_loginType=='user') ? $logged_user_row['businessName'] : $logged_user_row['fullName']);
 
-	
 $menu_types = array(1=>'Settings Menu', 2=>'Main Menu', 3=>'Top Menu');
 
 $row_flag = 1;
@@ -286,7 +271,7 @@ $row_flag = 1;
             <img src="images/KISSAdmin_logo.png" align="right">
             <div class="right_links">
                 <div class="login">
-                    Logged in as "<?=$_SESSION['displayName']?>"&nbsp;&nbsp;&nbsp;|&nbsp;
+                    Logged in as "<?=$displayName?>"&nbsp;&nbsp;&nbsp;|&nbsp;
                     <? if(count($settings_menu)>0) { ?>
                         <a href="javascript:void(0);" onclick="settingsTab();">Settings</a>&nbsp;&nbsp;|&nbsp;&nbsp;
                     <? } ?>
@@ -314,11 +299,11 @@ $row_flag = 1;
                 <li><a href="<?=$menu['filename']?>" class="<?=$menu['class']?>"></a>
                     <? if(strstr($menu['class'], 'invoices_btn') || strstr($menu['class'], 'quotation_btn') || strstr($menu['class'], 'clients_btn') || strstr($menu['class'], 'payment_btn')) { ?>
                         <ul>
+                            <li><a href="<?=$menu['filename']?>?action=list">View All <?=str_replace(' Module', '', $menu['name'])?></a></li>
                             <li><a href="<?=$menu['filename']?>?action=add">Create New <?=str_replace(' Module', '', $menu['name'])?></a></li>
                             <? if(strstr($menu['class'], 'invoices_btn')) { ?>
-                            <li><a href="repeated_invoices.php">View Repeat Invoices</a></li>
-                    <? } ?>
-                            
+                                <li><a href="repeated_invoices.php">View Repeat Invoices</a></li>
+                            <? } ?>                            
                         </ul>
                     <? } ?>
                 </li>

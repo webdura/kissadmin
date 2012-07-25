@@ -5,7 +5,7 @@ a:hover, a.selected { color:#FF9000; }
 .right_links, .right_links a { color:#FFFFFF; }
 .right_links a:hover,.right_links a.selected { color:#000 !important; }
 
-#top_buttons, #top_buttons ul {
+#top_buttons, #top_buttons ul, #top_buttons ul li ul li {
     background: transparent url(images/pink_hearts_theme/nav_bg.jpg) repeat-x;
 }
 .summary_btn { 

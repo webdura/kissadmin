@@ -152,8 +152,20 @@ switch ($action)
         break;
         
     case 'login':
-        $_SESSION['adm_userId'] = $_SESSION['ses_userId'];
-        $_SESSION['ses_userId'] = $_REQUEST['userId'];
+    	   $userId   = $_REQUEST['userId'];
+        $user_sql = "SELECT * FROM `gma_logins` WHERE `userId`='$userId'";
+        $user_rs  = mysql_query($user_sql);
+        if(mysql_num_rows($user_rs)==1)
+        {
+            $user_row = mysql_fetch_assoc($user_rs);
+            
+            $_SESSION['adm_userId'] = $_SESSION['ses_userId'];
+            
+            $_SESSION['ses_userId']    = $ses_userId    = $user_row['userId'];
+            $_SESSION['ses_companyId'] = $ses_companyId = $user_row['companyId'];
+            $_SESSION['ses_userType']  = $ses_userType  = $user_row['userType'];
+            $_SESSION['ses_loginType'] = $ses_loginType = ($ses_loginType=='normal' || $ses_loginType=='trial' || $ses_loginType=='client') ? 'user' : 'admin';
+        }
         
         header("Location: index.php");        
         break;

@@ -283,9 +283,22 @@ switch ($action)
         break;
         
     case 'login':	
-    	
-        $_SESSION['usr_userId'] = $_SESSION['ses_userId'];
-        $_SESSION['ses_userId'] = $_REQUEST['userId'];
+    	   $userId   = $_REQUEST['userId'];
+        $user_sql = "SELECT * FROM `gma_logins` WHERE `userId`='$userId' AND `companyId`='$ses_companyId'";
+        $user_rs  = mysql_query($user_sql);
+        
+        if(mysql_num_rows($user_rs)==1)
+        {
+            $user_row = mysql_fetch_assoc($user_rs);
+            
+            $_SESSION['usr_userId'] = $_SESSION['ses_userId'];
+            
+            $_SESSION['ses_userId']    = $ses_userId    = $user_row['userId'];
+            $_SESSION['ses_companyId'] = $ses_companyId = $user_row['companyId'];
+            $_SESSION['ses_userType']  = $ses_userType  = $user_row['userType'];
+            $_SESSION['ses_loginType'] = $ses_loginType = ($ses_loginType=='normal' || $ses_loginType=='trial' || $ses_loginType=='client') ? 'user' : 'admin';
+        }
+        
         header("Location: index.php");        
         break;
         
@@ -398,7 +411,7 @@ if($action=='list') { ?>
         <tr valign="top" class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
             <td>Discount Percentage</th>
             <td>
-            <div><input type="checkbox" name="discount_type" id="discount_type" value="1" <?=($user_row['discount_type']==1 ? 'checked' : '')?> />&nbsp;Same overall discount</div>
+            <div style="padding-bottom:5px;"><b>Overall Discount : </b><input type="checkbox" name="discount_type" id="discount_type" value="1" <?=($user_row['discount_type']==1 ? 'checked' : '')?> />&nbsp;<input type="text" name="discount_value" id="discount_value" class="textbox number" style="width:200px;" value="<?=@$user_row['discount_value']?>" /></div>
             <? foreach ($group_rows as $group_id=>$group_row) { ?>
                 <b><?=$group_row['name']?>&nbsp;:&nbsp;</b><input type="text" name="discount[<?=$group_id?>]" id="discount_<?=$group_id?>" class="textbox number discount" style="width:200px;" value="<?=@$user_row['group_ids'][$group_id]?>" /><br>
             <? } ?>
@@ -552,17 +565,29 @@ $(document).ready(function() {
     
     var discount_type = $('#discount_type').attr('checked');
     if(discount_type) {
-        $('.discount').css('background', '#F4F4F4')
-        $('.discount').attr('readonly', 'readonly')
+        $('.discount').css('background', '#F4F4F4');
+        $('.discount').attr('readonly', 'readonly');
+        
+        $('#discount_value').css('background', '#FFF');
+        $('#discount_value').removeAttr('readonly')
+    } else {
+        $('#discount_value').css('background', '#F4F4F4');
+        $('#discount_value').attr('readonly', 'readonly');
     }
     $('#discount_type').click(function() {
         var discount_type = $('#discount_type').attr('checked');
         if(discount_type) {
-            $('.discount').css('background', '#F4F4F4')
-            $('.discount').attr('readonly', 'readonly')
+            $('#discount_value').css('background', '#FFF');
+            $('#discount_value').removeAttr('readonly')
+            
+            $('.discount').css('background', '#F4F4F4');
+            $('.discount').attr('readonly', 'readonly');
         } else {
-            $('.discount').css('background', '#FFF')
-            $('.discount').removeAttr('readonly')
+            $('#discount_value').css('background', '#F4F4F4');
+            $('#discount_value').attr('readonly', 'readonly');
+            
+            $('.discount').css('background', '#FFF');
+            $('.discount').removeAttr('readonly');
         }
     });
     //alert(discount_type)

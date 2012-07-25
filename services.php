@@ -297,7 +297,7 @@ $(document).ready(function() {
             </tr> 
             <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
                 <td></td>
-                <td><a href="images/services.csv" target="_blank">Click here</a> for sample CSV file.</td>  
+                <td><a href="images/services.csv" target="_blank" class="links">Click here</a> for sample CSV file.</td>  
             </tr>
         </table>
         <div class="addedit_btn"><input type="submit" name="sbmt" id="sbmt" value="Submit" class="btn_style" /></div>
