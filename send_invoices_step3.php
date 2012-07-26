@@ -35,7 +35,6 @@ if(isset($_FILES) && $_FILES["csvfile"]["size"] > 0 && !isset($_SESSION['sendInv
     				  
 	    $invoice_details_sql = '';
 	    
-	    
 	    $invoice_details_sqls = array();
 	    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 	        if($row > 0) {

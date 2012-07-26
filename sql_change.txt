@@ -27,3 +27,5 @@ ADD  `companyCity` VARCHAR( 100 ) NOT NULL AFTER  `companyAddress2` ,
 ADD  `companyProvince` VARCHAR( 100 ) NOT NULL AFTER  `companyCity` ,
 ADD  `companyZip` VARCHAR( 15 ) NOT NULL AFTER  `companyProvince` ,
 ADD  `companyWebsite` VARCHAR( 250 ) NOT NULL  AFTER  `companyZip`
+
+INSERT INTO `gma_emails` VALUES(0, 'send_custom_invoices', 'Your Invoice', 'Hi [firstname] [lastname],\r\n\r\nPlease find the attached invoice.\r\n\r\nClient Name : [clientname]\r\nCompany Name : [companyname]\r\nUsername : [username]\r\nEmail Address : [email]\r\n\r\n-----\r\nAdministrator\r\n[companyname]', 'Company Name => [companyname]\r\nFirst Name => [firstname]\r\nLast Name => [lastname]\r\nClient Name => [clientname]\r\nUsername => [username]\r\nEmail Address => [email]', 1, 0, 0, 2);
