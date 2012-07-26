@@ -121,25 +121,60 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
     }
     
     if(!isset($array_values['companyname'])) {
-        $array_values['invoice_logo']          = $company_row['companyName'];
-        $array_values['company_account_email'] = $company_row['companyAccountEmail'];
-        $array_values['companyname']           = $company_row['companyName'];
+        $array_values['invoice_logo']          	= $company_row['companyName'];
+        $array_values['company_account_email'] 	= $company_row['companyAccountEmail'];
+        $array_values['company_account_tel'] 	= $company_row['companyAccountTel'];
+        $array_values['company_website'] 		= $company_row['companyWebsite'];
+        $array_values['companyname']           	= $company_row['companyName'];
         
-        $array_values['companyBankName']    = $company_row['companyBankName'];
-        $array_values['companyBranchName']  = $company_row['companyBranchName'];
-        $array_values['companyBranchNo']    = $company_row['companyBranchNo'];
-        $array_values['companyAccountName'] = $company_row['companyAccountName'];
-        $array_values['companyAccountType'] = $company_row['companyAccountType'];
-        $array_values['companyAccountNo']   = $company_row['companyAccountNo'];
+        $array_values['companyAddress1']    	= $company_row['companyAddress1'];
+        $array_values['companyAddress2']  		= $company_row['companyAddress2'];
+        $array_values['companyCity']    		= $company_row['companyCity'];
+        $array_values['companyProvince'] 		= $company_row['companyProvince'];
+        $array_values['companyZip'] 			= $company_row['companyZip'];
+
+        $array_values['companyBankName']   		= $company_row['companyBankName'];
+        $array_values['companyBranchName']  	= $company_row['companyBranchName'];
+        $array_values['companyBranchNo']    	= $company_row['companyBranchNo'];
+        $array_values['companyAccountName'] 	= $company_row['companyAccountName'];
+        $array_values['companyAccountType'] 	= $company_row['companyAccountType'];
+        $array_values['companyAccountNo']   	= $company_row['companyAccountNo'];
+        
+        $array_values['company_address']		= $company_row['companyName'];
+        $array_values['company_address']		.= (trim($array_values['companyAddress1'])!='')?",<br/>".$array_values['companyAddress1']:'';
+        $array_values['company_address']		.= (trim($array_values['companyAddress2'])!='')?",<br/>".$array_values['companyAddress2']:'';
+        $array_values['company_address']		.= (trim($array_values['companyCity'])!='')?",<br/>".$array_values['companyCity']:'';
+        $array_values['company_address']		.= (trim($array_values['companyProvince'])!='')?",<br/>".$array_values['companyProvince']:'';
+        $array_values['company_address']		.= (trim($array_values['companyZip'])!='')?",<br/>".$array_values['companyZip']:'';
+        
+        $array_values['company_address'] = trim($array_values['company_address'], ',<br/>');
+        $array_values['bank_details'] = '<div style="background-color:#FF0000; float:left; width:400px;">';
+
+        if($array_values['status']!=1) {
+			$array_values['bank_details'] .= '<div style="float:left;  width:180px; text-align:right; padding-right:20px;" > Payment method: </div>'; 
+			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >EFT </div>';
+			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Bank Details: </div>';
+			$array_values['bank_details'] .= '<div style="float:left; width:200px;" > &nbsp; </div>';
+			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Bank: </div>';
+			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyBankName']. '</div>'; 
+			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Branch: </div>';
+			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyBranchName'] . '</div>'; 
+			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Account Name: </div>';
+			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyAccountName']. '</div>'; 
+			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Account Number: </div>';
+			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyAccountNo']. '</div>'; 
+        }
+
+        $array_values['bank_details'] .= '</div>';
+       
     }
-    
     $array_values['link_org']    = "{$SITE_URL}index.php";
     $array_values['link']        = "<a href='".$array_values['link_org']."'>Click here</a>";
     
     $array_values['logo'] = '';
     if($invoice_logo_mail!='' && file_exists(dirname($_SERVER['SCRIPT_FILENAME']) . "/" . $invoice_logo_mail))
         $array_values['logo'] = "<img src='{$SITE_URL}$invoice_logo_mail'>";
-    
+     
     foreach ($array_values as $key => $value) {
         $email_subject = str_replace("[$key]", $value, $email_subject);
         $email_content = str_replace("[$key]", $value, $email_content);
@@ -609,51 +644,57 @@ function invoiceDetails($orderId, $flag=0)
     $order_detail_rs  = mysql_query($order_detail_sql);
     $discount_flag    = mysql_num_rows($order_detail_rs);
     
-    $order_detail_sql = "SELECT *,gma_order_details.amount AS order_amount FROM gma_order_details LEFT JOIN gma_services ON id=service_id WHERE orderId='$orderId'";
+    $order_detail_sql = "SELECT *,gma_order_details.amount AS order_amount " .
+    					" FROM gma_order_details LEFT JOIN gma_services ON id=service_id WHERE orderId='$orderId'";
     $order_detail_rs  = mysql_query($order_detail_sql);
     $i = 1;
     while ($order_detail_row = mysql_fetch_assoc($order_detail_rs))
     {
         $service_id  = $order_detail_row['id'];
         //$serviceName = ($service_id==0) ? $order_detail_row['serviceName'] : $order_detail_row['service_name'];
-        $serviceName = $order_detail_row['serviceName'];
+        $serviceName = (trim($order_detail_row['serviceName'])=='')?$order_detail_row['service_name']:$order_detail_row['serviceName'];
+        $description = $order_detail_row['description'];
         $cost        = $order_detail_row['cost'];
         $quantity    = $order_detail_row['quantity'];
         $discount    = $order_detail_row['discount'];
         $amount      = $order_detail_row['order_amount'];
             $details .= "<tr>
-                <td bgcolor=white class='color4'><div align=left >".$i++."</div></td>
-                <td bgcolor=white class='color4'><div align=left >".$serviceName."</div></td>
-                <td bgcolor=white class='color4'><div align=center >".$cost."</div></td>
-                <td bgcolor=white class='color4'><div align=center >".$quantity."</div></td>";
+                <td bgcolor=white class='color4'>".$i++."</td>
+                <td bgcolor=white class='color4'>".$serviceName."</td>
+                <td bgcolor=white class='color4'>".$description."</td>
+                <td bgcolor=white class='color4' align='right'>".$cost."</td>
+                <td bgcolor=white class='color4' align='center'>".$quantity."</td>";
             
             if($discount_flag!=0)
-                $details .= "<td bgcolor=white class='color4'><div align=center >".$discount."%</div></td>";
+                $details .= "<td bgcolor=white class='color4' align='right'>".$discount."%</td>";
                 
-            $details .= "<td bgcolor=white class='color4'><div align=right>" .formatMoney($amount,true)."</div></td>
+            $details .= "<td bgcolor=white class='color4' align='right'>" .formatMoney($amount,true)."</td>
             </tr>";
     }
     $result .= "<tr>
-                    <td width='35' class='color3'><div align='left'><b>ITEM</b></div></td>
-                    <td width='400' class='color3'><div align='left'><b>DESCRIPTION</b></div></td>
-                    <td width='87' class='color3'><div align='left'><b>COST</b></div></td>
-                    <td width='50' class='color3'><div align='left'><b>QUANTITY</b></div></td>";
+                    <td class='color3'><b>#</b></td>
+                    <td class='color3'><b>ITEM</b></td>
+                    <td class='color3'><b>DESCRIPTION</b></td>
+                    <td class='color3' align='right'><b>COST</b></td>
+                    <td class='color3 align='center''><b>QUANTITY</b></td>";
     
     if($discount_flag!=0)
-        $result .= "<td width='87' class='color3'><div align='left'><b>DISCOUNT</b></div></td>";
+        $result .= "<td class='color3' align='right'><b>DISCOUNT</b></td>";
         
-    $result .= "   <td width='98' class='color3'><div align='right'><b>AMOUNT</b></div></td>
+    $result .= "   <td class='color3' align='right'><b>AMOUNT</b></td>
                 </tr>$details";
     
     
     $result .= "<tr>
-                    <td colspan='".($discount_flag!=0 ? 5 : 4)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
+                    <td colspan='".($discount_flag!=0 ? 6 : 5)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
                     <td class='color1'><div align='right' class='style9'>".formatMoney($order_row['invoice_amount'], true)."</div></td>
                 </tr>";
         
     $order_details['invoiceId']    = $order_row['invoiceId'];    
     $order_details['order_date']   = date("j F Y", strtotime($order_row['orderDate']));
     
+    $order_details['status']	   = $order_row['orderStatus'];    
+    $order_details['status_text']  = ($order_row['orderStatus']==1)?'PAID':'Pending';    
     $order_details['firstname']    = $order_row['firstName'];    
     $order_details['lastname']     = $order_row['lastName'];    
     $order_details['clientname']   = $order_row['businessName'];    
@@ -666,6 +707,26 @@ function invoiceDetails($orderId, $flag=0)
     // echo '<pre>'; print_r($order_details); print_r($order_row); exit;  
     
     $order_details['invoiceDetails'] = $result;
+    
+    $user_detail_sql = "SELECT * " .
+    					" FROM gma_user_address WHERE userId=" . $order_row['userId'];
+    $user_detail_rs  = mysql_query($user_detail_sql);
+    $i = 1;
+    while ($user_detail_row = mysql_fetch_assoc($user_detail_rs))
+    {
+		if($user_detail_row['type']=='B'){
+			$order_details['billing_address'] = $user_detail_row['address'];
+			$order_details['billing_city'] = $user_detail_row['city'];
+			$order_details['billing_province'] = $user_detail_row['province'];
+			$order_details['billing_zip'] = $user_detail_row['zip'];
+		} else {
+			$order_details['delivery_address'] = $user_detail_row['address'];
+			$order_details['delivery_city'] = $user_detail_row['city'];
+			$order_details['delivery_province'] = $user_detail_row['province'];
+			$order_details['delivery_zip'] = $user_detail_row['zip'];			
+		}
+    }
+    
     
     return $order_details;
 }
@@ -930,7 +991,7 @@ function invoiceEmailSend($sendInvoiceId) {
 
 } 
 
-function saveRepeatedInvoice($orderId, $data){
+function saveRepeatedInvoice($orderId, $data, $allServices){
 
     if($orderId>0)
     {

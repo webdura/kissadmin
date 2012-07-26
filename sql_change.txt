@@ -18,3 +18,12 @@ ALTER TABLE  `gma_order` ADD  `comments` TEXT NOT NULL AFTER  `sendDate`;
 ALTER TABLE  `gma_quotation` ADD  `comments` TEXT NOT NULL AFTER  `invoice_amount`;
 
 DELETE FROM  `gma_admins_permission` WHERE  `admins_id` =5 AND  `module_id` =2;
+
+-- 26 July
+
+ALTER TABLE  `gma_company` ADD  `companyAddress1` VARCHAR( 250 ) NOT NULL AFTER  `companyAccountContact` ,
+ADD  `companyAddress2` VARCHAR( 250 ) NOT NULL AFTER  `companyAddress1` ,
+ADD  `companyCity` VARCHAR( 100 ) NOT NULL AFTER  `companyAddress2` ,
+ADD  `companyProvince` VARCHAR( 100 ) NOT NULL AFTER  `companyCity` ,
+ADD  `companyZip` VARCHAR( 15 ) NOT NULL AFTER  `companyProvince` ,
+ADD  `companyWebsite` VARCHAR( 250 ) NOT NULL  AFTER  `companyZip`

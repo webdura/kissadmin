@@ -47,7 +47,7 @@ switch ($action)
         	
         	if(isset($_REQUEST['repeat']) && $_REQUEST['repeat']==1){
         		
-        		if (saveRepeatedInvoice($orderId, $_POST)) {
+        		if (saveRepeatedInvoice($orderId, $_POST, $allServices)) {
         		
 					return header("Location: invoices.php?msg=$smsg");
 	            	exit;

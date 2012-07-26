@@ -44,7 +44,7 @@ switch ($action)
         {
         	if(isset($_REQUEST['repeat']) && $_REQUEST['repeat']==1){
         		
-        		if (saveRepeatedInvoice($orderId, $_POST)) {       		
+        		if (saveRepeatedInvoice($orderId, $_POST, $allServices)) {       		
 		            $smsg = "Repeat Invoice saved successfully";        			
         			     		
 					return header("Location: repeated_invoices.php?msg=$smsg");
@@ -53,7 +53,7 @@ switch ($action)
  
         	}
         	else {
-        		if (saveRepeatedInvoice($orderId, $_POST)) {  
+        		if (saveRepeatedInvoice($orderId, $_POST, $allServices)) {  
         			
 		            $sql  = "UPDATE gma_order_repeat SET orderStatus=1 WHERE id='$orderId'"; 
 		            mysql_query($sql);

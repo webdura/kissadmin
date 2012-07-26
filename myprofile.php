@@ -102,6 +102,7 @@ if(isset($_POST['userName']))
             	   " companyCity=".GetSQLValueString($_POST['companyCity'], 'text')."," .
             	   " companyProvince=".GetSQLValueString($_POST['companyProvince'], 'text')."," .
             	   " companyZip=".GetSQLValueString($_POST['companyZip'], 'text')."," .
+            	   " companyWebsite=".GetSQLValueString($_POST['companyWebsite'], 'text')."," .
             	   " companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text')."," .
             	   " companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text')."," .
             	   " companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text')."," .
@@ -385,13 +386,17 @@ include_once('sub_header.php');
                 <td><input type="text" name="companyAccountFax" id="companyAccountFax" class="textbox" value="<?=$company_row['companyAccountFax']?>" /></td>  
             </tr>
             <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+                <td>Website</td>
+                <td><input type="text" name="companyWebsite" id="companyWebsite" class="textbox" value="<?=$company_row['companyWebsite']?>" /></td>  
+            </tr>
+            <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
                 <td>Account Contact</td>
                 <td><input type="text" name="companyAccountContact" id="companyAccountContact" class="textbox" value="<?=$company_row['companyAccountContact']?>" /></td>  
             </tr>
             <!--<tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
                 <td>Overall Discount</td>
                 <td><input type="text" name="companyDiscount" id="companyDiscount" class="textbox number" value="<?=$company_row['companyDiscount']?>" /></td>  
-            </tr>-->
+            </tr>-->companyWebsite
         </table>
 
         <? $row_flag = 1; ?>

@@ -53,6 +53,7 @@ switch ($action)
             	   " companyCity=".GetSQLValueString($_POST['companyCity'], 'text')."," .
             	   " companyProvince=".GetSQLValueString($_POST['companyProvince'], 'text')."," .
             	   " companyZip=".GetSQLValueString($_POST['companyZip'], 'text')."," .
+            	   " companyWebsite=".GetSQLValueString($_POST['companyWebsite'], 'text')."," .
             	   " companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text')."," . 
             	   " companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text')."," . 
             	   " companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text')."," . 
@@ -121,6 +122,7 @@ switch ($action)
             	   " companyCity=".GetSQLValueString($_POST['companyCity'], 'text')."," .
             	   " companyProvince=".GetSQLValueString($_POST['companyProvince'], 'text')."," .
             	   " companyZip=".GetSQLValueString($_POST['companyZip'], 'text')."," .
+            	   " companyWebsite=".GetSQLValueString($_POST['companyWebsite'], 'text')."," .
             	   " companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text')."," . 
             	   " companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text')."," . 
             	   " companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text')."," . 
@@ -304,6 +306,10 @@ if($action=='list') { ?>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Account Fax</td>
         <td><input type="text" name="companyAccountFax" id="companyAccountFax" class="textbox" value="<?=$company_row['companyAccountFax']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Website</td>
+        <td><input type="text" name="companyWebsite" id="companyWebsite" class="textbox" value="<?=$company_row['companyWebsite']?>" /></td>  
     </tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Account Contact</td>
