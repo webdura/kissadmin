@@ -46,7 +46,7 @@ $invoice_status   = (isset($theme_row['invoice_status'])) ? $theme_row['invoice_
 $theme_head_color = $theme_row['head_color'];
 $invoice_logo_mail = ($invoice_status==1) ? $site_logo : $invoice_logo;
 
-if($ses_userType!='user') {
+if($ses_loginType!='user') {
     $theme_sql = "SELECT * FROM gma_admin_details,gma_theme WHERE id=theme_id AND userId='$ses_userId'";
     $theme_rs  = mysql_query($theme_sql);
     $theme_row = mysql_fetch_assoc($theme_rs);
@@ -556,7 +556,7 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
             $amount = $row['amount'];
             
             if($date_flag==0 && $type!='payment')
-                $desc = "<a href='invoices.php?action=view&orderId=".$row['orderId']."&popup' class='thickbox'>$desc</a>";
+                $desc = "<a href='invoices.php?action=view&orderId=".$row['orderId']."&popup' class='thickbox links'>$desc</a>";
             
             $balance = ($type=='payment') ? $balance-$amount : $balance + $amount;
             $result .= "<tr class='$class'>

@@ -556,7 +556,7 @@ $(document).ready(function() {
         },
         messages: {
             file: {
-                accept: "csv files only"
+                accept: "Only csv files supported"
             }
         }
     });

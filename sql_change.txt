@@ -16,3 +16,5 @@ CREATE TABLE IF NOT EXISTS `gma_order_repeat_details` ( `orderRepeatId` bigint(2
 ALTER TABLE  `gma_order` ADD  `comments` TEXT NOT NULL AFTER  `sendDate`;
 
 ALTER TABLE  `gma_quotation` ADD  `comments` TEXT NOT NULL AFTER  `invoice_amount`;
+
+DELETE FROM  `gma_admins_permission` WHERE  `admins_id` =5 AND  `module_id` =2;

@@ -14,8 +14,8 @@ $user_count  = 0;
 $user_month_count = mysql_num_rows($user_rs);
 
 $clientOnly = "";
-if( strtolower(trim($_SESSION['ses_userType']))=='client')
-	$clientOnly = " AND gma_order.userId = " . $_SESSION['ses_userId'];
+if($ses_loginType=='user')
+	   $clientOnly = " AND gma_order.userId = " . $_SESSION['ses_userId'];
 
 
 $order_sql = " SELECT MONTH(orderDate) as joinMonth, MONTHNAME(orderDate) as joinMonthName, YEAR(orderDate) as joinYear " .
@@ -40,7 +40,7 @@ include('sub_header.php');
 ?>
 
 <div class="client_display">
-<?php if($ses_userType!='user'){ ?>
+<?php if($ses_loginType!='user'){ ?>
     <div class="dashboard">
         <h2>Clients</h2>
         <table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">

@@ -246,7 +246,7 @@ switch ($task)
         $theme_id  = (isset($_REQUEST['theme_id'])) ? $_REQUEST['theme_id'] : 0;
         $theme_id  = GetSQLValueString($theme_id, 'int');
         
-        if($ses_userType!='user') {
+        if($ses_loginType!='user') {
             $user_sql = "UPDATE gma_admin_details SET theme_id='$theme_id' WHERE userId=$ses_userId";
             mysql_query($user_sql);
         }

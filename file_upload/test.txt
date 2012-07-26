@@ -1,0 +1,1 @@
+Gnet Mail 1SELECT invoicePath FROM gma_send_invoices WHERE id =C:/wamp/www/kissadmin/file_upload/invoices/

@@ -16,6 +16,8 @@ $orderId   = (isset($_REQUEST['orderId']) && $_REQUEST['orderId']>0) ? $_REQUEST
 $userTypes = userTypes('', 0, 1);
 $userTypes = "'".implode("', '", $userTypes)."'";
 
+if($ses_loginType=='user' && ($action=='add' || $action=='edit' || $action=='delete' || $action=='deleteall')) $action = 'list';
+
 $allGroups = $allServices = array();
 $group_sql = "SELECT * FROM gma_groups WHERE status=1 AND companyId='$ses_companyId' ORDER BY `order` ASC"; 
 $group_rs  = mysql_query($group_sql);

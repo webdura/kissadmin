@@ -297,7 +297,7 @@ $row_flag = 1;
         <ul id="menu">
             <? foreach ($main_menu as $key=>$menu) { ?>
                 <li><a href="<?=$menu['filename']?>" class="<?=$menu['class']?>"></a>
-                    <? if(strstr($menu['class'], 'invoices_btn') || strstr($menu['class'], 'quotation_btn') || strstr($menu['class'], 'clients_btn') || strstr($menu['class'], 'payment_btn')) { ?>
+                    <? if((strstr($menu['class'], 'invoices_btn') || strstr($menu['class'], 'quotation_btn') || strstr($menu['class'], 'clients_btn') || strstr($menu['class'], 'payment_btn')) && $ses_loginType!='user') { ?>
                         <ul>
                             <li><a href="<?=$menu['filename']?>?action=list">View All <?=str_replace(' Module', '', $menu['name'])?></a></li>
                             <li><a href="<?=$menu['filename']?>?action=add">Create New <?=str_replace(' Module', '', $menu['name'])?></a></li>
@@ -308,7 +308,7 @@ $row_flag = 1;
                     <? } ?>
                 </li>
             <? } ?>
-            <? if($ses_userType!='user') { ?>
+            <? if($ses_loginType!='user') { ?>
                 <li class="theme_sel">
                     Theme : 
                     <select class="selectbox" name="user_theme_id" id="user_theme_id" style="width:150px" onchange="changeTheme(this.value)">

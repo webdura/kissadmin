@@ -148,14 +148,16 @@ $user_rs   = mysql_query($user_sql);
 
 $page_title   = 'Account Activity';
 
-$other_urls[] = array('text'=>'This month', 'sign'=>'+', 'url'=>"myaccount.php?userId=$userId&date=thismonth", 'click'=>'');
-$other_urls[] = array('text'=>'Last month', 'sign'=>'+', 'url'=>"myaccount.php?userId=$userId&date=lastmonth", 'click'=>'');
-$other_urls[] = array('text'=>'Last 3 months', 'sign'=>'+', 'url'=>"myaccount.php?userId=$userId&date=3months", 'click'=>'');
-$other_urls[] = array('text'=>'All', 'sign'=>'+', 'url'=>"myaccount.php?userId=$userId&date=all", 'click'=>'');
+$userlink = ($ses_loginType=='user') ? '' : "userId=$userId&";
 
-$right_urls[] = array('text'=>'View Statement', 'sign'=>'+', 'click'=>"", 'url'=>"myaccount.php?userId=$userId&date=$date_range&startdate=$startdate&enddate=$enddate&action=view", 'class'=>'thickbox', 'target'=>'_blank');
-$right_urls[] = array('text'=>'Save Statement', 'sign'=>'+', 'click'=>"", 'url'=>"myaccount.php?userId=$userId&date=$date_range&startdate=$startdate&enddate=$enddate&action=save", 'class'=>'', 'target'=>'_blank');
-$right_urls[] = array('text'=>'Email Statement', 'sign'=>'+', 'url'=>"javascript:void(0);", 'click'=>"mailStatement('myaccount.php?userId=$userId&date=$date_range&startdate=$startdate&enddate=$enddate&action=email');", 'class'=>'', 'target'=>'');
+$other_urls[] = array('text'=>'This month', 'sign'=>'+', 'url'=>"myaccount.php?{$userlink}date=thismonth", 'click'=>'');
+$other_urls[] = array('text'=>'Last month', 'sign'=>'+', 'url'=>"myaccount.php?{$userlink}date=lastmonth", 'click'=>'');
+$other_urls[] = array('text'=>'Last 3 months', 'sign'=>'+', 'url'=>"myaccount.php?{$userlink}date=3months", 'click'=>'');
+$other_urls[] = array('text'=>'All', 'sign'=>'+', 'url'=>"myaccount.php?{$userlink}date=all", 'click'=>'');
+
+$right_urls[] = array('text'=>'View Statement', 'sign'=>'+', 'click'=>"", 'url'=>"myaccount.php?{$userlink}date=$date_range&startdate=$startdate&enddate=$enddate&action=view", 'class'=>'thickbox', 'target'=>'_blank');
+$right_urls[] = array('text'=>'Save Statement', 'sign'=>'+', 'click'=>"", 'url'=>"myaccount.php?{$userlink}date=$date_range&startdate=$startdate&enddate=$enddate&action=save", 'class'=>'', 'target'=>'_blank');
+$right_urls[] = array('text'=>'Email Statement', 'sign'=>'+', 'url'=>"javascript:void(0);", 'click'=>"mailStatement('myaccount.php?{$userlink}date=$date_range&startdate=$startdate&enddate=$enddate&action=email');", 'class'=>'', 'target'=>'');
 //$date_search  = true;
 
 include('sub_header.php');
