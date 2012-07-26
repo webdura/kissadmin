@@ -43,7 +43,7 @@ if(isset($_POST['theme_id']) && $_POST['theme_id']>0)
         $old_name = "images/company/$invoice_logo";
         
         copy($tmp_name, $new_name);
-        //upload_photo($new_name, $new_name, 20000, 100);
+        upload_photo($new_name, $new_name, 200, 100);
         if($filename != $invoice_logo)
             @unlink($old_name);
         $invoice_logo = $filename;

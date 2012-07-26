@@ -12,7 +12,7 @@ if($_SERVER['HTTP_HOST']=='localhost') {
     $username  = "root";
     $password  = "";
     $dbname    = "gnetmail_db5722";
-    $SITE_URL = 'http://localhost/gnetmail/admin/';
+    $SITE_URL = 'http://localhost/kissadmin/';
 } else {
     $localhost = "localhost";
     $username  = "gnetmail_sys0510";

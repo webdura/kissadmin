@@ -42,7 +42,24 @@ switch ($action)
             $useremail = $_POST['email'];
             $status    = isset($_POST['status']) ? 1 : 0;
             
-            $sql = "INSERT INTO gma_company SET companyName=".GetSQLValueString($_POST['companyName'], 'text').",companyVatNo=".GetSQLValueString($_POST['companyVatNo'], 'text').",companyAccountEmail=".GetSQLValueString($_POST['companyAccountEmail'], 'text').",companyAccountTel=".GetSQLValueString($_POST['companyAccountTel'], 'text').",companyAccountFax=".GetSQLValueString($_POST['companyAccountFax'], 'text').",companyAccountContact=".GetSQLValueString($_POST['companyAccountContact'], 'text').",companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text').",companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text').",companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text').",companyAccountName=".GetSQLValueString($_POST['companyAccountName'], 'text').",companyAccountType=".GetSQLValueString($_POST['companyAccountType'], 'text').",companyAccountNo=".GetSQLValueString($_POST['companyAccountNo'], 'text').",status=".GetSQLValueString($status, 'int');
+            $sql = "INSERT INTO gma_company SET companyName=".GetSQLValueString($_POST['companyName'], 'text')."," .
+            	   " companyVatNo=".GetSQLValueString($_POST['companyVatNo'], 'text')."," . 
+            	   " companyAccountEmail=".GetSQLValueString($_POST['companyAccountEmail'], 'text')."," . 
+            	   " companyAccountTel=".GetSQLValueString($_POST['companyAccountTel'], 'text')."," . 
+            	   " companyAccountFax=".GetSQLValueString($_POST['companyAccountFax'], 'text')."," . 
+            	   " companyAccountContact=".GetSQLValueString($_POST['companyAccountContact'], 'text')."," . 
+            	   " companyAddress1=".GetSQLValueString($_POST['companyAddress1'], 'text')."," .
+            	   " companyAddress2=".GetSQLValueString($_POST['companyAddress2'], 'text')."," .
+            	   " companyCity=".GetSQLValueString($_POST['companyCity'], 'text')."," .
+            	   " companyProvince=".GetSQLValueString($_POST['companyProvince'], 'text')."," .
+            	   " companyZip=".GetSQLValueString($_POST['companyZip'], 'text')."," .
+            	   " companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text')."," . 
+            	   " companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text')."," . 
+            	   " companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text')."," . 
+            	   " companyAccountName=".GetSQLValueString($_POST['companyAccountName'], 'text')."," . 
+            	   " companyAccountType=".GetSQLValueString($_POST['companyAccountType'], 'text')."," . 
+            	   " companyAccountNo=".GetSQLValueString($_POST['companyAccountNo'], 'text')."," . 
+            	   " status=".GetSQLValueString($status, 'int');
             mysql_query($sql);
             $companyId = mysql_insert_id();
             
@@ -93,7 +110,24 @@ switch ($action)
             $useremail = $_POST['email'];
             $status    = isset($_POST['status']) ? 1 : 0;
             
-            $sql = "UPDATE gma_company SET companyName=".GetSQLValueString($_POST['companyName'], 'text').",companyVatNo=".GetSQLValueString($_POST['companyVatNo'], 'text').",companyAccountEmail=".GetSQLValueString($_POST['companyAccountEmail'], 'text').",companyAccountTel=".GetSQLValueString($_POST['companyAccountTel'], 'text').",companyAccountFax=".GetSQLValueString($_POST['companyAccountFax'], 'text').",companyAccountContact=".GetSQLValueString($_POST['companyAccountContact'], 'text').",companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text').",companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text').",companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text').",companyAccountName=".GetSQLValueString($_POST['companyAccountName'], 'text').",companyAccountType=".GetSQLValueString($_POST['companyAccountType'], 'text').",companyAccountNo=".GetSQLValueString($_POST['companyAccountNo'], 'text').",status=".GetSQLValueString($status, 'int')." WHERE companyId='$companyId'";
+            $sql = "UPDATE gma_company SET companyName=".GetSQLValueString($_POST['companyName'], 'text')."," . 
+            	   " companyVatNo=".GetSQLValueString($_POST['companyVatNo'], 'text')."," . 
+            	   " companyAccountEmail=".GetSQLValueString($_POST['companyAccountEmail'], 'text')."," . 
+            	   " companyAccountTel=".GetSQLValueString($_POST['companyAccountTel'], 'text')."," . 
+            	   " companyAccountFax=".GetSQLValueString($_POST['companyAccountFax'], 'text')."," . 
+            	   " companyAccountContact=".GetSQLValueString($_POST['companyAccountContact'], 'text')."," . 
+            	   " companyAddress1=".GetSQLValueString($_POST['companyAddress1'], 'text')."," .
+            	   " companyAddress2=".GetSQLValueString($_POST['companyAddress2'], 'text')."," .
+            	   " companyCity=".GetSQLValueString($_POST['companyCity'], 'text')."," .
+            	   " companyProvince=".GetSQLValueString($_POST['companyProvince'], 'text')."," .
+            	   " companyZip=".GetSQLValueString($_POST['companyZip'], 'text')."," .
+            	   " companyBankName=".GetSQLValueString($_POST['companyBankName'], 'text')."," . 
+            	   " companyBranchName=".GetSQLValueString($_POST['companyBranchName'], 'text')."," . 
+            	   " companyBranchNo=".GetSQLValueString($_POST['companyBranchNo'], 'text')."," . 
+            	   " companyAccountName=".GetSQLValueString($_POST['companyAccountName'], 'text')."," . 
+            	   " companyAccountType=".GetSQLValueString($_POST['companyAccountType'], 'text')."," . 
+            	   " companyAccountNo=".GetSQLValueString($_POST['companyAccountNo'], 'text')."," . 
+            	   " status=".GetSQLValueString($status, 'int')." WHERE companyId='$companyId'";
             mysql_query($sql);
             
             $sql = "UPDATE gma_logins SET companyId=".GetSQLValueString($companyId, 'text').",userName=".GetSQLValueString($userName, 'text').",password=".GetSQLValueString($password, 'text').",email=".GetSQLValueString($useremail, 'text').",userType=".GetSQLValueString($userType, 'text')." WHERE userId='$userId'";
@@ -274,6 +308,26 @@ if($action=='list') { ?>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Account Contact</td>
         <td><input type="text" name="companyAccountContact" id="companyAccountContact" class="textbox" value="<?=$company_row['companyAccountContact']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td width="20%">Address 1</td>
+        <td><input type="text" name="companyAddress1" id="companyAddress1" class="textbox required" value="<?=$company_row['companyAddress1']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Address 2</td>
+        <td><input type="text" name="companyAddress2" id="companyAddress2" class="textbox" value="<?=$company_row['companyAddress2']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>City</td>
+        <td><input type="text" name="companyCity" id="companyCity" class="textbox" value="<?=$company_row['companyCity']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Province</td>
+        <td><input type="text" name="companyProvince" id="companyProvince" class="textbox" value="<?=$company_row['companyProvince']?>" /></td>  
+    </tr>
+    <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
+        <td>Zipcode</td>
+        <td><input type="text" name="companyZip" id="companyZip" class="textbox" value="<?=$company_row['companyZip']?>" /></td>  
     </tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
         <td>Bank Name</td>

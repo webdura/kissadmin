@@ -44,7 +44,7 @@ $site_logo        = (isset($theme_row['site_logo']) && $theme_row['site_logo']!=
 $invoice_logo     = (isset($theme_row['invoice_logo']) && $theme_row['invoice_logo']!='') ? 'images/company/'.$theme_row['invoice_logo'] : $site_logo;
 $invoice_status   = (isset($theme_row['invoice_status'])) ? $theme_row['invoice_status'] : 0;
 $theme_head_color = $theme_row['head_color'];
-$invoice_logo_mail = ($invoice_status==1) ? $site_logo : $invoice_logo;
+$invoice_logo_mail = ($invoice_status==1) ? $site_logo : $invoice_logo; 
 
 if($ses_loginType!='user') {
     $theme_sql = "SELECT * FROM gma_admin_details,gma_theme WHERE id=theme_id AND userId='$ses_userId'";
@@ -101,7 +101,7 @@ function userTypes($user_type='', $flag=0, $array=0)
 
 function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
     global $ses_companyId, $SITE_URL, $company_row, $invoice_logo_mail;
-    
+   
     $companyId = (is_null($companyId) ? $ses_companyId : $companyId);
     
     $company_sql = "SELECT * FROM gma_company, gma_logins, gma_admin_details WHERE gma_admin_details.userId=gma_logins.userId AND gma_company.companyId=gma_logins.companyId AND gma_company.ownerId=gma_logins.userId AND gma_company.companyId=".GetSQLValueString($companyId, 'text');
@@ -110,7 +110,7 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
     $email_from  = $company_row['email'];
     
     $email_sql = "SELECT * FROM gma_emails WHERE companyId=".GetSQLValueString($companyId, 'text')." AND template=".GetSQLValueString($email_template, 'text');
-    $email_rs  = mysql_query($email_sql);
+    $email_rs  = mysql_query($email_sql); 
     $email_row = mysql_fetch_assoc($email_rs);
     $email_subject = $email_row['subject'];
     $email_content = $email_row['content'];
@@ -137,8 +137,8 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
     $array_values['link']        = "<a href='".$array_values['link_org']."'>Click here</a>";
     
     $array_values['logo'] = '';
-    if($invoice_logo_mail!='' && file_exists("images/company/$invoice_logo_mail"))
-        $array_values['logo'] = "<img src='{$SITE_URL}images/company/$invoice_logo_mail'>";
+    if($invoice_logo_mail!='' && file_exists(dirname($_SERVER['SCRIPT_FILENAME']) . "/" . $invoice_logo_mail))
+        $array_values['logo'] = "<img src='{$SITE_URL}$invoice_logo_mail'>";
     
     foreach ($array_values as $key => $value) {
         $email_subject = str_replace("[$key]", $value, $email_subject);
