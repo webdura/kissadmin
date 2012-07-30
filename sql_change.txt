@@ -26,6 +26,15 @@ ADD  `companyAddress2` VARCHAR( 250 ) NOT NULL AFTER  `companyAddress1` ,
 ADD  `companyCity` VARCHAR( 100 ) NOT NULL AFTER  `companyAddress2` ,
 ADD  `companyProvince` VARCHAR( 100 ) NOT NULL AFTER  `companyCity` ,
 ADD  `companyZip` VARCHAR( 15 ) NOT NULL AFTER  `companyProvince` ,
-ADD  `companyWebsite` VARCHAR( 250 ) NOT NULL  AFTER  `companyZip`
+ADD  `companyWebsite` VARCHAR( 250 ) NOT NULL  AFTER  `companyZip`;
 
 INSERT INTO `gma_emails` VALUES(0, 'send_custom_invoices', 'Your Invoice', 'Hi [firstname] [lastname],\r\n\r\nPlease find the attached invoice.\r\n\r\nClient Name : [clientname]\r\nCompany Name : [companyname]\r\nUsername : [username]\r\nEmail Address : [email]\r\n\r\n-----\r\nAdministrator\r\n[companyname]', 'Company Name => [companyname]\r\nFirst Name => [firstname]\r\nLast Name => [lastname]\r\nClient Name => [clientname]\r\nUsername => [username]\r\nEmail Address => [email]', 1, 0, 0, 2);
+
+ALTER TABLE  `gma_send_invoices` ADD  `subject` VARCHAR( 300 ) NOT NULL AFTER  `title` , ADD  `content` TEXT NOT NULL AFTER  `subject`;
+ALTER TABLE  `gma_send_invoice_details` ADD  `userId` INT NOT NULL AFTER  `sendInvoiceId`;
+ALTER TABLE  `gma_send_invoice_details` ADD  `send_flag` INT( 1 ) NOT NULL ,ADD  `file_flag` INT( 1 ) NOT NULL ,ADD  `send_status` INT( 1 ) NOT NULL;
+ALTER TABLE  `gma_order` ADD  `status` INT( 1 ) NOT NULL DEFAULT  '1'
+
+CREATE TABLE IF NOT EXISTS `gma_creditnote` (`id` int(11) NOT NULL AUTO_INCREMENT, `orderId` int(11) NOT NULL, `userId` int(11) NOT NULL, `creditnoteId` int(11) NOT NULL, `amount` decimal(10,2) NOT NULL, `creditnoteDate` datetime NOT NULL, PRIMARY KEY (`id`));
+
+ALTER TABLE  `gma_creditnote` ADD  `comments` TEXT NOT NULL AFTER  `amount`;

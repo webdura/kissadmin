@@ -303,7 +303,11 @@ $row_flag = 1;
                             <li><a href="<?=$menu['filename']?>?action=add">Create New <?=str_replace(' Module', '', $menu['name'])?></a></li>
                             <? if(strstr($menu['class'], 'invoices_btn')) { ?>
                                 <li><a href="repeated_invoices.php">View Repeat Invoices</a></li>
-                            <? } ?>                            
+                            <? } ?>
+                            <? if(strstr($menu['class'], 'invoices_btn') || strstr($menu['class'], 'payment_btn')) { ?>
+                                <li><a href="creditnote.php?action=list">View Credit Notes</a></li>
+                                <li><a href="creditnote.php?action=add">Create Credit Note</a></li>
+                            <? } ?>
                         </ul>
                     <? } ?>
                 </li>

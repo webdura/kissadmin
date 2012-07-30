@@ -359,7 +359,7 @@ function pagination($maxPage, $pageNum=1)
     return 'Page: (Page '.$pageNum.' of '.$maxPage.') &nbsp; '.$first. $prev . $nav . $next . $last;
 }
 
-function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
+function GetSQLValueString($theValue, $theType='text', $theDefinedValue = "", $theNotDefinedValue = "") 
 {
     $theValue = (!get_magic_quotes_gpc()) ? addslashes($theValue) : $theValue;
     
@@ -449,16 +449,18 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
     else 
         $title = "Account Statement - All History";
     
-    $payment_sql  = $order_sql = "userID='$userId'";
+    $payment_sql  = $order_sql = $credit_sql = "userID='$userId'";
     if($flag==1)
     {
         $payment_sql .= " AND date<'$date1'";
         $order_sql   .= " AND (orderDate<'$date1')";
+        $credit_sql .= " AND (creditnoteDate<'$date1')";
     }
     else
     {
         $payment_sql .= " AND 1=2";
         $order_sql   .= " AND 1=2";
+        $credit_sql .= " AND 1=2";
     }
     
     $payment_sql = "SELECT SUM(amount) as amount FROM gma_payments WHERE $payment_sql";
@@ -471,16 +473,22 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
     $order_row = mysql_fetch_assoc($order_rs);
     $order_amount = $order_row['amount'];
     
+    $order_sql = "SELECT SUM(creditnote_amount) as amount FROM gma_creditnote WHERE $credit_sql";
+    $order_rs  = mysql_query($order_sql);
+    $order_row = mysql_fetch_assoc($order_rs);
+    $credit_amount = $order_row['amount'];
+    
     $balance_forward = $balance_due = $order_amount - $payment_amount;
     if($userId > 0)
-    	$payment_sql  = $order_sql = "userID='$userId'"; 
+    	   $payment_sql  = $order_sql = $credit_sql = "userID='$userId'"; 
     else 
-     	$payment_sql  = $order_sql = "1"; 
+     	   $payment_sql  = $order_sql = $credit_sql = "1"; 
    
     if($flag==1)
     {
         $payment_sql .= " AND (date>='$date1' AND date<='$date2')";
         $order_sql   .= " AND (orderDate>='$date1' AND orderDate<='$date2')";
+        $credit_sql  .= " AND (creditnoteDate>='$date1' AND creditnoteDate<='$date2')";
     }
     
     $payment_sql = "SELECT *,DATE_FORMAT(date,'%Y%m%d') AS date_new,DATE_FORMAT(date,'%d/%m/%Y') AS date FROM gma_payments WHERE $payment_sql ORDER BY date ASC";
@@ -517,6 +525,27 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
         
         $details[$date_new][] = $details_row;	
     }
+    
+    $credit_sql = "SELECT *,DATE_FORMAT(creditnoteDate,'%Y%m%d') AS date_new,DATE_FORMAT(creditnoteDate,'%d/%m/%Y') AS creditnoteDate FROM gma_creditnote WHERE $credit_sql GROUP BY creditId ORDER BY creditnoteDate ASC";
+    $credit_rs  = mysql_query($credit_sql);
+    while ($credit_row = mysql_fetch_assoc($credit_rs))
+    {
+        $date_new  = $credit_row['date_new'];
+        $creditId  = $credit_row['creditId'];
+        $user_id   = $credit_row['userId'];
+        $amount    = $credit_row['creditnote_amount'];
+        
+        $details_row['type']    = 'creditnote';
+        $details_row['orderId'] =  $credit_row['id'];
+        $details_row['desc']    = 'Credit note '.$credit_row['creditId'];
+        $details_row['date']    = $credit_row['creditnoteDate'];
+        $details_row['amount']  = $amount;
+        
+        $balance_due = $balance_due - $amount;
+        
+        $details[$date_new][] = $details_row;	
+    }
+    
     ksort($details);
     
     if($date_flag==1)
@@ -540,7 +569,7 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
                     $date   = $row['date'];
                     $amount = $row['amount'];
                     
-                    $balance_forward = ($type=='payment') ? $balance_forward-$amount : $balance_forward + $amount;
+                    $balance_forward = ($type!='order') ? $balance_forward-$amount : $balance_forward + $amount;
                 }
             }
         }
@@ -590,15 +619,17 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
             $date   = $row['date'];
             $amount = $row['amount'];
             
-            if($date_flag==0 && $type!='payment')
+            if($date_flag==0 && $type=='order')
                 $desc = "<a href='invoices.php?action=view&orderId=".$row['orderId']."&popup' class='thickbox links'>$desc</a>";
+            if($date_flag==0 && $type=='creditnote')
+                $desc = "<a href='creditnote.php?action=view&orderId=".$row['creditId']."&popup' class='thickbox links'>$desc</a>";
             
-            $balance = ($type=='payment') ? $balance-$amount : $balance + $amount;
+            $balance = ($type!='order') ? $balance-$amount : $balance + $amount;
             $result .= "<tr class='$class'>
                 <td>$date</td>
                 <td>$desc</td>
                 <td>".(($type=='payment') ? formatMoney($amount, true) : '')."</td>
-                <td>".(($type!='payment') ? formatMoney($amount, true) : '')."</td>
+                <td>".(($type!='payment') ? formatMoney(($type=='order' ? $amount : "-$amount"), true) : '')."</td>
                 <td>".formatMoney($balance, true)."</td>
             </tr>";
         }
@@ -1079,5 +1110,18 @@ function getHowOften($key=0) {
 	else	
 		return $howOften;
 	
+}
+
+function readFiles($folder) {
+    $files = array();
+    if ($handle = opendir($folder)) {
+        while (false !== ($file = readdir($handle))) {
+            if($file!='.' && $file!='..')
+                $files[] = $file;
+        }
+        closedir($handle);
+    }
+    
+    return $files;
 }
 ?>

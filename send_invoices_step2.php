@@ -1,7 +1,7 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="list addedit">
     <tr><th colspan="2"><b>STEP 2 :- Upload pdf File</b></th></tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td>
+        <td style="padding-top:20px;">
     
     <!-- Bootstrap CSS Toolkit styles -->
 <link rel="stylesheet" href="css/file_upload/bootstrap.css"><!-- Generic page styles -->
@@ -13,7 +13,7 @@
 <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 <div class="container">
     <!-- The file upload form used as target for the file upload widget -->
-    <form id="fileupload" action="file_upload/" method="POST" enctype="multipart/form-data">
+    <form id="fileupload" action="file_upload.php" method="POST" enctype="multipart/form-data">
         <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
         <div class="row fileupload-buttonbar">
             <div class="span7">
@@ -38,7 +38,15 @@
         <div class="fileupload-loading"></div>
         <br>
         <!-- The table listing the files available for upload/download -->
-        <table role="presentation" class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
+        <table role="presentation" class="list table table-striped" width="100%" border="0">
+            <tr>
+                <th>Filename</th>
+                <th width="15%">Size</th>
+                <th colspan="2" width="25%">Details</th>
+                <th width="10%">Action</th>
+            </tr>
+            <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody>
+        </table>
 		<br>
     </form>
 <!-- The template to display files available for upload -->
@@ -120,4 +128,4 @@ The jQuery UI widget factory, can be omitted if jQuery UI is already included --
         </td>
     </tr>
  </table>
-<div class="addedit_btn"><input type="button" name="sbmt" id="sbmt" value="Proceed To Next Step" class="btn_style" onclick="window.location='?action=step4';" /></div>
+<div class="addedit_btn"><input type="button" name="sbmt" id="sbmt" value="Proceed To Next Step" class="btn_style" onclick="window.location='?action=step3';" /></div>

@@ -1,33 +1,10 @@
 <?php
-error_reporting(E_ALL | E_STRICT);
+include("config.php");
 
-include(dirname($_SERVER['SCRIPT_FILENAME']) . "/../config.php");
-$fp = fopen("test.txt", "w");
-fwrite($fp, $_SESSION['displayName']);
-
-    	$inv_sql = "SELECT invoicePath FROM gma_send_invoices WHERE id =" . $_SESSION['sendInvoiceId'];
-fwrite($fp, $inv_sql);
-    	$inv_rs = mysql_query($inv_sql);
-    	if (mysql_num_rows($inv_rs) > 0) {
-	    	$inv_row = mysql_fetch_array($inv_rs);	
-	    	$path = trim($inv_row['invoicePath']);
-	    	if($path != '') {
-	    		$path .= "/";
-	    		
-	    		if(!is_dir(dirname($_SERVER['SCRIPT_FILENAME']).'/invoices/'.$path)){
-	    			mkdir(dirname($_SERVER['SCRIPT_FILENAME']).'/invoices/'.$path, 0777);
-	    		}
-	    		
-	    		
-	    	}	
-    	}	  
-
-    	
-fwrite($fp, dirname($_SERVER['SCRIPT_FILENAME']).'/invoices/'.$path);
-fclose($fp);
+$folder_path = "images/invoice/{$_SESSION['send_invoice']}/";
+$options     = array('upload_dir' => $folder_path, 'accept_file_types'=>'/.+pdf/i', 'script_url'=>'file_upload.php');
 
 require('upload.class.php');
-$options = array('upload_dir' => dirname($_SERVER['SCRIPT_FILENAME']).'/invoices/'.$path);
 $upload_handler = new UploadHandler($options);
 
 header('Pragma: no-cache');
@@ -41,10 +18,12 @@ header('Access-Control-Allow-Headers: X-File-Name, X-File-Type, X-File-Size');
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'OPTIONS':
         break;
+        
     case 'HEAD':
     case 'GET':
         $upload_handler->get();
         break;
+        
     case 'POST':
         if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
             $upload_handler->delete();
@@ -52,9 +31,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $upload_handler->post();
         }
         break;
+        
     case 'DELETE':
         $upload_handler->delete();
         break;
+        
     default:
         header('HTTP/1.1 405 Method Not Allowed');
 }

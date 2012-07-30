@@ -17,10 +17,12 @@ function generateTableRow($ordersDetail) {
         $service_box .= '</optgroup>';
     }
     $service_box .= '</select>';
-
+    
+    $description = $allGroups[$ordersDetail['group_id']]['services'][$ordersDetail['service_id']]['description'];
+    
     $result = "<tr class='~~class~~'>
                     <td>$service_box</td>
-                    <td><div id='description_~~test~~'>{$ordersDetail['description']}</div></td>
+                    <td><div id='description_~~test~~'>{$description}</div></td>
                     <td class='row2' id='creditquantity_div'><input type='text' size='10' style='text-align:right;' class='invoicetextboxtxt_green' name='cost[~~test~~]' id='cost_~~test~~' readonly value='{$ordersDetail['cost']}'></td>
                     <td class='row2' id='creditquantity_div' ><input type='text' size='10' style='text-align:right;' class='invoicetextboxtxt_green' name='quantity[~~test~~]' id='quantity_~~test~~' onChange='changeTotal(~~test~~)' value='{$ordersDetail['quantity']}'></td>
                     <td class='row2' id='creditquantity_div' ><input type='text' size='10' style='text-align:right;' class='{$discount_style}' name='discount[~~test~~]' id='discount_~~test~~' onChange='changeTotal(~~test~~)' value='{$ordersDetail['discount']}' /></td>
@@ -75,6 +77,7 @@ $list_org = generateTableRow(array());
         if(count($orderDetails) > 0 ){
             for($i=1; $i<=count($orderDetails); $i++) {
                 if ($orderDetails[$i-1]['service_id'] > 0) {
+                    //echo '<pre>'; print_r($orderDetails[$i-1]); exit;
                     $list = generateTableRow($orderDetails[$i-1]);
                     
                     $list = str_replace('~~test~~', $i, $list);
@@ -109,7 +112,11 @@ $list_org = generateTableRow(array());
     </td>
 </tr>
 </table>
-<div class="addedit_btn fright"><input type="submit" name="save" id="save" value="Save as Draft" class="btn_style" />&nbsp;&nbsp;<input type="submit" name="sendMail" id="sendMail" value="Send by Mail" class="btn_style" /></div>
+<? if(isset($creditnote) && $creditnote) { ?>
+    <div class="addedit_btn fright"><input type="submit" name="save" id="save" value="Save" class="btn_style" /></div>
+<? } else { ?>
+    <div class="addedit_btn fright"><input type="submit" name="save" id="save" value="Save as Draft" class="btn_style" />&nbsp;&nbsp;<input type="submit" name="sendMail" id="sendMail" value="Send by Mail" class="btn_style" /></div>
+<? } ?>
 
 </form>
 <table id="test_div" style="display:none"><?=$list_org?></table>

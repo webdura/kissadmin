@@ -1,5 +1,6 @@
-
 <form method="POST" id="emailForm" name='emailForm' enctype="multipart/form-data">
+<input type="hidden" name="action" id="action" value="step4">
+<input type="hidden" name="task" id="task" value="update">
 <table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
     <tr><th colspan="2"><b>STEP 4 :- Enter Your Message</b></th></tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
@@ -15,7 +16,10 @@
         <td><?=$email_row['variables']?></td>  
     </tr> 
 </table>
-<div class="addedit_btn"><input type="submit" name="upload" id="upload" value="Submit" class="btn_style" /></div>
+<div class="addedit_btn">
+    <input type="button" name="back" id="back" value="Go To Previous Step" class="btn_style" onclick="window.location='<?=$default_file?>?action=step3';" />
+    <input type="submit" name="upload" id="upload" value="Submit" class="btn_style" />
+</div>
 </form>
 
 <script type="text/javascript" src="js/ckeditor/ckeditor.js"></script> 
@@ -23,17 +27,6 @@
 CKEDITOR.replace('content', { });
 
 $(document).ready(function() {
-    jQuery("#emailForm").validate({
-        rules: {
-            upload: {
-                accept: "html|htm|txt"
-            }
-        },
-        messages: {
-            upload: {
-                accept: jQuery.format("Only html OR txt file types allowed")
-            }
-        }
-    });
+    jQuery("#emailForm").validate();
 });
 </script>

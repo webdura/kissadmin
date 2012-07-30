@@ -163,6 +163,9 @@ table, tr, td, th { font-weight:normal; }
 .list a.links { 
     color:blue;
 }
+.list td span { 
+    color:green;
+}
 .addedit td { border-width:0px !important; }
 .addedit td:last-child { border-width:1px !important; }
 
