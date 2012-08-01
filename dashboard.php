@@ -39,7 +39,6 @@ $page_title = 'Summary';
 include('sub_header.php');
 ?>
 
-<div class="client_display">
 <?php if($ses_loginType!='user'){ ?>
     <div class="dashboard">
         <h2>Clients</h2>

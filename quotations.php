@@ -48,9 +48,9 @@ switch ($action)
         if((isset($_REQUEST['sendMail']) || isset($_REQUEST['save'])))
         {
             $invoice_sql = "SELECT companyQuotationNo FROM gma_company WHERE companyId='$ses_companyId'";
-            $invoice_rs  = mysql_query($invoice_sql);
-            $invoice_row = mysql_fetch_assoc($invoice_rs);
-            $invoice_id  = $invoice_row['companyQuotationNo'];
+            $company_rs  = mysql_query($company_sql);
+            $company_row = mysql_fetch_assoc($company_rs);
+            $companyQuotationNo = $company_row['companyQuotationNo'];
             
             $orderDate    = date('Y-m-d H:i:s');
             $userId       = $_REQUEST['userId'];
@@ -72,8 +72,8 @@ switch ($action)
             }
             if($invoiceId==0)
             {
-                $invoice_id = $invoice_id + 1;
-                $invoiceId  = $invoice_id;
+                $companyQuotationNo = $companyQuotationNo + 1;
+                $invoiceId  = $companyQuotationNo;
             }
             
             mysql_query("DELETE FROM gma_quotation_details WHERE quotationId='$quotationId' AND quotationId>0");    
@@ -107,12 +107,11 @@ switch ($action)
                     $invoice_amount = $invoice_amount + $amount;
                 }
             }
-            $order_sql = "UPDATE gma_quotation SET userId='$userId',order_number='$order_number',invoice_amount='$invoice_amount' " .
-            			" comments=$comments WHERE id='$quotationId'";
+            $order_sql = "UPDATE gma_quotation SET userId='$userId',order_number='$order_number',invoice_amount='$invoice_amount',comments=$comments WHERE id='$quotationId'";
             mysql_query($order_sql);
             
             $smsg = ($quotationId>0) ? "updated" : "added";
-            $sql  = "UPDATE gma_company SET companyQuotationNo='$invoice_id' WHERE companyId='$ses_companyId'";
+            $sql  = "UPDATE gma_company SET companyQuotationNo='$companyQuotationNo' WHERE companyId='$ses_companyId'";
             mysql_query($sql);
             
             $smsg = "Quotation added successfully";
@@ -120,12 +119,11 @@ switch ($action)
             {	
                 $details = quotationDetails($quotationId);
                 $result  = emailSend('quotation', $details);
-		        if($result) {
-		        	$sql  = "UPDATE gma_quotation SET sendDate=NOW()WHERE id='$quotationId'";
-		            mysql_query($sql);
-		            $smsg = "Quotation added and mail sent successfully";
-		        }
-                
+                if($result) {
+                    $sql  = "UPDATE gma_quotation SET sendDate=NOW()WHERE id='$quotationId'";
+                    mysql_query($sql);
+                    $smsg = "Quotation added and mail sent successfully";
+                }                
             }
             return header("Location: quotations.php?msg=$smsg");
             exit;

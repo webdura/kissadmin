@@ -1,0 +1,714 @@
+vinayak@webduratech.com, admin@gnetmail.co.za, 01-08-2012 07:09:26, Invoice
+<style>/* style */
+
+
+body { text-decoration:none; padding:0px; margin:0px; font-family: Arial, Helvetica, sans-serif; font-size:12px; }
+h1,h2,h3,h4,h5,h6 { padding:0px; margin:0px; font-weight:normal; }
+h1 { font-weight:bold; }
+p { padding:0px; margin:0px; }
+form { padding:0px; margin:0px; }
+.clear { clear:both !important; }
+.fleft { float:left !important; }
+.fright { float:right !important; }
+.fcenter { text-align:center !important; }
+a { text-decoration:none; outline-style:none; }
+table, tr, td, th { font-weight:normal; }
+.cursor { cursor:pointer; }
+
+
+#wrapper {
+    width:95%;
+    position:relative;
+    margin:0 auto;
+}
+#wrapper { background: transparent url(images/top_kisses.png) no-repeat top right; }
+
+#head {
+    width:100%;
+    height: 130px;
+    padding:3px 0px 3px 3px;
+    margin:0px;
+    overflow:hidden;
+}
+
+
+.summary_btn { 
+    width:138px;
+}
+.clients_btn { 
+    width:111px;
+}
+.quotation_btn { 
+    width:137px;
+}
+.invoices_btn { 
+    width:121px;
+}
+.statement_btn { 
+    width:135px;
+}
+.payment_btn { 
+    width:127px;
+}
+.pricing_btn { 
+    width:113px;
+}
+
+#head_left {
+    float: left;
+    margin-top: 8px;
+    height: 118px;
+    margin-left:10px;
+}
+.logo { float:left; height:106px; background:#fff; padding:20px 10px 10px 10px;}
+.head_left { background: url(images/logo_bg_left.png) no-repeat left top; }
+.head_right { background:url(images/logo_bg_right.png) no-repeat left top; }
+.head_left, .head_right { width:40px; height:150px; display:inline-block; float:left; }
+
+#head_right {
+    float:right;
+    width:65%;
+    max-height:82px;
+    text-align:right;
+    margin-right:10px;
+}
+#head_right div { clear:both; }
+.right_links .login { padding-top:10px; }
+.right_links .submenu { padding-top:5px; }
+#settings { display:none; }
+
+
+#top_buttons, #top_buttons ul {
+    margin:0px;
+    padding:0px;
+    height:45px;
+    clear:both;
+}
+#top_buttons ul li {
+    list-style:none;
+    display:inline-block;
+    float:left;
+}
+#top_buttons ul li a {
+    height:45px;
+    display:inline-block;
+}
+
+
+.btn_style {
+    margin:0px;
+    padding:0px;
+    border-radius: 6px;
+    min-width:15px;
+    text-align:center;
+    font-weight:normal;
+    padding:0px 15px;
+    cursor:pointer;
+}
+.current, .inactive {
+    cursor:default !important;
+}
+.inactive {
+    color:#ABADB3 !important;
+}
+
+#maincontent {
+    padding: 15px 15px 0px 15px;
+    margin-bottom: 10px;
+}
+.page_header {
+    margin:0px;
+    padding:0px;
+    height:40px;
+    
+    padding:0px 10px 0px 20px;
+}
+.page_header h2 { font-size:18px; font-weight:bold; float:left; }
+.page_header .addnew { margin-left:40px; padding-top:2px; }
+.page_header .delete { margin-left:10px; }
+.page_header .addnew .btn_style { padding:0px 2px; }
+.page_header .addnew span { margin-top:2px; display:inline-block; }
+.page_header .search { margin-left:20px; float:left; display:inline-block; }
+.page_header .search .inputbox { width:100px; border-radius: 4px; }
+.page_header .text_links { padding-top:14px; }
+.page_header .pagination { padding-top:14px; }
+.page_header .pagination .btn_style { padding:0px 4px; margin-left:3px; }
+
+.padding_top { padding-top:10px; }
+
+.contents {
+    padding:10px 20px;
+    min-height:330px;
+}
+.list { border:1px solid #BCBD9B; border-right:0px solid #BCBD9B; }
+.list th{ 
+    height:30px;
+    font-size:12px;
+    font-weight:bold;
+}
+.list th, .list td {
+    text-align:left;
+    padding:5px 10px 5px 10px;
+} 
+.list td { background-color:#fff; font-size:12px; height:25px;}
+.list tr.footer td { }
+.list tr.altrow td { }
+.list .btn_style { padding:0px 5px; border-radius: 4px; }
+.list .asc, .list .desc { 
+    width:10px;
+    height:14px;
+    display:inline-block;
+}
+.list .asc { 
+    margin-left:20px;
+}
+.list .desc { 
+    margin-left:3px;
+}
+.list a.links { 
+    color:blue;
+}
+.list td span { 
+    color:green;
+}
+.addedit td { border-width:0px !important; }
+.addedit td:last-child { border-width:1px !important; }
+
+.backlink { float:right; padding-right:20px; }
+.addedit_btn { text-align:left; padding:10px; }
+.dashboard { float:left; width:48%; margin-left:2%; }
+.dashboard h2 { padding-bottom:10px; }
+.addedit_btn .btn_style { height:25px; }
+
+/* Old styles */
+.textbox {
+    border:1px solid #a8b394;
+    width:250px;
+    padding:4px;
+    margin:2px 0px 2px 4px;
+}
+.selectbox {
+    border:1px solid #a8b394;
+    width:250px;
+    padding:4px;
+    margin:2px 0px 2px 4px;
+}
+.textarea {
+    border:1px solid #a8b394;
+    width:350px;
+    padding:4px;
+    margin:2px 0px 2px 4px;
+    height:80px
+}
+.msg {
+    font-family: Arial, Helvetica, sans-serif;
+    color:#006600;
+    font-size: 14px;
+    font-weight: normal;
+}
+.norecords {
+    width:97%;
+    height:15px;
+    text-align:center !important;
+    padding:5px 0px;
+    font-weight:normal;
+    color:red;
+}
+label.error {
+    color:red;
+    padding-left:10px;
+}
+
+/* tooltip */
+#tooltip { position:absolute; z-index:9999; color:#fff; font-size:10px; width:380px; }
+#tooltip .tipHeader { height:0px; }
+*html #tooltip .tipHeader { margin-bottom:-6px; }
+#tooltip .tipBody { background-color:#67982B; padding:5px 5px 5px 15px; }
+#tooltip .tipFooter { height:0px; }
+
+
+/*------------------------------Messages --------------------------------------------------------------*/
+
+.message {	-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;	font-weight:normal;	overflow:hidden;	padding:10px 15px 10px 32px;	min-height:16px;	width:96%;margin:0 auto;	 z-index:999;/*left:10%;position:fixed;*/ margin-bottom:5px; }
+.message p {	float:left;	padding:1px 0 0 23px;	color:#0656FF;}
+.message ul li {float:left;	padding:0;	width:93%;	font-size:12px;	}
+.message.errormsg {	background:url("images/error.gif") no-repeat scroll 12px 12px #FFECCE;	border:1px solid #E9C59B;	color:#E3302C;	top:150px;}
+.message.successmsg {	background:url("images/success.gif") no-repeat scroll 12px 12px #EDFBD8;	border:1px solid #BFDE84;	color:#508600;	top:200px;}
+.infomsg {	background:url("images/info.gif") no-repeat scroll 12px 12px #ECF9FF;	border:1px solid #BBDBE0;	color:#0888C3;	top:250px;}
+.warningmsg {	background:url("images/warning.gif") no-repeat scroll 12px 12px #FEFDE2;	border:1px solid #E5E181;	color:#666666;	top:300px;}
+.message .close {	background:url("images/close.png") no-repeat scroll 0 0 transparent;	cursor:pointer;	display:block;	float:right;	height:16px;	opacity:0.7;	width:16px;}
+.message .close.hover {opacity:1;}
+*html .message {height:16px;}
+
+.moduleContainer{
+	padding-left: 15px; 
+	height:auto;
+	overflow: hidden;
+
+
+}
+
+.adminHead { 
+	padding-left: 5px; 
+	height: 20px; 
+	padding-top:7px; 
+    height:20px;
+    font-size:15px !important;
+    font-weight:bold;
+
+}
+
+
+.moduleName { 
+	padding-left: 10px; 
+	padding-top:7px;
+	width: 200px;
+	position: relative;
+	float: left;
+}
+
+.clear {
+    clear: both;
+}
+
+
+.sub_subhead { 
+    font-size:15px !important;
+    font-weight:bold;
+    color:#000;
+    margin:7px 0px 7px 0px;
+    float:left;
+}
+
+.theme_sel { float:right !important; padding:7px 13px 13px 13px; font-weight:bold; }
+
+
+/* New */
+
+#menu li a:hover, #menu li:hover { position:relative; z-index:200; }
+#menu :hover ul { left:0px; top:43px; margin:0; padding:0; }
+#menu ul, #menu:hover ul ul{position:absolute;left:-9999px;top:-9999px;width:100%;	height:0;	margin:0;padding:0;list-style:none;}
+#menu :hover ul{width:200px;left:-1px;border:none;padding:0px 0!important;margin:0 !important;height:100%;display:table;
+border:1px solid #dedede;border-top:none;background:#FFF;
+-moz-border-radius:0px 0px 5px 5px;-webkit-border-radius: 0px 0px 5px 5px;border-radius: 0px 0px 5px 5px; 
+}
+#menu :hover ul li {padding:0 0px!important;margin:0!important;overflow:hidden;display:block;width:200px;height:auto!important;}
+#menu :hover ul li a {display:block;clear:both;padding:4px 5px 7px 5px!important;margin:0!important;color:#555 !important;text-align:left!important; border:none!important;height:30px!important; line-height:30px!important; height:25px;}
+
+
+div.footer { text-align:center; padding:10px 0px; }
+
+.round_box {
+    border: 1px solid #000;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    padding:10px;
+    margin:0px 10px;
+}
+
+
+
+
+/* pagination */
+
+
+.pages 
+{
+    padding: 0em;
+    margin: 0 0;
+    padding: 10px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+    clear: left;
+    font-size: 11px;
+    font-family:Verdana, "Arial", Helvetica, sans-serif;
+}
+
+.pages a, .pages span 
+{
+    display: block;
+    float: left;
+    padding: 0.2em 0.5em;
+    margin-right: 0.1em;
+    border: 1px solid #fff;
+    background-color: #fff;
+}
+
+.pages span.current 
+{
+    border: 1px solid #2E6AB1;
+    font-weight: bold;
+    background: #0557a8;
+    color: #fff;
+}
+.pages span.text 
+{
+    font-weight: bold;
+    color: #000;
+}
+
+.pages a 
+{
+    border: 1px solid #9AAFE5;
+    color: #105CB6;
+    text-decoration: none;
+}
+
+.pages a:hover 
+{
+    border-color: #2E6AB1;
+    color: #105CB6;
+    background: #c0dcf0;
+}
+
+.pages a.nextprev 
+{
+    font-weight: bold;
+    color: #105CB6;
+}
+
+.pages span.nextprev 
+{
+    border: 1px solid #ddd;
+    color: #999;
+}
+
+
+
+
+/* thickbox */
+
+
+/* ----------------------------------------------------------------------------------------------------------------*/
+/* ---------->>> global settings needed for thickbox <<<-----------------------------------------------------------*/
+/* ----------------------------------------------------------------------------------------------------------------*/
+
+
+/* ----------------------------------------------------------------------------------------------------------------*/
+/* ---------->>> thickbox specific link and font settings <<<------------------------------------------------------*/
+/* ----------------------------------------------------------------------------------------------------------------*/
+#TB_window {
+	font: 12px Arial, Helvetica, sans-serif;
+	color: #333333;
+	
+	width:915px !important;
+}
+
+#TB_secondLine {
+	font: 10px Arial, Helvetica, sans-serif;
+	color:#666666;
+}
+
+#TB_window a:link {color: #666666;}
+#TB_window a:visited {color: #666666;}
+#TB_window a:hover {color: #000;}
+#TB_window a:active {color: #666666;}
+#TB_window a:focus{color: #666666;}
+
+/* ----------------------------------------------------------------------------------------------------------------*/
+/* ---------->>> thickbox settings <<<-----------------------------------------------------------------------------*/
+/* ----------------------------------------------------------------------------------------------------------------*/
+#TB_overlay {
+	position: fixed;
+	z-index:100;
+	top: 0px;
+	left: 0px;
+	height:100%;
+	width:100%;
+}
+
+.TB_overlayMacFFBGHack {background: url(macFFBgHack.png) repeat;}
+.TB_overlayBG {
+	background-color:#000;
+	filter:alpha(opacity=75);
+	-moz-opacity: 0.75;
+	opacity: 0.75;
+}
+
+* html #TB_overlay { /* ie6 hack */
+     position: absolute;
+     height: expression(document.body.scrollHeight > document.body.offsetHeight ? document.body.scrollHeight : document.body.offsetHeight + 'px');
+}
+
+#TB_window {
+	position: fixed;
+	background: #ffffff;
+	z-index: 102;
+	color:#000000;
+	display:none;
+	border: 4px solid #525252;
+	text-align:left;
+	top:40%;
+	left:50%;
+}
+
+* html #TB_window { /* ie6 hack */
+position: absolute;
+margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = document.documentElement && document.documentElement.scrollTop || document.body.scrollTop) + 'px');
+}
+
+#TB_window img#TB_Image {
+	display:block;
+	margin: 15px 0 0 15px;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #666;
+	border-left: 1px solid #666;
+}
+
+#TB_caption{
+	height:25px;
+	padding:7px 30px 10px 25px;
+	float:left;
+}
+
+#TB_closeWindow{
+	height:25px;
+	padding:11px 25px 10px 0;
+	float:right;
+}
+
+#TB_closeAjaxWindow{
+	padding:7px 10px 5px 0;
+	margin-bottom:1px;
+	text-align:right;
+	float:right;
+}
+
+#TB_ajaxWindowTitle{
+	float:left;
+	padding:7px 0 5px 10px;
+	margin-bottom:1px;
+}
+
+#TB_title{
+	background-color:#e8e8e8;
+	height:27px;
+}
+
+#TB_ajaxContent{
+	clear:both;
+	padding:2px 15px 15px 15px;
+	overflow:auto;
+	text-align:left;
+	line-height:1.4em;
+	
+	height:500px !important;
+	width:900px !important;
+}
+
+#TB_ajaxContent.TB_modal{
+	padding:15px;
+}
+
+#TB_ajaxContent p{
+	padding:5px 0px 5px 0px;
+}
+
+#TB_load{
+	position: fixed;
+	display:none;
+	height:13px;
+	width:208px;
+	z-index:103;
+	top: 50%;
+	left: 50%;
+	margin: -6px 0 0 -104px; /* -height/2 0 0 -width/2 */
+}
+
+* html #TB_load { /* ie6 hack */
+position: absolute;
+margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = document.documentElement && document.documentElement.scrollTop || document.body.scrollTop) + 'px');
+}
+
+#TB_HideSelect{
+	z-index:99;
+	position:fixed;
+	top: 0;
+	left: 0;
+	background-color:#fff;
+	border:none;
+	filter:alpha(opacity=0);
+	-moz-opacity: 0;
+	opacity: 0;
+	height:100%;
+	width:100%;
+}
+
+* html #TB_HideSelect { /* ie6 hack */
+     position: absolute;
+     height: expression(document.body.scrollHeight > document.body.offsetHeight ? document.body.scrollHeight : document.body.offsetHeight + 'px');
+}
+
+#TB_iframeContent{
+	clear:both;
+	border:none;
+	margin-bottom:-1px;
+	margin-top:1px;
+	_margin-bottom:1px;
+}
+
+
+
+
+/* paisley_royal_theme */
+
+
+.body { background: transparent url(images/paisley_royal_theme/background.jpg) repeat right top; }
+a { color:#FFFFFF; }
+a:hover, a.selected { color:#FF9000; }
+
+.right_links, .right_links a { color:#000; }
+.right_links a:hover,.right_links a.selected { color:#FF9000 !important; }
+
+#top_buttons, #top_buttons ul, #top_buttons ul li ul li {
+    background: transparent url(images/paisley_royal_theme/nav_bg.jpg) repeat-x;
+}
+.summary_btn { 
+    background:url(images/paisley_royal_theme/summary_btn.jpg) no-repeat left top ;
+}
+.clients_btn { 
+    background:url(images/paisley_royal_theme/clients_btn.jpg) no-repeat left top ;
+}
+.quotation_btn { 
+    background:url(images/paisley_royal_theme/quotation_btn.jpg) no-repeat left top ;
+}
+.invoices_btn { 
+    background:url(images/paisley_royal_theme/invoices_btn.jpg) no-repeat left top ;
+}
+.statement_btn { 
+    background:url(images/paisley_royal_theme/statement_btn.jpg) no-repeat left top ;
+}
+.payment_btn { 
+    background:url(images/paisley_royal_theme/payment_btn.jpg) no-repeat left top ;
+}
+.pricing_btn { 
+    background:url(images/paisley_royal_theme/pricing_btn.jpg) no-repeat left top ;
+}
+
+
+.btn_style {
+    background: transparent url(images/paisley_royal_theme/btn_bg.png) repeat-x left bottom;
+    border:2px solid #ADBFC9;
+    color:#000;
+}
+.current {
+    color:#FF9000;
+}
+
+#maincontent {
+    background-color:#E5E5DD;
+}
+#subcontent {
+    opacity:100;
+    background-color:#fff;
+}
+.page_header {
+    background: transparent url(images/paisley_royal_theme/heading_bg.png) repeat-x;
+}
+.page_header h2 { color:#000; }
+.page_header .addnew { color:#000; }
+.page_header .text_links, .page_header .text_links a { color:#4782A0; }
+
+
+.contents {
+    border-top:1px solid #E1E2DE;
+}
+.list { border:1px solid #C2D0D6; border-right:0px solid #C2D0D6; }
+.list th{ 
+    background: transparent url(images/paisley_royal_theme/action_bar_bg.jpg) repeat-x;
+    color:#000;
+}
+.list th, .list td { border-right:1px solid #C2D0D6; }
+.list td { background-color:#fff; }
+.list tr.altrow td { background-color:#E7EFF2; }
+.list tr.footer td { background-color:#C2D0D6; }
+.list .asc { 
+    background: transparent url(images/paisley_royal_theme/arrow_up.png) no-repeat;
+}
+.list .desc { 
+    background: transparent url(images/paisley_royal_theme/arrow_down.png) repeat-x;
+}
+
+div.footer, div.footer a { color:#000000; }</style><div class="round_box">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr><td>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" >
+        <tr valign="top">
+            <td align="left" width="30%"><img src='http://localhost/kissadmin/images/company/invoice_logo_1.png'></td>
+            <td align="left">Gnet Mail</td>
+            <td align="left" width="30%">Tel: companyAccountTel<br />companyAccountEmail@gmail.com<br /></td>
+        </tr>
+    </table>
+</td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" >
+        <tr>
+            <td>Attention:</td>
+            <td>Vinayak Saseendran</td>
+            <td width="10%">&nbsp;</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Company:</td>
+            <td>Webdura</td>
+            <td></td>
+            <td>Date:</td>
+            <td>1 August 2012</td>
+        </tr>
+        <tr>
+            <td>Tel:</td>
+            <td>9876543210</td>
+            <td></td>
+            <td>Invoice No:</td>
+            <td>1013</td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>vinayak@webduratech.com</td>
+            <td></td>
+            <td>Order No:</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Address:</td>
+            <td>Kakkanad, Cochin, Kerala, 123456</td>
+            <td></td>
+            <td>Order Status:</td>
+            <td>Pending</td>
+        </tr>							
+    </table>
+</td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td><table width="100%" class="list" cellpadding="0" cellspacing="0"><tr>
+                    <th>#</th>
+                    <th>ITEM</th>
+                    <th>DESCRIPTION</th>
+                    <th>COST</th>
+                    <th>QUANTITY</th><th>DISCOUNT</th>   <th>AMOUNT</th>
+                </tr><tr class=''>
+                <td>1</td>
+                <td>SEND CREDITS - Pay As You Go</td>
+                <td>SEND CREDITS - Pay As You Go</td>
+                <td>260.00</td>
+                <td>1</td><td align='right'>45%</td><td align='right'>R 143.00</td>
+        </tr><tr class='footer'>
+                    <td colspan='6'><div align='right'><b>TOTAL DUE</b></div></td>
+                    <td><div align='left'>R 143.00</div></td>
+                </tr></table></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" >
+        <tr valign="top">
+            <td width="50%">Delivery Address : <br />Kakkanad<br />Cochin<br />Kerala<br />123456</td>
+            <td><div style="width:400px;"><div style="float:left;  width:180px; text-align:right; padding-right:20px;" > Payment method: </div><div style="float:left; width:200px;" >EFT </div><div style="clear:both" >&nbsp;</div><div style="float:left; width:180px; text-align:right; padding-right:20px;" > Bank Details: </div><div style="float:left; width:200px;" > &nbsp; </div><div style="float:left; width:180px; text-align:right; padding-right:20px;" > Bank: </div><div style="float:left; width:200px;" >companyBankName</div><div style="float:left; width:180px; text-align:right; padding-right:20px;" > Branch: </div><div style="float:left; width:200px;" >companyBranchName</div><div style="float:left; width:180px; text-align:right; padding-right:20px;" > Account Name: </div><div style="float:left; width:200px;" >companyAccountName</div><div style="float:left; width:180px; text-align:right; padding-right:20px;" > Account Number: </div><div style="float:left; width:200px;" >companyAccountNo</div></div></td>
+        </tr>
+    </table>
+</td></tr>
+</table>
+</div>
+
+<div class="clear">&nbsp;</div>
+<div class="round_box">Notes&nbsp;:&nbsp;</div>
+

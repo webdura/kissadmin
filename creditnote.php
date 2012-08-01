@@ -59,12 +59,12 @@ switch ($action)
             $creditId = 0;
             if($creditnoteId>0)
             {
-                $order_sql = "SELECT * FROM gma_creditnote WHERE id='$creditnoteId'";
-                $order_rs  = mysql_query($order_sql);
-                if(mysql_num_rows($order_rs)>0)
+                $credit_sql = "SELECT * FROM gma_creditnote WHERE id='$creditnoteId'";
+                $credit_rs  = mysql_query($credit_sql);
+                if(mysql_num_rows($credit_rs)>0)
                 {
-                    $order_row = mysql_fetch_array($order_rs);
-                    $creditId  = $order_row['creditId'];
+                    $credit_row = mysql_fetch_array($credit_rs);
+                    $creditId  = $credit_row['creditId'];
                 }
                 else 
                     $creditId = $creditnoteId = 0;
@@ -100,14 +100,14 @@ switch ($action)
                     $amount      = $_REQUEST['amount'][$key];
                     
                     
-                    $order_sql = "INSERT INTO gma_creditnote_details SET creditnoteId='$creditnoteId',group_id='$group_id',service_id='$service_id',serviceName='$serviceName',cost='$cost',quantity='$quantity',discount='$discount',amount='$amount'";
-                    mysql_query($order_sql);
+                    $credit_sql = "INSERT INTO gma_creditnote_details SET creditnoteId='$creditnoteId',group_id='$group_id',service_id='$service_id',serviceName='$serviceName',cost='$cost',quantity='$quantity',discount='$discount',amount='$amount'";
+                    mysql_query($credit_sql);
                     
                     $credit_amount += $amount;
                 }
             }
-            $order_sql = "UPDATE gma_creditnote SET userId='$userId',creditnote_amount='$credit_amount',comments=$comments WHERE id='$creditnoteId'";
-            mysql_query($order_sql); 
+            $credit_sql = "UPDATE gma_creditnote SET userId='$userId',creditnote_amount='$credit_amount',comments=$comments WHERE id='$creditnoteId'";
+            mysql_query($credit_sql); 
             
             $smsg = ($creditnoteId>0) ? "updated" : "added";
             $sql  = "UPDATE gma_company SET companyCreditNo='$companyCreditNo' WHERE companyId='$ses_companyId'";
@@ -131,33 +131,53 @@ switch ($action)
         $total = 0;
         if($creditnoteId>0)
         { 
-            $order_sql = "SELECT * FROM gma_creditnote, gma_logins WHERE gma_logins.userId=gma_creditnote.userId AND gma_logins.companyId='$ses_companyId' AND id='$creditnoteId'";
+            $credit_sql = "SELECT * FROM gma_creditnote, gma_logins WHERE gma_logins.userId=gma_creditnote.userId AND gma_logins.companyId='$ses_companyId' AND id='$creditnoteId'";
             if($ses_loginType=='user')
-                $order_sql .= " AND gma_logins.userId='$ses_userId'";
-            $order_rs  = mysql_query($order_sql);
-            if(mysql_num_rows($order_rs)==0) {
+                $credit_sql .= " AND gma_logins.userId='$ses_userId'";
+            $credit_rs  = mysql_query($credit_sql);
+            if(mysql_num_rows($credit_rs)==0) {
                 $smsg = "Invalid Request";
                 return header("Location: creditnote.php?msg=$smsg");
                 exit;
             }
-            $order_row = mysql_fetch_assoc($order_rs);
-            $userId    = $order_row['userId'];
-            $total     = $order_row['creditnote_amount'];
-            $comments  = $order_row['comments']; 
+            $credit_row = mysql_fetch_assoc($credit_rs);
+            $userId    = $credit_row['userId'];
+            $total     = $credit_row['creditnote_amount'];
+            $comments  = $credit_row['comments']; 
             
             $orderDetails      = array();
-            $order_detail_sql  = "SELECT * FROM gma_creditnote_details WHERE creditnoteId='$creditnoteId'";
-            $order_detail_rs   = mysql_query($order_detail_sql);
-            while($order_detail_row = mysql_fetch_assoc($order_detail_rs))
+            $credit_detail_sql  = "SELECT * FROM gma_creditnote_details WHERE creditnoteId='$creditnoteId'";
+            $credit_detail_rs   = mysql_query($credit_detail_sql);
+            while($credit_detail_row = mysql_fetch_assoc($credit_detail_rs))
             {
-                 $orderDetails[] = $order_detail_row;
+                 $orderDetails[] = $credit_detail_row;
             }
         }
         break;
+
+    case 'delete':
+        $credit_sql = "SELECT * FROM gma_creditnote, gma_logins WHERE gma_logins.userId=gma_creditnote.userId AND gma_logins.companyId='$ses_companyId' AND id='$creditnoteId'";
+        $credit_rs  = mysql_query($credit_sql);
+        if(mysql_num_rows($credit_rs)==0) {
+            $smsg = "Invalid Request";
+            return header("Location: creditnote.php?msg=$smsg");
+            exit;
+        }
+        
+        $credit_sql = "DELETE FROM gma_creditnote WHERE id='$creditnoteId'";
+        mysql_query($credit_sql);
+        $credit_sql = "DELETE FROM gma_creditnote_details WHERE creditnoteId='$creditnoteId'";
+        mysql_query($credit_sql);
+        
+        return header("Location: creditnote.php?msg=Details successfully deleted !.");
+        exit;
+        
+        break;
         
     case 'view':
-        $details = invoiceDetails($orderId);
-        $details = emailSend('invoice', $details, null, 1);
+        $details = creditNoteDetails($creditnoteId);
+//        echo '<pre>'; print_r($details); exit;
+        $details = emailSend('creditnote', $details, null, 1);
         echo "<div align='center'>$details</div>";
         exit;
         break;
@@ -168,23 +188,23 @@ switch ($action)
         $offset  = ($pageNum - 1) * $perPage;
         $orderBy = ($_REQUEST['orderby']!='') ? 'ORDER BY '.$_REQUEST['orderby'].' '.$_REQUEST['order'] : 'ORDER BY creditId DESC ';
         
-        $order_sql   = ($userId!='') ? "gma_creditnote.userId='$userId' AND " : '';
-        $order_sql  .= ($srchtxt!='') ? "(userName LIKE '$srchtxt%' OR creditId LIKE '$srchtxt%') AND " : '';
-        $order_sql  .= ($ses_loginType=='user') ? "gma_creditnote.userId='$ses_userId' AND " : '';
-        $order_sql  .= "companyId='$ses_companyId'"; // AND gma_creditnote.status=1";
-        $order_sql   = "SELECT gma_creditnote.*,businessName,DATE_ADD(creditnoteDate, INTERVAL 7 HOUR) AS creditnoteDate FROM gma_creditnote LEFT JOIN gma_logins ON gma_creditnote.userId=gma_logins.userId LEFT JOIN gma_user_details ON gma_creditnote.userId=gma_user_details.userId WHERE $order_sql GROUP BY creditId $orderBy";
-        $order_rs    = mysql_query($order_sql);
-        $order_count = mysql_num_rows($order_rs);
+        $credit_sql   = ($userId!='') ? "gma_creditnote.userId='$userId' AND " : '';
+        $credit_sql  .= ($srchtxt!='') ? "(userName LIKE '$srchtxt%' OR creditId LIKE '$srchtxt%') AND " : '';
+        $credit_sql  .= ($ses_loginType=='user') ? "gma_creditnote.userId='$ses_userId' AND " : '';
+        $credit_sql  .= "companyId='$ses_companyId'"; // AND gma_creditnote.status=1";
+        $credit_sql   = "SELECT gma_creditnote.*,businessName,DATE_ADD(creditnoteDate, INTERVAL 7 HOUR) AS creditnoteDate FROM gma_creditnote LEFT JOIN gma_logins ON gma_creditnote.userId=gma_logins.userId LEFT JOIN gma_user_details ON gma_creditnote.userId=gma_user_details.userId WHERE $credit_sql GROUP BY creditId $orderBy";
+        $credit_rs    = mysql_query($credit_sql);
+        $credit_count = mysql_num_rows($credit_rs);
         
         $pagination = '';
-        if($order_count>$perPage)
+        if($credit_count>$perPage)
         {
-            $order_sql  .= " LIMIT $offset, $perPage";
-            $order_rs    = mysql_query($order_sql);
+            $credit_sql  .= " LIMIT $offset, $perPage";
+            $credit_rs    = mysql_query($credit_sql);
             
-            $maxPage     = ceil($order_count/$perPage);
+            $maxPage     = ceil($credit_count/$perPage);
             $pagination  = pagination($maxPage, $pageNum);
-            $pagination  = paginations($order_count, $perPage, 5);
+            $pagination  = paginations($credit_count, $perPage, 5);
         }
         
         if($ses_loginType!='user') {
@@ -218,18 +238,18 @@ if($action=='add' || $action=='edit') {
         </tr>  
         <?php
         $j=0;
-        while($order_row = mysql_fetch_array($order_rs))
+        while($credit_row = mysql_fetch_array($credit_rs))
         {
             $val++;
             
-            $creditId = $order_row['creditId'];
-            $creditnoteId   = $auto_id = $order_row['id'];
-            $userId    = $order_row['userId'];
+            $creditId = $credit_row['creditId'];
+            $creditnoteId   = $auto_id = $credit_row['id'];
+            $userId    = $credit_row['userId'];
             $class     = ((($j++)%2)==1) ? 'altrow' : '';
 
-            if($order_row['orderStatus'] == 0) {
+            if($credit_row['orderStatus'] == 0) {
 	        	$paid_sql = "SELECT creditnoteId, SUM(amount) AS paidAmount FROM gma_payment_order ".
-	        				" WHERE creditnoteId= " . $order_row['id'] .
+	        				" WHERE creditnoteId= " . $credit_row['id'] .
 	        				" GROUP BY creditnoteId";
 	            $paid_rs  = mysql_query($paid_sql);
 	            if(mysql_num_rows($paid_rs)>0) {
@@ -238,22 +258,22 @@ if($action=='add' || $action=='edit') {
 	            	$status = 'Paid ' . formatMoney($paidAmt);
 	            }
 	            else
-	            	$status = paymentStatus($order_row['orderStatus']);
+	            	$status = paymentStatus($credit_row['orderStatus']);
             }
             else {
             	
-            	$status = paymentStatus($order_row['orderStatus']);
+            	$status = paymentStatus($credit_row['orderStatus']);
             }
             
-            $status = ($order_row['status']==0) ? '<span>Cancelled</span>' : $status;
+            $status = ($credit_row['status']==0) ? '<span>Cancelled</span>' : $status;
             
             ?>
             <tr class="<?=$class?>">
                 <!--<td><input type="checkbox" id="delete" name="delete[]" value="<?=$auto_id?>"></td>-->
                 <td><?=$creditId?></td>
-                <td><?=dateFormat($order_row['creditnoteDate'], 'N')?></td>
-                <? if($ses_loginType!='user') { ?> <td><?=$order_row['businessName']?></td> <? } ?>
-                <td><?=formatMoney($order_row['creditnote_amount'], true)?></td>
+                <td><?=dateFormat($credit_row['creditnoteDate'], 'N')?></td>
+                <? if($ses_loginType!='user') { ?> <td><?=$credit_row['businessName']?></td> <? } ?>
+                <td><?=formatMoney($credit_row['creditnote_amount'], true)?></td>
                 <td>
                     <a href="creditnote.php?action=view&creditnoteId=<?=$creditnoteId?>&popup" class="btn_style thickbox">View</a>
                     &nbsp;<a href="creditnote.php?action=edit&creditnoteId=<?=$creditnoteId?>" class="btn_style">Edit</a>
@@ -265,7 +285,7 @@ if($action=='add' || $action=='edit') {
             </tr>
             <?php
         }
-        if($order_count==0) { ?>
+        if($credit_count==0) { ?>
             <tr><td class="norecords" colspan="10">No Records Found</td></tr>
         <? } ?>
     </table>

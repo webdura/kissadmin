@@ -241,7 +241,10 @@ function deleteAll()
         alert("Please select any records to delete ");
         return false;
     }
-    $('#listForm').submit();
+    
+    if(window.confirm('Are you sure to delete this ?')) {
+        $('#listForm').submit();
+    }
 }
 
 
@@ -361,4 +364,15 @@ function sameBilling() {
         $('.delivery').removeAttr('readonly')
         $('.delivery').css('background', '#FFF')
     }
+}
+
+
+function cancelInvoice(orderId) {
+    var url = 'invoices.php?action=cancel&orderId='+orderId;
+    var send = 0;
+    if(window.confirm('Would you like a Credit Note to be emailed to the client ?'))
+        send = 1;
+    url = url + '&send='+send;
+    
+    window.location = url;
 }

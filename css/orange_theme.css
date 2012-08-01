@@ -1,4 +1,4 @@
-body { background: #FAA002; }
+.body { background: #FAA002; }
 a { color:#FFFFFF; }
 a:hover, a.selected { color:#FF9000; }
 
@@ -72,3 +72,5 @@ a:hover, a.selected { color:#FF9000; }
 .list .desc { 
     background: transparent url(images/orange_theme/arrow_down.png) repeat-x;
 }
+
+div.footer, div.footer a { color:#FFFFFF; }

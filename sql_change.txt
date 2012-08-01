@@ -1,40 +1,50 @@
--- 24July
+-- 24 July
 
-ALTER TABLE  `gma_company` ADD  `companyInvoiceNo` INT NOT NULL DEFAULT  '1000' AFTER  `companyDiscount` , ADD  `companyQuotationNo` INT NOT NULL DEFAULT  '1000' AFTER  `companyInvoiceNo` , ADD  `companyCreditNo` INT NOT NULL DEFAULT  '1000' AFTER  `companyQuotationNo`;
+ALTER TABLE  gma_company ADD  companyInvoiceNo INT NOT NULL DEFAULT  '1000' AFTER  companyDiscount , ADD  companyQuotationNo INT NOT NULL DEFAULT  '1000' AFTER  companyInvoiceNo , ADD  companyCreditNo INT NOT NULL DEFAULT  '1000' AFTER  companyQuotationNo;
 
-ALTER TABLE  `gma_services` ADD  `description` VARCHAR( 250 ) NOT NULL AFTER  `service_name`;
+ALTER TABLE  gma_services ADD  description VARCHAR( 250 ) NOT NULL AFTER  service_name;
 
-ALTER TABLE `gma_order_repeat`  ADD `startDate` DATETIME NOT NULL AFTER `sendDate`,  ADD `how_often` TINYINT NOT NULL AFTER `startDate`,  ADD `how_many` SMALLINT NOT NULL DEFAULT '1001' AFTER `how_often`,  ADD `sentTotal` TINYINT NOT NULL DEFAULT '0' AFTER `how_many`;
+ALTER TABLE  gma_company DROP  companyDiscount;
+ALTER TABLE  gma_user_details ADD  discount_value FLOAT NOT NULL;
 
-ALTER TABLE  `gma_company` DROP  `companyDiscount`;
-ALTER TABLE  `gma_user_details` ADD  `discount_value` FLOAT NOT NULL;
+CREATE TABLE IF NOT EXISTS gma_order_repeat (id bigint(20) NOT NULL AUTO_INCREMENT, userId int(11) NOT NULL, invoiceId int(11) NOT NULL, order_number varchar(50) NOT NULL, invoice_amount decimal(10,2) NOT NULL, orderDate datetime NOT NULL, sendDate datetime NOT NULL, startDate datetime NOT NULL, how_often tinyint(4) NOT NULL, how_many smallint(6) NOT NULL DEFAULT '1001', sentTotal tinyint(4) NOT NULL DEFAULT '0', invoiceSentDate datetime NOT NULL, sendMail char(1) NOT NULL DEFAULT 'N', orderStatus int(1) NOT NULL, PRIMARY KEY (id));
 
-CREATE TABLE IF NOT EXISTS `gma_order_repeat` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `userId` int(11) NOT NULL, `invoiceId` int(11) NOT NULL, `order_number` varchar(50) NOT NULL, `invoice_amount` decimal(10,2) NOT NULL, `orderDate` datetime NOT NULL, `sendDate` datetime NOT NULL, `startDate` datetime NOT NULL, `how_often` tinyint(4) NOT NULL, `how_many` smallint(6) NOT NULL DEFAULT '1001', `sentTotal` tinyint(4) NOT NULL DEFAULT '0', `invoiceSentDate` datetime NOT NULL, `sendMail` char(1) NOT NULL DEFAULT 'N', `orderStatus` int(1) NOT NULL, PRIMARY KEY (`id`));
+CREATE TABLE IF NOT EXISTS gma_order_repeat_details ( orderRepeatId bigint(20) NOT NULL, group_id int(11) NOT NULL, service_id int(11) NOT NULL, serviceName varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, cost decimal(10,2) NOT NULL, quantity int(11) NOT NULL DEFAULT '1', amount decimal(10,2) NOT NULL, discount tinyint(4) NOT NULL, exportStatus enum('false','true') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, KEY orderId (orderRepeatId) );
 
-CREATE TABLE IF NOT EXISTS `gma_order_repeat_details` ( `orderRepeatId` bigint(20) NOT NULL, `group_id` int(11) NOT NULL, `service_id` int(11) NOT NULL, `serviceName` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, `cost` decimal(10,2) NOT NULL, `quantity` int(11) NOT NULL DEFAULT '1', `amount` decimal(10,2) NOT NULL, `discount` tinyint(4) NOT NULL, `exportStatus` enum('false','true') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, KEY `orderId` (`orderRepeatId`) );
+ALTER TABLE  gma_order ADD  comments TEXT NOT NULL AFTER  sendDate;
 
-ALTER TABLE  `gma_order` ADD  `comments` TEXT NOT NULL AFTER  `sendDate`;
+ALTER TABLE  gma_quotation ADD  comments TEXT NOT NULL AFTER  invoice_amount;
 
-ALTER TABLE  `gma_quotation` ADD  `comments` TEXT NOT NULL AFTER  `invoice_amount`;
+DELETE FROM  gma_admins_permission WHERE  admins_id =5 AND  module_id =2;
 
-DELETE FROM  `gma_admins_permission` WHERE  `admins_id` =5 AND  `module_id` =2;
+--26 July
 
--- 26 July
+ALTER TABLE  gma_company ADD  companyAddress1 VARCHAR( 250 ) NOT NULL AFTER  companyAccountContact ,
+ADD  companyAddress2 VARCHAR( 250 ) NOT NULL AFTER  companyAddress1 ,
+ADD  companyCity VARCHAR( 100 ) NOT NULL AFTER  companyAddress2 ,
+ADD  companyProvince VARCHAR( 100 ) NOT NULL AFTER  companyCity ,
+ADD  companyZip VARCHAR( 15 ) NOT NULL AFTER  companyProvince ,
+ADD  companyWebsite VARCHAR( 250 ) NOT NULL  AFTER  companyZip;
 
-ALTER TABLE  `gma_company` ADD  `companyAddress1` VARCHAR( 250 ) NOT NULL AFTER  `companyAccountContact` ,
-ADD  `companyAddress2` VARCHAR( 250 ) NOT NULL AFTER  `companyAddress1` ,
-ADD  `companyCity` VARCHAR( 100 ) NOT NULL AFTER  `companyAddress2` ,
-ADD  `companyProvince` VARCHAR( 100 ) NOT NULL AFTER  `companyCity` ,
-ADD  `companyZip` VARCHAR( 15 ) NOT NULL AFTER  `companyProvince` ,
-ADD  `companyWebsite` VARCHAR( 250 ) NOT NULL  AFTER  `companyZip`;
+INSERT INTO gma_emails VALUES(0, 'send_custom_invoices', 'Your Invoice', 'Hi [firstname] [lastname],\r\n\r\nPlease find the attached invoice.\r\n\r\nClient Name : [clientname]\r\nCompany Name : [companyname]\r\nUsername : [username]\r\nEmail Address : [email]\r\n\r\n-----\r\nAdministrator\r\n[companyname]', 'Company Name => [companyname]\r\nFirst Name => [firstname]\r\nLast Name => [lastname]\r\nClient Name => [clientname]\r\nUsername => [username]\r\nEmail Address => [email]', 1, 0, 0, 2);
 
-INSERT INTO `gma_emails` VALUES(0, 'send_custom_invoices', 'Your Invoice', 'Hi [firstname] [lastname],\r\n\r\nPlease find the attached invoice.\r\n\r\nClient Name : [clientname]\r\nCompany Name : [companyname]\r\nUsername : [username]\r\nEmail Address : [email]\r\n\r\n-----\r\nAdministrator\r\n[companyname]', 'Company Name => [companyname]\r\nFirst Name => [firstname]\r\nLast Name => [lastname]\r\nClient Name => [clientname]\r\nUsername => [username]\r\nEmail Address => [email]', 1, 0, 0, 2);
+ALTER TABLE  gma_send_invoices ADD  subject VARCHAR( 300 ) NOT NULL AFTER  title , ADD  content TEXT NOT NULL AFTER  subject;
+ALTER TABLE  gma_send_invoice_details ADD  userId INT NOT NULL AFTER  sendInvoiceId;
+ALTER TABLE  gma_send_invoice_details ADD  send_flag INT( 1 ) NOT NULL ,ADD  file_flag INT( 1 ) NOT NULL ,ADD  send_status INT( 1 ) NOT NULL;
+ALTER TABLE  gma_order ADD  status INT( 1 ) NOT NULL DEFAULT  '1';
 
-ALTER TABLE  `gma_send_invoices` ADD  `subject` VARCHAR( 300 ) NOT NULL AFTER  `title` , ADD  `content` TEXT NOT NULL AFTER  `subject`;
-ALTER TABLE  `gma_send_invoice_details` ADD  `userId` INT NOT NULL AFTER  `sendInvoiceId`;
-ALTER TABLE  `gma_send_invoice_details` ADD  `send_flag` INT( 1 ) NOT NULL ,ADD  `file_flag` INT( 1 ) NOT NULL ,ADD  `send_status` INT( 1 ) NOT NULL;
-ALTER TABLE  `gma_order` ADD  `status` INT( 1 ) NOT NULL DEFAULT  '1'
+CREATE TABLE IF NOT EXISTS gma_creditnote (id int(11) NOT NULL AUTO_INCREMENT, orderId int(11) NOT NULL, userId int(11) NOT NULL, creditnoteId int(11) NOT NULL, amount decimal(10,2) NOT NULL, creditnoteDate datetime NOT NULL, PRIMARY KEY (id));
 
-CREATE TABLE IF NOT EXISTS `gma_creditnote` (`id` int(11) NOT NULL AUTO_INCREMENT, `orderId` int(11) NOT NULL, `userId` int(11) NOT NULL, `creditnoteId` int(11) NOT NULL, `amount` decimal(10,2) NOT NULL, `creditnoteDate` datetime NOT NULL, PRIMARY KEY (`id`));
+ALTER TABLE  gma_creditnote ADD  comments TEXT NOT NULL AFTER  amount;
 
-ALTER TABLE  `gma_creditnote` ADD  `comments` TEXT NOT NULL AFTER  `amount`;
+INSERT INTO gma_emails VALUES(0, 'creditnote', 'Credit note', '<table width="672" border="0" cellspacing="0" cellpadding="0">\r\n<tr><td bgcolor="#CCCCCC">\r\n    <table width="100%" border="0" cellspacing="1" cellpadding="10">\r\n        <tr><td align="center" bgcolor="#fff">\r\n            <table width="662" border="0" cellspacing="2" cellpadding="0">\r\n            <tr><td align="center">[logo]</td></tr>\r\n            <tr><td align="right"><a href="mailto:[company_account_email]">[company_account_email]</a></div></td></tr>\r\n            <tr><td width="91%">\r\n                <table width="100%" border="0" cellspacing="0" cellpadding="0">\r\n                    <tr><td colspan="2">\r\n                                        \r\n                    <table width="100%" border="0" cellspacing="0" cellpadding="3">\r\n                        <tr>\r\n                            <td width="128"><strong>CREDITNOTE NUMBER</strong></td>\r\n                            <td width="265">[creditId] </td>\r\n                            <td width="108"><strong>DATE</strong></td>\r\n                            <td width="265">[creditnote_date] </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td><strong>Attention</strong></td>\r\n                            <td colspan="3">[firstname] [lastname] </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td><strong>Company</strong></td>\r\n                            <td colspan="3">[clientname]</td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td width="108"><strong>Tel</strong></td>\r\n                            <td colspan="3">[phone]</td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td><strong>Address</strong></td>\r\n                            <td colspan="3">[address]</td>\r\n                        </tr>\r\n                        <tr><td colspan="4"></td></tr>\r\n                        <tr>\r\n                            <td><strong>VAT Number: </strong></td>\r\n                            <td colspan="3">[vatno]</td>\r\n                        </tr>\r\n                        <tr><td colspan="4"></td></tr>\r\n                    </table>\r\n                            \r\n                </td></tr>\r\n            </table>\r\n        </td></tr>\r\n    </table>\r\n\r\n    <table width="662" border="0" cellspacing="2" cellpadding="0">\r\n        <tr><td colspan="3">\r\n            <table width="100%" border="0" cellspacing="2" cellpadding="5" class="head_bg">\r\n                [creditnoteDetails]\r\n            </table>\r\n        </td></tr>\r\n        <tr><td colspan="3"></td></tr>\r\n    </table>\r\n    \r\n    Content can be added here.\r\n    \r\n</td></tr>\r\n</table>', 'Logo => [logo]\r\nCompany Account Email Address => [company_account_email]\r\nCreditnote Id/Number => [creditId]\r\nCreditnote Date => [creditnote_date]\r\n\r\nCreditnote Details => [creditnoteDetails]\r\n\r\nCompany Name => [companyname]\r\nFirst Name => [firstname]\r\nLast Name => [lastname]\r\nClient Name => [clientname]\r\nPhone Number => [phone]\r\nAddress => [address]\r\nVat No => [vatno]\r\nEmail Address => [email]', 1, 0, 0, 4);
+
+UPDATE gma_modules SET  filename='send_invoices.php' WHERE  id =16;
+
+-- 30July
+
+INSERT INTO gma_modules (`id`, `name`, `default`, `display`, `status`, `filename`, `class`, `order`, `menu`, `for_users`) VALUES (18, 'Subscription', '1', '1', '1', 'subscription.php', '', '2', '1', 'A');
+INSERT INTO `gma_admins_permission` (`companyId`, `admins_id`, `module_id`) VALUES ('1', '1', '18');
+INSERT INTO `gma_company_module` (`companyId`, `module_id`, `status`) VALUES ('1', '18', '1');
+
+ALTER TABLE  `gma_creditnote` ADD  `sendDate` DATETIME NOT NULL;

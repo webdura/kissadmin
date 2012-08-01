@@ -1,4 +1,4 @@
-body { background: transparent url(images/paisley_royal_theme/background.jpg) repeat right top; }
+.body { background: transparent url(images/paisley_royal_theme/background.jpg) repeat right top; }
 a { color:#FFFFFF; }
 a:hover, a.selected { color:#FF9000; }
 
@@ -73,3 +73,5 @@ a:hover, a.selected { color:#FF9000; }
 .list .desc { 
     background: transparent url(images/paisley_royal_theme/arrow_down.png) repeat-x;
 }
+
+div.footer, div.footer a { color:#000000; }

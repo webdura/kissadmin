@@ -3,9 +3,9 @@ h1,h2,h3,h4,h5,h6 { padding:0px; margin:0px; font-weight:normal; }
 h1 { font-weight:bold; }
 p { padding:0px; margin:0px; }
 form { padding:0px; margin:0px; }
-.clear { clear:both; }
-.fleft { float:left; }
-.fright { float:right; }
+.clear { clear:both !important; }
+.fleft { float:left !important; }
+.fright { float:right !important; }
 .fcenter { text-align:center !important; }
 a { text-decoration:none; outline-style:none; }
 table, tr, td, th { font-weight:normal; }
@@ -63,7 +63,7 @@ table, tr, td, th { font-weight:normal; }
 
 #head_right {
     float:right;
-    width:59%;
+    width:65%;
     max-height:82px;
     text-align:right;
     margin-right:10px;
@@ -109,7 +109,8 @@ table, tr, td, th { font-weight:normal; }
 }
 
 #maincontent {
-    padding:15px;
+    padding: 15px 15px 0px 15px;
+    margin-bottom: 10px;
 }
 .page_header {
     margin:0px;
@@ -290,3 +291,13 @@ border:1px solid #dedede;border-top:none;background:#FFF;
 #menu :hover ul li {padding:0 0px!important;margin:0!important;overflow:hidden;display:block;width:200px;height:auto!important;}
 #menu :hover ul li a {display:block;clear:both;padding:4px 5px 7px 5px!important;margin:0!important;color:#555 !important;text-align:left!important; border:none!important;height:30px!important; line-height:30px!important; height:25px;}
 
+
+div.footer { text-align:center; padding:10px 0px; }
+
+.round_box {
+    border: 1px solid #000;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    padding:10px;
+    margin:0px 10px;
+}

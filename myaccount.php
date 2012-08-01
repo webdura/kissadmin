@@ -13,20 +13,19 @@ $startdate   = (isset($_REQUEST['startdate'])) ? $_REQUEST['startdate'] : '';
 $enddate     = (isset($_REQUEST['enddate'])) ? $_REQUEST['enddate'] : '';
 
 if(isset($_REQUEST['userId']) ){
-	if($ses_loginType!='user')
-		$userId = GetSQLValueString($_REQUEST['userId'], 'int') ;
-	else 
-		$userId = $ses_userId;
+    if($ses_loginType!='user')
+        $userId = GetSQLValueString($_REQUEST['userId'], 'int') ;
+    else 
+        $userId = $ses_userId;
 } else {
-	if(isset($_SESSION['clientId']) && $_SESSION['clientId']>0)
-		$userId = $_SESSION['clientId'];
-	else{ 
-		if($ses_loginType!='user')
-			$userId = 0; 
-		else 
-			$userId = $ses_userId;
-	}
-	
+    if(isset($_SESSION['clientId']) && $_SESSION['clientId']>0)
+        $userId = $_SESSION['clientId'];
+    else{ 
+        if($ses_loginType!='user')
+            $userId = 0; 
+        else 
+            $userId = $ses_userId;
+    }
 }
 	
 $_SESSION['clientId'] = $userId;

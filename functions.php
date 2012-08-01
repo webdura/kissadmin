@@ -113,7 +113,7 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
     $email_rs  = mysql_query($email_sql); 
     $email_row = mysql_fetch_assoc($email_rs);
     $email_subject = $email_row['subject'];
-    $email_content = $email_row['content'];
+    $email_content = stripslashes($email_row['content']);
     $email_status  = $email_row['status'];
     // if($email_row['update']==0) {
     if(!strstr($email_content, '<table')) {
@@ -121,17 +121,17 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
     }
     
     if(!isset($array_values['companyname'])) {
-        $array_values['invoice_logo']          	= $company_row['companyName'];
-        $array_values['company_account_email'] 	= $company_row['companyAccountEmail'];
-        $array_values['company_account_tel'] 	= $company_row['companyAccountTel'];
-        $array_values['company_website'] 		= $company_row['companyWebsite'];
-        $array_values['companyname']           	= $company_row['companyName'];
+        $array_values['invoice_logo']          = $company_row['companyName'];
+        $array_values['company_account_email'] = $company_row['companyAccountEmail'];
+        $array_values['company_account_tel'] 	 = $company_row['companyAccountTel'];
+        $array_values['company_website'] 		    = $company_row['companyWebsite'];
+        $array_values['companyname']           = $company_row['companyName'];
         
-        $array_values['companyAddress1']    	= $company_row['companyAddress1'];
-        $array_values['companyAddress2']  		= $company_row['companyAddress2'];
-        $array_values['companyCity']    		= $company_row['companyCity'];
-        $array_values['companyProvince'] 		= $company_row['companyProvince'];
-        $array_values['companyZip'] 			= $company_row['companyZip'];
+        $array_values['companyAddress1'] = $company_row['companyAddress1'];
+        $array_values['companyAddress2'] = $company_row['companyAddress2'];
+        $array_values['companyCity']     = $company_row['companyCity'];
+        $array_values['companyProvince'] = $company_row['companyProvince'];
+        $array_values['companyZip'] 			  = $company_row['companyZip'];
 
         $array_values['companyBankName']   		= $company_row['companyBankName'];
         $array_values['companyBranchName']  	= $company_row['companyBranchName'];
@@ -141,30 +141,29 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
         $array_values['companyAccountNo']   	= $company_row['companyAccountNo'];
         
         $array_values['company_address']		= $company_row['companyName'];
-        $array_values['company_address']		.= (trim($array_values['companyAddress1'])!='')?",<br/>".$array_values['companyAddress1']:'';
-        $array_values['company_address']		.= (trim($array_values['companyAddress2'])!='')?",<br/>".$array_values['companyAddress2']:'';
-        $array_values['company_address']		.= (trim($array_values['companyCity'])!='')?",<br/>".$array_values['companyCity']:'';
-        $array_values['company_address']		.= (trim($array_values['companyProvince'])!='')?",<br/>".$array_values['companyProvince']:'';
-        $array_values['company_address']		.= (trim($array_values['companyZip'])!='')?",<br/>".$array_values['companyZip']:'';
+        $array_values['company_address']	.= (trim($array_values['companyAddress1'])!='')?",<br/>".$array_values['companyAddress1']:'';
+        $array_values['company_address']	.= (trim($array_values['companyAddress2'])!='')?",<br/>".$array_values['companyAddress2']:'';
+        $array_values['company_address']	.= (trim($array_values['companyCity'])!='')?",<br/>".$array_values['companyCity']:'';
+        $array_values['company_address']	.= (trim($array_values['companyProvince'])!='')?",<br/>".$array_values['companyProvince']:'';
+        $array_values['company_address']	.= (trim($array_values['companyZip'])!='')?",<br/>".$array_values['companyZip']:'';
         
         $array_values['company_address'] = trim($array_values['company_address'], ',<br/>');
-        $array_values['bank_details'] = '<div style="background-color:#FF0000; float:left; width:400px;">';
-
+        $array_values['bank_details'] = '<div style="width:400px;">';
         if($array_values['status']!=1) {
-			$array_values['bank_details'] .= '<div style="float:left;  width:180px; text-align:right; padding-right:20px;" > Payment method: </div>'; 
-			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >EFT </div>';
-			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Bank Details: </div>';
-			$array_values['bank_details'] .= '<div style="float:left; width:200px;" > &nbsp; </div>';
-			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Bank: </div>';
-			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyBankName']. '</div>'; 
-			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Branch: </div>';
-			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyBranchName'] . '</div>'; 
-			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Account Name: </div>';
-			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyAccountName']. '</div>'; 
-			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Account Number: </div>';
-			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyAccountNo']. '</div>'; 
+         			$array_values['bank_details'] .= '<div style="float:left;  width:180px; text-align:right; padding-right:20px;" > Payment method: </div>'; 
+         			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >EFT </div>';
+         			$array_values['bank_details'] .= '<div style="clear:both" >&nbsp;</div>';
+         			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Bank Details: </div>';
+         			$array_values['bank_details'] .= '<div style="float:left; width:200px;" > &nbsp; </div>';
+         			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Bank: </div>';
+         			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyBankName']. '</div>'; 
+         			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Branch: </div>';
+         			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyBranchName'] . '</div>'; 
+         			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Account Name: </div>';
+         			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyAccountName']. '</div>'; 
+         			$array_values['bank_details'] .= '<div style="float:left; width:180px; text-align:right; padding-right:20px;" > Account Number: </div>';
+         			$array_values['bank_details'] .= '<div style="float:left; width:200px;" >' . $company_row['companyAccountNo']. '</div>'; 
         }
-
         $array_values['bank_details'] .= '</div>';
        
     }
@@ -181,22 +180,24 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
     }
     $email_to = $array_values['to_email'];
     
-    if($flag==1) { 
+    if($flag==1) {
         return $email_content;
-        
-    } else if($email_status==1 && $flag==0) {     
+    } else if($email_status==1 && $flag==0) {
      
-        global $theme_head_bg, $theme_head_color, $theme_color1, $theme_color2, $theme_color3, $theme_color4;
+        $css_content = cssRead();
+        $email_content = "<style>$css_content</style>$email_content";
         
-        $email_content = str_replace('class="color1"', 'style="background-color: '.$theme_color1.'"', $email_content);
-        $email_content = str_replace('class="color2"', 'style="border-top:4px solid '.$theme_color2.'"', $email_content);
-        $email_content = str_replace('class="color3"', 'style="background-color: '.$theme_color3.'"', $email_content);
-        $email_content = str_replace('class="color4"', 'style="background-color: '.$theme_color4.'"', $email_content);
-        
-        $email_content = str_replace("class='color1'", 'style="background-color: '.$theme_color1.'"', $email_content);
-        $email_content = str_replace("class='color2'", 'style="border-top:4px solid '.$theme_color2.'"', $email_content);
-        $email_content = str_replace("class='color3'", 'style="background-color: '.$theme_color3.'"', $email_content);
-        $email_content = str_replace("class='color4'", 'style="background-color: '.$theme_color4.'"', $email_content);
+//        global $theme_head_bg, $theme_head_color, $theme_color1, $theme_color2, $theme_color3, $theme_color4;
+//        
+//        $email_content = str_replace('class="color1"', 'style="background-color: '.$theme_color1.'"', $email_content);
+//        $email_content = str_replace('class="color2"', 'style="border-top:4px solid '.$theme_color2.'"', $email_content);
+//        $email_content = str_replace('class="color3"', 'style="background-color: '.$theme_color3.'"', $email_content);
+//        $email_content = str_replace('class="color4"', 'style="background-color: '.$theme_color4.'"', $email_content);
+//        
+//        $email_content = str_replace("class='color1'", 'style="background-color: '.$theme_color1.'"', $email_content);
+//        $email_content = str_replace("class='color2'", 'style="border-top:4px solid '.$theme_color2.'"', $email_content);
+//        $email_content = str_replace("class='color3'", 'style="background-color: '.$theme_color3.'"', $email_content);
+//        $email_content = str_replace("class='color4'", 'style="background-color: '.$theme_color4.'"', $email_content);
         
         include("includes/htmlMimeMail.inc.php");
         $mailToSend  = new htmlMimeMail();
@@ -212,7 +213,7 @@ function emailSend($email_template, $array_values, $companyId=null, $flag=0) {
         }
         
         $email_to = explode(',', $email_to);
-        //$mailToSend->send($email_to);
+        $mailToSend->send($email_to);
                 
         $today  = date('d-m-Y H:i:s');
         $myFile = "mail_log.txt";
@@ -452,9 +453,9 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
     $payment_sql  = $order_sql = $credit_sql = "userID='$userId'";
     if($flag==1)
     {
-        $payment_sql .= " AND date<'$date1'";
-        $order_sql   .= " AND (orderDate<'$date1')";
-        $credit_sql .= " AND (creditnoteDate<'$date1')";
+        $payment_sql .= " AND date(date)<'$date1'";
+        $order_sql   .= " AND (date(orderDate)<'$date1')";
+        $credit_sql .= " AND (date(creditnoteDate)<'$date1')";
     }
     else
     {
@@ -463,32 +464,37 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
         $credit_sql .= " AND 1=2";
     }
     
-    $payment_sql = "SELECT SUM(amount) as amount FROM gma_payments WHERE $payment_sql";
-    $payment_rs  = mysql_query($payment_sql);
-    $payment_row = mysql_fetch_assoc($payment_rs);
+    $payment_sql    = "SELECT SUM(amount) as amount FROM gma_payments WHERE $payment_sql";
+    $payment_rs     = mysql_query($payment_sql);
+    $payment_row    = mysql_fetch_assoc($payment_rs);
     $payment_amount = $payment_row['amount'];
     
-    $order_sql = "SELECT SUM(invoice_amount) as amount FROM gma_order WHERE $order_sql";
-    $order_rs  = mysql_query($order_sql);
-    $order_row = mysql_fetch_assoc($order_rs);
+    $order_sql    = "SELECT SUM(invoice_amount) as amount FROM gma_order WHERE $order_sql";
+    $order_rs     = mysql_query($order_sql);
+    $order_row    = mysql_fetch_assoc($order_rs);
     $order_amount = $order_row['amount'];
     
-    $order_sql = "SELECT SUM(creditnote_amount) as amount FROM gma_creditnote WHERE $credit_sql";
-    $order_rs  = mysql_query($order_sql);
-    $order_row = mysql_fetch_assoc($order_rs);
-    $credit_amount = $order_row['amount'];
+    $credit_sql    = "SELECT SUM(creditnote_amount) as amount FROM gma_creditnote WHERE $credit_sql";
+    $credit_rs     = mysql_query($credit_sql);
+    $credit_row    = mysql_fetch_assoc($credit_rs);
+    $credit_amount = $credit_row['amount'];
     
-    $balance_forward = $balance_due = $order_amount - $payment_amount;
-    if($userId > 0)
-    	   $payment_sql  = $order_sql = $credit_sql = "userID='$userId'"; 
-    else 
-     	   $payment_sql  = $order_sql = $credit_sql = "1"; 
+//    echo $userId.'<br>';
+//    echo "$payment_sql == $payment_amount<br>";
+//    echo "$order_sql == $order_amount<br>";
+//    echo "$credit_sql == $credit_amount<br>";
+    
+    $balance_forward = $balance_due = $order_amount - $payment_amount - $credit_amount;
+//    if($userId > 0)
+	   $payment_sql  = $order_sql = $credit_sql = "userID='$userId'"; 
+//    else 
+//     	   $payment_sql  = $order_sql = $credit_sql = "1"; 
    
     if($flag==1)
     {
-        $payment_sql .= " AND (date>='$date1' AND date<='$date2')";
-        $order_sql   .= " AND (orderDate>='$date1' AND orderDate<='$date2')";
-        $credit_sql  .= " AND (creditnoteDate>='$date1' AND creditnoteDate<='$date2')";
+        $payment_sql .= " AND (date(date)>='$date1' AND date(date)<='$date2')";
+        $order_sql   .= " AND (date(orderDate)>='$date1' AND date(orderDate)<='$date2')";
+        $credit_sql  .= " AND (date(creditnoteDate)>='$date1' AND date(creditnoteDate)<='$date2')";
     }
     
     $payment_sql = "SELECT *,DATE_FORMAT(date,'%Y%m%d') AS date_new,DATE_FORMAT(date,'%d/%m/%Y') AS date FROM gma_payments WHERE $payment_sql ORDER BY date ASC";
@@ -536,7 +542,7 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
         $amount    = $credit_row['creditnote_amount'];
         
         $details_row['type']    = 'creditnote';
-        $details_row['orderId'] =  $credit_row['id'];
+        $details_row['creditId'] =  $credit_row['id'];
         $details_row['desc']    = 'Credit note '.$credit_row['creditId'];
         $details_row['date']    = $credit_row['creditnoteDate'];
         $details_row['amount']  = $amount;
@@ -622,7 +628,7 @@ function myAccount($userId, $date_range, $startdate, $enddate, $date_flag=0)
             if($date_flag==0 && $type=='order')
                 $desc = "<a href='invoices.php?action=view&orderId=".$row['orderId']."&popup' class='thickbox links'>$desc</a>";
             if($date_flag==0 && $type=='creditnote')
-                $desc = "<a href='creditnote.php?action=view&orderId=".$row['creditId']."&popup' class='thickbox links'>$desc</a>";
+                $desc = "<a href='creditnote.php?action=view&creditnoteId=".$row['creditId']."&popup' class='thickbox links'>$desc</a>";
             
             $balance = ($type!='order') ? $balance-$amount : $balance + $amount;
             $result .= "<tr class='$class'>
@@ -663,7 +669,7 @@ function getFile($filename){
 
 function invoiceDetails($orderId, $flag=0)
 {
-    global $active_theme, $admin_email, $ses_companyId, $company_row;
+    global $default_theme, $admin_email, $ses_companyId, $company_row;
     
     $details   = $result = '';
     
@@ -675,8 +681,7 @@ function invoiceDetails($orderId, $flag=0)
     $order_detail_rs  = mysql_query($order_detail_sql);
     $discount_flag    = mysql_num_rows($order_detail_rs);
     
-    $order_detail_sql = "SELECT *,gma_order_details.amount AS order_amount " .
-    					" FROM gma_order_details LEFT JOIN gma_services ON id=service_id WHERE orderId='$orderId'";
+    $order_detail_sql = "SELECT *,gma_order_details.amount AS order_amount FROM gma_order_details LEFT JOIN gma_services ON id=service_id WHERE orderId='$orderId'";
     $order_detail_rs  = mysql_query($order_detail_sql);
     $i = 1;
     while ($order_detail_row = mysql_fetch_assoc($order_detail_rs))
@@ -689,42 +694,47 @@ function invoiceDetails($orderId, $flag=0)
         $quantity    = $order_detail_row['quantity'];
         $discount    = $order_detail_row['discount'];
         $amount      = $order_detail_row['order_amount'];
-            $details .= "<tr>
-                <td bgcolor=white class='color4'>".$i++."</td>
-                <td bgcolor=white class='color4'>".$serviceName."</td>
-                <td bgcolor=white class='color4'>".$description."</td>
-                <td bgcolor=white class='color4' align='right'>".$cost."</td>
-                <td bgcolor=white class='color4' align='center'>".$quantity."</td>";
+        
+        $class    = (($i%2)==0) ? 'altrow' : '';
+        
+        $details .= "<tr class='$class'>
+                <td>".$i++."</td>
+                <td>$serviceName</td>
+                <td>$description</td>
+                <td>$cost</td>
+                <td>$quantity</td>";
             
-            if($discount_flag!=0)
-                $details .= "<td bgcolor=white class='color4' align='right'>".$discount."%</td>";
-                
-            $details .= "<td bgcolor=white class='color4' align='right'>" .formatMoney($amount,true)."</td>
-            </tr>";
+        if($discount_flag!=0)
+            $details .= "<td align='right'>$discount%</td>";
+            
+        $details .= "<td align='right'>".formatMoney($amount, true)."</td>
+        </tr>";
     }
     $result .= "<tr>
-                    <td class='color3'><b>#</b></td>
-                    <td class='color3'><b>ITEM</b></td>
-                    <td class='color3'><b>DESCRIPTION</b></td>
-                    <td class='color3' align='right'><b>COST</b></td>
-                    <td class='color3 align='center''><b>QUANTITY</b></td>";
+                    <th>#</th>
+                    <th>ITEM</th>
+                    <th>DESCRIPTION</th>
+                    <th>COST</th>
+                    <th>QUANTITY</th>";
     
     if($discount_flag!=0)
-        $result .= "<td class='color3' align='right'><b>DISCOUNT</b></td>";
+        $result .= "<th>DISCOUNT</th>";
         
-    $result .= "   <td class='color3' align='right'><b>AMOUNT</b></td>
+    $result .= "   <th>AMOUNT</th>
                 </tr>$details";
     
     
-    $result .= "<tr>
-                    <td colspan='".($discount_flag!=0 ? 6 : 5)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
-                    <td class='color1'><div align='right' class='style9'>".formatMoney($order_row['invoice_amount'], true)."</div></td>
+    $result .= "<tr class='footer'>
+                    <td colspan='".($discount_flag!=0 ? 6 : 5)."'><div align='right'><b>TOTAL DUE</b></div></td>
+                    <td><div align='left'>".formatMoney($order_row['invoice_amount'], true)."</div></td>
                 </tr>";
+    $result = '<table width="100%" class="list" cellpadding="0" cellspacing="0">'.$result.'</table>';
         
-    $order_details['invoiceId']    = $order_row['invoiceId'];    
+    $order_details['invoiceId']    = $order_row['invoiceId'];
+    $order_details['comments']     = $order_row['comments'];
     $order_details['order_date']   = date("j F Y", strtotime($order_row['orderDate']));
     
-    $order_details['status']	   = $order_row['orderStatus'];    
+    $order_details['status']	      = $order_row['orderStatus'];    
     $order_details['status_text']  = ($order_row['orderStatus']==1)?'PAID':'Pending';    
     $order_details['firstname']    = $order_row['firstName'];    
     $order_details['lastname']     = $order_row['lastName'];    
@@ -733,38 +743,34 @@ function invoiceDetails($orderId, $flag=0)
     $order_details['address']      = $order_row['address'];    
     $order_details['vatno']        = $order_row['vatNo'];    
     $order_details['order_number'] = $order_row['order_number'];    
-    $order_details['email']        = $order_row['email'];        
-    $order_details['to_email']     = $order_row['email'];  
-    // echo '<pre>'; print_r($order_details); print_r($order_row); exit;  
+    $order_details['email']        = $order_details['to_email'] = $order_row['email'];
     
-    $order_details['invoiceDetails'] = $result;
-    
-    $user_detail_sql = "SELECT * " .
-    					" FROM gma_user_address WHERE userId=" . $order_row['userId'];
+    $user_detail_sql = "SELECT * FROM gma_user_address WHERE userId=" . $order_row['userId'];
     $user_detail_rs  = mysql_query($user_detail_sql);
     $i = 1;
     while ($user_detail_row = mysql_fetch_assoc($user_detail_rs))
     {
-		if($user_detail_row['type']=='B'){
-			$order_details['billing_address'] = $user_detail_row['address'];
-			$order_details['billing_city'] = $user_detail_row['city'];
-			$order_details['billing_province'] = $user_detail_row['province'];
-			$order_details['billing_zip'] = $user_detail_row['zip'];
-		} else {
-			$order_details['delivery_address'] = $user_detail_row['address'];
-			$order_details['delivery_city'] = $user_detail_row['city'];
-			$order_details['delivery_province'] = $user_detail_row['province'];
-			$order_details['delivery_zip'] = $user_detail_row['zip'];			
-		}
+        if($user_detail_row['type']=='B'){
+            $order_details['billing_address']  = $user_detail_row['address'];
+            $order_details['billing_city']     = $user_detail_row['city'];
+            $order_details['billing_province'] = $user_detail_row['province'];
+            $order_details['billing_zip']      = $user_detail_row['zip'];
+        } else {
+            $order_details['delivery_address']  = $user_detail_row['address'];
+            $order_details['delivery_city']     = $user_detail_row['city'];
+            $order_details['delivery_province'] = $user_detail_row['province'];
+            $order_details['delivery_zip']      = $user_detail_row['zip'];			
+        }
     }
     
+    $order_details['invoiceDetails'] = $result; 
     
     return $order_details;
 }
 
 function quotationDetails($quotationId, $flag=0)
 {
-    global $active_theme, $admin_email, $ses_companyId, $company_row;
+    global $default_theme, $admin_email, $ses_companyId, $company_row;
     
     $details   = $result = '';
     
@@ -787,38 +793,45 @@ function quotationDetails($quotationId, $flag=0)
         $cost        = $quotation_detail_row['cost'];
         $quantity    = $quotation_detail_row['quantity'];
         $discount    = $quotation_detail_row['discount'];
-        $amount      = $quotation_detail_row['amount'];
-            $details .= "<tr>
-                <td bgcolor=white class='color4'><div align=left >".$i++."</div></td>
-                <td bgcolor=white class='color4'><div align=left >".$serviceName."</div></td>
-                <td bgcolor=white class='color4'><div align=center >".$cost."</div></td>
-                <td bgcolor=white class='color4'><div align=center >".$quantity."</div></td>";
+        $amount      = $quotation_detail_row['quotation_amount'];
+        
+        $class    = (($i%2)==0) ? 'altrow' : '';
+        
+        $details .= "<tr class='$class'>
+                <td>".$i++."</td>
+                <td>$serviceName</td>
+                <td>$description</td>
+                <td>$cost</td>
+                <td>$quantity</td>";
             
-            if($discount_flag!=0)
-                $details .= "<td bgcolor=white class='color4'><div align=center >".$discount."%</div></td>";
-                
-            $details .= "<td bgcolor=white class='color4'><div align=right>" .formatMoney($amount,true)."</div></td>
-            </tr>";
-     }
+        if($discount_flag!=0)
+            $details .= "<td align='right'>$discount%</td>";
+            
+        $details .= "<td align='right'>".formatMoney($amount, true)."</td>
+        </tr>";
+    }
     $result .= "<tr>
-                    <td width='35' class='color3'><div align='left'><b>ITEM</b></div></td>
-                    <td width='400' class='color3'><div align='left'><b>DESCRIPTION</b></div></td>
-                    <td width='87' class='color3'><div align='left'><b>COST</b></div></td>
-                    <td width='50' class='color3'><div align='left'><b>QUANTITY</b></div></td>";
+                    <th>#</th>
+                    <th>ITEM</th>
+                    <th>DESCRIPTION</th>
+                    <th>COST</th>
+                    <th>QUANTITY</th>";
     
     if($discount_flag!=0)
-        $result .= "<td width='87' class='color3'><div align='left'><b>DISCOUNT</b></div></td>";
+        $result .= "<th>DISCOUNT</th>";
         
-    $result .= "   <td width='98' class='color3'><div align='right'><b>AMOUNT</b></div></td>
+    $result .= "   <th>AMOUNT</th>
                 </tr>$details";
     
     
-    $result .= "<tr>
-                    <td colspan='".($discount_flag!=0 ? 5 : 4)."' class='color1'><div align='right'><span><strong>TOTAL DUE </strong></span></div></td>
-                    <td class='color1'><div align='right' class='style9'>".formatMoney($quotation_row['invoice_amount'], true)."</div></td>
+    $result .= "<tr class='footer'>
+                    <td colspan='".($discount_flag!=0 ? 6 : 5)."'><div align='right'><b>TOTAL DUE</b></div></td>
+                    <td><div align='left'>".formatMoney($quotation_row['invoice_amount'], true)."</div></td>
                 </tr>";
+    $result = '<table width="100%" class="list" cellpadding="0" cellspacing="0">'.$result.'</table>';
         
     $quotation_details['invoiceId']    = $quotation_row['invoiceId'];    
+    $quotation_details['comments']     = $quotation_row['comments'];
     $quotation_details['order_date']   = date("j F Y", strtotime($quotation_row['orderDate']));
     
     $quotation_details['firstname']    = $quotation_row['firstName'];    
@@ -835,6 +848,101 @@ function quotationDetails($quotationId, $flag=0)
     //echo '<pre>'; print_r($quotation_details); exit;  
     
     return $quotation_details;
+}
+
+function creditNoteDetails($creditnoteId, $flag=0) {
+    global $default_theme, $admin_email, $ses_companyId, $company_row;
+    
+    $details = $result = '';
+    
+    $creditnote_sql = "SELECT * FROM gma_creditnote,gma_user_details,gma_logins,gma_company WHERE gma_logins.userId=gma_creditnote.userId AND gma_creditnote.userId=gma_user_details.userId AND gma_company.companyId=gma_logins.companyId AND id='$creditnoteId'";
+    $creditnote_rs  = mysql_query($creditnote_sql);
+    $creditnote_row = mysql_fetch_assoc($creditnote_rs);
+    
+    $creditnote_detail_sql = "SELECT * FROM gma_creditnote_details LEFT JOIN gma_services ON id=service_id WHERE creditnoteId='$creditnoteId' AND discount>0";
+    $creditnote_detail_rs  = mysql_query($creditnote_detail_sql);
+    $discount_flag    = mysql_num_rows($creditnote_detail_rs);
+    
+    $creditnote_detail_sql = "SELECT *,gma_creditnote_details.amount AS creditnote_amount FROM gma_creditnote_details LEFT JOIN gma_services ON id=service_id WHERE creditnoteId='$creditnoteId'";
+    $creditnote_detail_rs  = mysql_query($creditnote_detail_sql);
+    $i = 1;
+    while ($creditnote_detail_row = mysql_fetch_assoc($creditnote_detail_rs)) {
+        $service_id  = $creditnote_detail_row['id'];
+        $serviceName = (trim($creditnote_detail_row['serviceName'])=='') ? $creditnote_detail_row['service_name'] : $creditnote_detail_row['serviceName'];
+        $description = $creditnote_detail_row['description'];
+        $cost        = $creditnote_detail_row['cost'];
+        $quantity    = $creditnote_detail_row['quantity'];
+        $discount    = $creditnote_detail_row['discount'];
+        $amount      = $creditnote_detail_row['creditnote_amount'];
+        
+        $class    = (($i%2)==0) ? 'altrow' : '';
+        
+        $details .= "<tr class='$class'>
+                <td>".$i++."</td>
+                <td>$serviceName</td>
+                <td>$description</td>
+                <td>$cost</td>
+                <td>$quantity</td>";
+            
+        if($discount_flag!=0)
+            $details .= "<td align='right'>$discount%</td>";
+            
+        $details .= "<td align='right'>".formatMoney($amount, true)."</td>
+        </tr>";
+    }
+    $result .= "<tr>
+                    <th>#</th>
+                    <th>ITEM</th>
+                    <th>DESCRIPTION</th>
+                    <th>COST</th>
+                    <th>QUANTITY</th>";
+    
+    if($discount_flag!=0)
+        $result .= "<th>DISCOUNT</th>";
+        
+    $result .= "   <th>AMOUNT</th>
+                </tr>$details";
+    
+    
+    $result .= "<tr class='footer'>
+                    <td colspan='".($discount_flag!=0 ? 6 : 5)."'><div align='right'><b>TOTAL DUE</b></div></td>
+                    <td><div align='left'>".formatMoney($creditnote_row['creditnote_amount'], true)."</div></td>
+                </tr>";
+    $result = '<table width="100%" class="list" cellpadding="0" cellspacing="0">'.$result.'</table>';
+        
+    $creditnote_details['creditId']        = $creditnote_row['creditId'];   
+    $creditnote_details['comments']        = $creditnote_row['comments']; 
+    $creditnote_details['creditnote_date'] = date("j F Y", strtotime($creditnote_row['creditnoteDate']));
+     
+    $creditnote_details['firstname']    = $creditnote_row['firstName'];    
+    $creditnote_details['lastname']     = $creditnote_row['lastName'];    
+    $creditnote_details['clientname']   = $creditnote_row['businessName'];    
+    $creditnote_details['phone']        = $creditnote_row['phone'];    
+    $creditnote_details['address']      = $creditnote_row['address'];    
+    $creditnote_details['vatno']        = $creditnote_row['vatNo'];
+    $creditnote_details['email']        = $creditnote_row['email'];        
+    $creditnote_details['to_email']     = $creditnote_row['email'];
+    
+    $user_detail_sql = "SELECT * FROM gma_user_address WHERE userId=" . $creditnote_row['userId'];
+    $user_detail_rs  = mysql_query($user_detail_sql);
+    $i = 1;
+    while ($user_detail_row = mysql_fetch_assoc($user_detail_rs))
+    {
+        if($user_detail_row['type']=='B'){
+            $creditnote_details['billing_address'] = $user_detail_row['address'];
+            $creditnote_details['billing_city'] = $user_detail_row['city'];
+            $creditnote_details['billing_province'] = $user_detail_row['province'];
+            $creditnote_details['billing_zip'] = $user_detail_row['zip'];
+        } else {
+            $creditnote_details['delivery_address'] = $user_detail_row['address'];
+            $creditnote_details['delivery_city'] = $user_detail_row['city'];
+            $creditnote_details['delivery_province'] = $user_detail_row['province'];
+            $creditnote_details['delivery_zip'] = $user_detail_row['zip'];			
+        }
+    }
+    $creditnote_details['creditnoteDetails'] = $result; 
+    
+    return $creditnote_details;
 }
 
 function upload_photo($photo_dest, $file_tempname, $file_maxwidth = "", $file_maxheight = "")
@@ -1123,5 +1231,25 @@ function readFiles($folder) {
     }
     
     return $files;
+}
+
+function cssRead() {
+    global $default_theme;
+    
+    //$theme_theme = 'blue_theme';
+    $files   = array('style', 'pagination', 'thickbox', $default_theme);
+    $css_content = '';
+    foreach ($files as $file)
+    {
+        if($css_content!='') $css_content .= "\n\n\n\n\n";
+        
+        $css_content .= "/* $file */\n\n\n";
+        $file     = "css/$file.css";
+        $fp       = fopen($file, 'r');
+        $css_content .= fread($fp, filesize($file));
+        fclose($fp);
+    }
+    
+    return $css_content;
 }
 ?>

@@ -258,7 +258,7 @@ $row_flag = 1;
         setTimeout("animatedcollapse.hide('successmsg');", 6000);
     </script>
 </head>
-<body>
+<body class="body">
 <div id="wrapper">
 
     <div id="head">

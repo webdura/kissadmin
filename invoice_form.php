@@ -98,18 +98,15 @@ $list_org = generateTableRow(array());
     </table>
 </td></tr>
 <tr>
-    <td><input type="button" onclick="addRow()" value="Add Line"></td>
+    <td width="100"><input type="button" onclick="addRow()" value="Add Line"></td>
     <td height="40" class="total" align="right" style="padding-right: 23px;">
-    	<span style="padding-right: 40px;">INVOICE TOTAL</span>
-    	<input type="text" style="text-align:right;height:20px" class="invoicetextbox_green" name="total" id="total" value="<?= sprintf("%01.2f", $total);?>" size="10" readonly />
+        <span style="padding-right: 40px;"><b>INVOICE TOTAL</b></span>
+        <input type="text" style="text-align:right;height:20px" class="invoicetextbox_green" name="total" id="total" value="<?= sprintf("%01.2f", $total);?>" size="10" readonly />
     </td>
 </tr>
 <tr>
-    <td colspan="2"align="right" valign="top" style="padding-right: 23px;">
-   
-    	<span style="padding-right: 40px;">Comments</span>
-    	<textarea name="comments" rows="6" cols="50"><?=$comments; ?></textarea>
-    </td>
+    <td align="left" valign="top"><b>Comments</b></td>
+    <td align="left" valign="top"><textarea name="comments" rows="6" cols="50"><?=$comments; ?></textarea></td>
 </tr>
 </table>
 <? if(isset($creditnote) && $creditnote) { ?>

@@ -51,15 +51,15 @@ switch ($action)
                 }
             }
 
-            $invoice_sql = "SELECT companyInvoiceNo FROM gma_company WHERE companyId='$ses_companyId'";
-            $invoice_rs  = mysql_query($invoice_sql);
-            $invoice_row = mysql_fetch_assoc($invoice_rs);
-            $invoice_id  = $invoice_row['companyInvoiceNo'];
+            $company_sql = "SELECT companyInvoiceNo FROM gma_company WHERE companyId='$ses_companyId'";
+            $company_rs  = mysql_query($company_sql);
+            $company_row = mysql_fetch_assoc($company_rs);
+            $companyInvoiceNo = $company_row['companyInvoiceNo'];
             
             $orderDate    = date('Y-m-d H:i:s');
             $userId       = $_REQUEST['userId'];
             $order_number = $_REQUEST['order_number'];
-            $comments = GetSQLValueString($_REQUEST['comments'], 'text');
+            $comments     = GetSQLValueString($_REQUEST['comments'], 'text');
             
             $invoiceId    = 0;
             if($orderId>0)
@@ -76,8 +76,8 @@ switch ($action)
             }
             if($invoiceId==0)
             {
-                $invoice_id = $invoice_id + 1;
-                $invoiceId  = $invoice_id;
+                $companyInvoiceNo = $companyInvoiceNo + 1;
+                $invoiceId  = $companyInvoiceNo;
             }
             
             mysql_query("DELETE FROM gma_order_details WHERE orderId='$orderId' AND orderId>0");    
@@ -115,7 +115,7 @@ switch ($action)
             mysql_query($order_sql); 
             
             $smsg = ($orderId>0) ? "updated" : "added";
-            $sql  = "UPDATE gma_company SET companyInvoiceNo='$invoice_id' WHERE companyId='$ses_companyId'";
+            $sql  = "UPDATE gma_company SET companyInvoiceNo='$companyInvoiceNo' WHERE companyId='$ses_companyId'";
             mysql_query($sql);
         
             $smsg = "Invoice successfully added !";    
@@ -182,6 +182,8 @@ switch ($action)
         $amount    = $order_row['invoice_amount'];
         $comments  = GetSQLValueString($order_row['comments'], 'text');
         $orderDate = date('Y-m-d H:i:s');
+        $send_flag = (isset($_REQUEST['send']) && $_REQUEST['send']==1) ? 1 : 0;
+        $sendDate  = ($send_flag) ? date('Y-m-d H:i:s') : '';
         
         $order_sql = "UPDATE gma_order SET status=0 WHERE id=$orderId";
         mysql_query($order_sql);
@@ -191,7 +193,7 @@ switch ($action)
         $creditnote_row = mysql_fetch_assoc($creditnote_rs);
         $creditId       = $creditnote_row['companyCreditNo'] + 1;
         
-        $creditnote_sql = "INSERT INTO gma_creditnote SET orderId='$orderId',userId='$userId',creditId='$creditId',creditnote_amount='$amount',comments=$comments,creditnoteDate='$orderDate'";
+        $creditnote_sql = "INSERT INTO gma_creditnote SET orderId='$orderId',userId='$userId',creditId='$creditId',creditnote_amount='$amount',comments=$comments,creditnoteDate='$orderDate',sendDate='$sendDate'";
         mysql_query($creditnote_sql);
         $creditnoteId = mysql_insert_id();
         
@@ -214,7 +216,14 @@ switch ($action)
         $order_sql = "UPDATE gma_company SET companyCreditNo=$creditId WHERE companyId='$ses_companyId'";
         mysql_query($order_sql);
         
-        return header("Location: invoices.php?msg=Invoice Cancelled");
+        $smsg = "Invoice Cancelled";
+        if($send_flag==1) {
+            $details = creditNoteDetails($creditnoteId);        
+            $result  = emailSend('creditnote', $details);
+            $smsg = "Invoice cancelled and mail send successfully";
+        }
+        
+        return header("Location: invoices.php?msg=$smsg");
         exit;
         break;
         
@@ -304,23 +313,19 @@ if($action=='add' || $action=='edit') {
             $class     = ((($j++)%2)==1) ? 'altrow' : '';
 
             if($order_row['orderStatus'] == 0) {
-	        	$paid_sql = "SELECT orderId, SUM(amount) AS paidAmount FROM gma_payment_order ".
-	        				" WHERE orderId= " . $order_row['id'] .
-	        				" GROUP BY orderId";
-	            $paid_rs  = mysql_query($paid_sql);
-	            if(mysql_num_rows($paid_rs)>0) {
-	            	$paid_row = mysql_fetch_assoc($paid_rs);
-	            	$paidAmt = $paid_row['paidAmount'];
-	            	$status = 'Paid ' . formatMoney($paidAmt);
-	            }
-	            else
-	            	$status = paymentStatus($order_row['orderStatus']);
+                $paid_sql = "SELECT orderId, SUM(amount) AS paidAmount FROM gma_payment_order WHERE orderId='$orderId' GROUP BY orderId";
+                $paid_rs  = mysql_query($paid_sql);
+                if(mysql_num_rows($paid_rs)>0) {
+                    $paid_row = mysql_fetch_assoc($paid_rs);
+                    $paidAmt = $paid_row['paidAmount'];
+                    $status = 'Paid ' . formatMoney($paidAmt);
+                }
+                else
+                   $status = paymentStatus($order_row['orderStatus']);
+            } else {
+                $status = paymentStatus($order_row['orderStatus']);
             }
-            else {
-            	
-            	$status = paymentStatus($order_row['orderStatus']);
-            }
-            
+
             $status = ($order_row['status']==0) ? '<span>Cancelled</span>' : $status;
             
             ?>
@@ -336,7 +341,7 @@ if($action=='add' || $action=='edit') {
                     <a href="invoices.php?action=view&orderId=<?=$orderId?>&popup" class="btn_style thickbox">View</a>
                     <? if($ses_loginType!='user' && $order_row['status']==1) { ?>
                         &nbsp;<a href="invoices.php?action=edit&orderId=<?=$orderId?>" class="btn_style">Edit</a>
-                        &nbsp;<a href="invoices.php?action=cancel&orderId=<?=$orderId?>" class="btn_style">Cancel</a>
+                        &nbsp;<a href="javascript:void(0);" class="btn_style" onclick="cancelInvoice(<?=$orderId?>)">Cancel</a>
                     <? } ?>
                     <? if($order_row['status']==1) { ?>
                         &nbsp;<a href="invoices.php?action=resendMail&orderId=<?=$orderId?>" title="Send invoice to my email" class="btn_style">Send</a>
