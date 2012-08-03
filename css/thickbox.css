@@ -10,7 +10,6 @@
 	font: 12px Arial, Helvetica, sans-serif;
 	color: #333333;
 	
-	width:915px !important;
 }
 
 #TB_secondLine {
@@ -113,7 +112,6 @@ margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = d
 	line-height:1.4em;
 	
 	height:500px !important;
-	width:900px !important;
 }
 
 #TB_ajaxContent.TB_modal{

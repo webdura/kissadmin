@@ -166,7 +166,7 @@ if($action=='list') { ?>
 <table width="100%" class="list addedit" cellpadding="0" cellspacing="0">
     <tr><th colspan="3"><?=$title?>&nbsp;<span class="backlink"><a href="subscription.php">Back</a></span></td></tr>
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
-        <td width="30%">Name</td>
+        <td width="20%">Name</td>
         <td><input type="text" name="name" id="name" class="fleft textbox required" value="<?=@$sub_row['name']?>" /></td>  
     </tr> 
     <tr class="<?=(($row_flag++)%2==1 ? '' : 'altrow')?>">
